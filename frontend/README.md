@@ -1,0 +1,32 @@
+# NGBCL frontend
+
+Next.js 16 (App Router, Cache Components) · React 19 · TypeScript · `motion` (Framer Motion) · TanStack Query · react-hook-form + zod · STOMP.
+
+```bash
+pnpm install
+cp .env.example .env.local   # already present for local dev
+pnpm dev                      # http://localhost:3000
+```
+
+## Structure
+
+```
+src/
+  app/                 routes — (public), (auth)/login, admin, console/auction, display/auction, score, ds
+  design-system/       styles/ngbcl-ds.css (verbatim export), fonts (self-hosted), tokens,
+                       primitives/, data/, sport/, live/, motion/
+  features/            screen-level composition per domain (home, admin-shell, public-shell, display, auth…)
+  lib/                 api (typed fetch + problem+json errors), auth (in-memory access token,
+                       refresh cookie), realtime (STOMP hub + versioned topics), format (money, dates, names)
+  proxy.ts             coarse route gate for /admin, /console, /score (UX only — the API enforces auth)
+```
+
+## Conventions
+
+- Every data view handles **loading → empty → error → content**; mutations end in a toast or inline field errors from the server.
+- Money: `Money` component (`LKR` label in admin, `Rs.` on public pages, compact only on the big display).
+- Status: `StatusChip status="PENDING"` — never pick status colours by hand.
+- Animations use `design-system/motion/presets.ts` durations and respect reduced motion via `MotionProvider`.
+- API types: `pnpm gen:api` (with the backend running) regenerates `src/lib/api/schema.d.ts` from OpenAPI.
+
+Read `AGENTS.md` — this Next.js version has breaking changes (e.g. `middleware` → `proxy`, async `params`).

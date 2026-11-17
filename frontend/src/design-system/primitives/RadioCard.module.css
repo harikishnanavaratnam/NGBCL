@@ -1,0 +1,14 @@
+.set { border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.grid { display: grid; gap: 10px; }
+.card {
+  display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; cursor: pointer;
+  border: 1px solid var(--line-2); border-radius: var(--r-m); background: var(--bg);
+  transition: border-color var(--dur-hover), background var(--dur-hover);
+}
+.card:hover { border-color: var(--line-3); }
+.card:has(input:focus-visible) { outline: 2px solid var(--lime); outline-offset: 2px; }
+.on { border-color: var(--lime); background: var(--lime-tint); }
+.disabled { opacity: .45; cursor: not-allowed; }
+.radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line-3); flex-shrink: 0; margin-top: 2px; }
+.on .radio { border-color: var(--lime); box-shadow: inset 0 0 0 3px var(--bg), inset 0 0 0 9px var(--lime); }
+.text { display: flex; flex-direction: column; gap: 2px; font-size: 14px; }

@@ -1,0 +1,15 @@
+# Local development (docker compose up -d db). Never use these values elsewhere.
+ngbcl:
+  security:
+    jwt-secret: local-dev-only-secret-change-me-0123456789abcdef
+    cookie-secure: false
+    allowed-origins: http://localhost:3000
+    ip-hash-salt: local
+  bootstrap:
+    admin-email: admin@ngbcl.local
+    admin-password: ChangeMe-Local-123
+    admin-name: Local Admin
+
+logging:
+  level:
+    lk.ngbcl: DEBUG
