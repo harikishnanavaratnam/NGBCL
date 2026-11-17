@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NGBCL 1.0 — Match scorer console wireframe</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/8f7dbd951cd94d5d6ac221330072dab7">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700;1,800&amp;family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#F5F7FA}
+.sc{container-type:inline-size;background:#101318;color:#F5F7FA;font-family:'DM Sans',"Noto Sans Tamil","Noto Sans Sinhala",system-ui,sans-serif;font-size:15px;line-height:1.45;min-height:100%;position:relative;display:flex;flex-direction:column}
+.sc *{box-sizing:border-box}
+.disp{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;letter-spacing:-.01em;margin:0}
+.num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-variant-numeric:tabular-nums lining-nums}
+.mono{font-family:'DM Sans', sans-serif;font-weight:500}
+.eyebrow{font-size:11px;line-height:1.2;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:#A5ADB8}
+.muted{color:#A5ADB8}
+.card{background:#191F27;border:1px solid rgba(245,247,250,.12);border-radius:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;line-height:1;letter-spacing:.08em;text-transform:uppercase;font-weight:600;padding:5px 8px;border-radius:2px;white-space:nowrap}
+.c-live{background:#D8FF42;color:#101318}
+.c-neutral{background:rgba(245,247,250,.1);color:#F5F7FA}
+.c-ok{background:rgba(92,207,149,.25);color:#5CCF95}
+.c-prov{background:rgba(130,174,255,.25);color:#82AEFF}
+.c-err{background:rgba(255,90,98,.2);color:#FF7178}
+.dot{width:7px;height:7px;border-radius:50%;background:#FF5A62;display:inline-block}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:0 20px;border-radius:6px;font:600 16px 'DM Sans',sans-serif;text-decoration:none;white-space:nowrap;cursor:pointer;border:0;color:#F5F7FA;background:transparent}
+.btn-out{border:1px solid rgba(245,247,250,.35)}
+.btn-volt{background:#D8FF42;color:#101318}
+.btn-gold{background:#C9A45C;color:#101318}
+.btn:focus-visible,.inp:focus-visible,.half:focus-visible{outline:2px solid #D8FF42;outline-offset:2px}
+.inp{width:100%;min-height:56px;padding:8px 12px;border:1px solid rgba(245,247,250,.3);border-radius:6px;background:#101318;font:600 24px 'Barlow Condensed',sans-serif;color:#F5F7FA;text-align:center}
+.halves{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;min-height:440px}
+.half{border:0;border-radius:8px;color:#F5F7FA;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font:inherit;position:relative;padding:20px}
+.big{font-size:200px;line-height:.85}
+.bar{display:flex;gap:10px;flex-wrap:wrap}
+.bar .btn{flex:1 1 140px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tabs{display:flex;border-top:1px solid rgba(245,247,250,.12);background:#191F27}
+.tabs a{flex:1;min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-decoration:none;font-size:12px;color:#A5ADB8}
+@container (max-width:700px){
+.halves{grid-template-columns:1fr;min-height:0}
+.half{min-height:250px;flex-direction:row;justify-content:space-between}
+.big{font-size:130px}
+.g2{grid-template-columns:1fr}
+.hide-s{display:none}
+.bar .btn{flex:1 1 45%;min-height:52px;font-size:14px}
+}
+</style>
+</helmet>
+<div class="sc {{annClass}}">
+
+<!-- ================= MY MATCHES ================= -->
+<sc-if value="{{sList}}" hint-placeholder-val="{{ false }}">
+<header style="display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: #191F27; border-bottom: 1px solid rgba(245,247,250,.12)">
+<div class="ph" style="width: 36px; height: 36px; font-size: 7px">Logo</div>
+<strong style="font-size: 18px">My matches</strong>
+<span class="chip c-neutral" style="margin-left: auto"><span class="dot" style="background: #D8FF42"></span>Online</span>
+<span class="muted" style="font-size: 13px">[Scorer name]</span>
+</header>
+<div style="flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 20px; position: relative">
+<div class="ann" style="top: 8px">My matches · Now / Next / Done</div>
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; gap: 10px">
+<span class="eyebrow">{{g.name}}</span>
+<sc-for list="{{g.items}}" as="m" hint-placeholder-count="2">
+<a href="#" class="card" style="text-decoration: none; padding: 16px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; border-left: 4px solid {{m.edge}}">
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 120px"><span class="mono" style="font-size: 18px">[HH:MM]</span><span class="muted" style="font-size: 13px">Court [—]</span></div>
+<div style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 200px"><strong>[Category] · Match [n]</strong><span class="muted" style="font-size: 13px">[Player] v [Player] · tie [Team A] v [Team B]</span></div>
+<span class="chip {{m.chip}}">{{m.status}}</span>
+</a>
+</sc-for>
+</div>
+</sc-for>
+</div>
+<nav class="tabs" aria-label="Scorer">
+<a href="#" aria-current="page" style="color: #D8FF42; font-weight: 600">My matches</a><a href="#">Live</a><a href="#">History</a>
+</nav>
+</sc-if>
+
+<!-- ================= PRE-MATCH ================= -->
+<sc-if value="{{sPre}}" hint-placeholder-val="{{ false }}">
+<header style="display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: #191F27; border-bottom: 1px solid rgba(245,247,250,.12)">
+<a href="#" style="font-weight: 600">‹ Back</a><strong style="font-size: 18px">Pre-match check</strong><span class="muted" style="font-size: 13px">[Category] · Match [n] · Court [—]</span>
+</header>
+<div style="flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 18px; position: relative">
+<div class="ann" style="top: 8px">Pre-match · verify players, first server, sides</div>
+<div class="g2">
+<sc-for list="{{sides}}" as="sd" hint-placeholder-count="2">
+<div class="card" style="padding: 16px; display: flex; flex-direction: column; gap: 12px; border-top: 4px solid {{sd.band}}">
+<div style="display: flex; align-items: center; gap: 10px"><div class="ph ph-crest" style="width: 40px; height: 40px; font-size: 7px">Crest</div><strong>{{sd.team}}</strong><span class="eyebrow" style="margin-left: auto">Side {{sd.side}}</span></div>
+<sc-for list="{{sd.players}}" as="p" hint-placeholder-count="2">
+<label style="display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 6px; background: rgba(245,247,250,.04); cursor: pointer">
+<div class="ph ph-person" style="width: 56px; height: 70px; font-size: 7px">Photo</div>
+<span style="flex: 1">[First] <strong>[SURNAME]</strong></span>
+<input type="checkbox" style="width: 24px; height: 24px" aria-label="Identity checked"><span class="muted" style="font-size: 12px">ID checked</span>
+</label>
+</sc-for>
+</div>
+</sc-for>
+</div>
+<fieldset class="card" style="padding: 16px; margin: 0; display: flex; flex-direction: column; gap: 10px">
+<legend class="eyebrow" style="padding: 0 6px">First server</legend>
+<div style="display: flex; gap: 10px; flex-wrap: wrap">
+<label style="flex: 1 1 160px; display: flex; gap: 10px; align-items: center; min-height: 56px; padding: 0 14px; border-radius: 6px; border: 2px solid #D8FF42"><input type="radio" name="srv" checked> [Side A player]</label>
+<label style="flex: 1 1 160px; display: flex; gap: 10px; align-items: center; min-height: 56px; padding: 0 14px; border-radius: 6px; border: 1px solid rgba(245,247,250,.3)"><input type="radio" name="srv"> [Side B player]</label>
+</div>
+</fieldset>
+<div class="card" style="padding: 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<span class="eyebrow">Sides</span><span>Side A on the <strong>left</strong> of this screen</span>
+<button type="button" class="btn btn-out" style="margin-left: auto; min-height: 48px">Swap sides</button>
+</div>
+<span class="muted" style="font-size: 13px">Rules: <span class="tbc">[pts] · win by [n] · cap [n] · best of [n]</span> from Settings</span>
+<button type="button" class="btn btn-volt" style="min-height: 64px; font-size: 18px">Start match</button>
+</div>
+</sc-if>
+
+<!-- ================= LIVE SCORING ================= -->
+<sc-if value="{{sLive}}" hint-placeholder-val="{{ true }}">
+<header style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: #191F27; border-bottom: 1px solid rgba(245,247,250,.12); flex-wrap: wrap; position: relative">
+<div class="ann" style="top: 6px; left: auto; right: 12px">Live scoring · tap a half to award a rally point</div>
+<span class="chip c-live"><span class="dot"></span>Live</span>
+<strong>[Category] · Match [n]</strong>
+<span class="muted hide-s" style="font-size: 13px">Court [—] · [Team A] v [Team B]</span>
+<sc-if value="{{offline}}" hint-placeholder-val="{{ false }}"><span class="chip c-err" style="margin-left: auto">Offline · {{queued}} points not synced</span></sc-if>
+<sc-if value="{{online}}" hint-placeholder-val="{{ true }}"><span class="chip c-neutral" style="margin-left: auto"><span class="dot" style="background: #D8FF42"></span>Synced</span></sc-if>
+</header>
+
+<sc-if value="{{offline}}" hint-placeholder-val="{{ false }}">
+<div role="status" style="padding: 10px 16px; background: rgba(255,90,98,.15); border-bottom: 1px solid #FF5A62; font-size: 14px; position: relative">
+<div class="ann" style="top: 4px; left: auto; right: 12px">Offline state · local queue, syncs on reconnect</div>
+<strong>No connection.</strong> Keep scoring — points are saved on this device and sent when the connection returns.
+</div>
+</sc-if>
+
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; flex-wrap: wrap">
+<sc-for list="{{gameTiles}}" as="t" hint-placeholder-count="2"><span class="chip {{t.cls}}" style="font-size: 13px; padding: 7px 10px">{{t.label}}</span></sc-for>
+<span class="muted" style="margin-left: auto; font-size: 12px">Demo rules: 21 pts · win by 2 · cap 30 · best of 3 <span class="tbc">[REAL RULES FROM SETTINGS]</span></span>
+</div>
+
+<sc-if value="{{msg}}" hint-placeholder-val="{{ false }}">
+<div role="status" aria-live="polite" style="margin: 0 16px; padding: 12px 16px; border-radius: 8px; background: #D8FF42; color: #101318; font-weight: 700; font-size: 20px; text-align: center">{{msgText}}</div>
+</sc-if>
+
+<div style="flex: 1; padding: 12px 16px; display: flex">
+<div class="halves" style="width: 100%">
+<button type="button" class="half" onClick="{{ptA}}" aria-label="Award point to Side A" style="background: {{bgA}}; box-shadow: inset 0 6px 0 #F05A28">
+<span style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+<span class="ph ph-crest" style="width: 48px; height: 48px; font-size: 7px">Crest</span>
+<span style="font-size: 16px">[Team A]</span>
+<span style="font-size: 18px">[First] <strong>[SURNAME]</strong></span>
+<sc-if value="{{srvA}}" hint-placeholder-val="{{ true }}"><span class="chip c-live">Serving</span></sc-if>
+</span>
+<span class="num big" style="opacity: {{opA}}">{{a}}</span>
+</button>
+<button type="button" class="half" onClick="{{ptB}}" aria-label="Award point to Side B" style="background: {{bgB}}; box-shadow: inset 0 6px 0 #1BA6B5">
+<span style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+<span class="ph ph-crest" style="width: 48px; height: 48px; font-size: 7px">Crest</span>
+<span style="font-size: 16px">[Team B]</span>
+<span style="font-size: 18px">[First] <strong>[SURNAME]</strong></span>
+<sc-if value="{{srvB}}" hint-placeholder-val="{{ false }}"><span class="chip c-live">Serving</span></sc-if>
+</span>
+<span class="num big" style="opacity: {{opB}}">{{b}}</span>
+</button>
+</div>
+</div>
+
+<div class="bar" style="padding: 12px 16px 16px; border-top: 1px solid rgba(245,247,250,.12); background: #191F27; position: relative">
+<div class="ann">Bottom bar</div>
+<button type="button" class="btn btn-out" onClick="{{undo}}">Undo last point</button>
+<button type="button" class="btn btn-out">Interval</button>
+<button type="button" class="btn btn-out">Retired / walkover</button>
+<button type="button" class="btn btn-out">Game-by-game</button>
+<button type="button" class="btn btn-out">Save and exit</button>
+</div>
+
+<sc-if value="{{pending}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; background: rgba(12,14,18,.8); display: flex; align-items: center; justify-content: center; z-index: 20; padding: 16px">
+<div role="dialog" aria-modal="true" aria-labelledby="geT" class="card" style="width: 520px; max-width: 100%; padding: 28px; display: flex; flex-direction: column; gap: 18px; border-color: #D8FF42; position: relative">
+<div class="ann">Game-end confirm · auto-detected</div>
+<h2 id="geT" style="margin: 0; font-size: 26px; font-weight: 600">Game {{gameNo}} to Side {{winSide}}, <span class="num" style="font-size: 34px">{{a}}–{{b}}</span>?</h2>
+<span class="muted">Check the score before confirming. You can still undo the last point.</span>
+<div style="display: flex; gap: 12px"><button type="button" class="btn btn-out" style="flex: 1" onClick="{{undo}}">Undo last point</button><button type="button" class="btn btn-volt" style="flex: 1" onClick="{{confirmGame}}">Confirm game</button></div>
+</div>
+</div>
+</sc-if>
+</sc-if>
+
+<!-- ================= GAME-BY-GAME ================= -->
+<sc-if value="{{sManual}}" hint-placeholder-val="{{ false }}">
+<header style="display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: #191F27; border-bottom: 1px solid rgba(245,247,250,.12)">
+<a href="#" style="font-weight: 600">‹ Back</a><strong style="font-size: 18px">Enter scores game by game</strong><span class="muted hide-s" style="font-size: 13px">For matches scored on paper</span>
+</header>
+<div style="flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 16px; position: relative">
+<div class="ann" style="top: 8px">Game-by-game entry · inline validation</div>
+<div class="card" style="padding: 16px; display: grid; grid-template-columns: 90px 1fr 1fr; gap: 12px; align-items: center">
+<span></span><strong style="text-align: center">[Side A]</strong><strong style="text-align: center">[Side B]</strong>
+<span class="eyebrow">Game 1</span><input class="inp" value="[—]" aria-label="Game 1 Side A"><input class="inp" value="[—]" aria-label="Game 1 Side B">
+<span class="eyebrow">Game 2</span><input class="inp" value="[—]" aria-label="Game 2 Side A" style="border: 2px solid #FF5A62"><input class="inp" value="[—]" aria-label="Game 2 Side B" style="border: 2px solid #FF5A62">
+<span></span><span role="alert" style="grid-column: 2 / 4; color: #FF7178; font-size: 14px; font-weight: 600">Game 2 can't end on this score — the winner must lead by [n] points or reach [cap].</span>
+<span class="eyebrow">Game 3</span><input class="inp" placeholder="if needed" aria-label="Game 3 Side A"><input class="inp" placeholder="if needed" aria-label="Game 3 Side B">
+</div>
+<div class="card" style="padding: 14px 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap"><span class="eyebrow">Outcome</span><select class="inp" style="font: 500 15px 'DM Sans', sans-serif; max-width: 280px; min-height: 48px; text-align: left" aria-label="Outcome"><option>Completed normally</option><option>Retired (if enabled)</option><option>Walkover (if enabled)</option></select></div>
+<button type="button" class="btn btn-volt" style="min-height: 64px">Review result</button>
+</div>
+</sc-if>
+
+<!-- ================= SUBMIT SUMMARY ================= -->
+<sc-if value="{{sSubmit}}" hint-placeholder-val="{{ false }}">
+<header style="display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: #191F27; border-bottom: 1px solid rgba(245,247,250,.12)">
+<strong style="font-size: 18px">Submit result</strong><span class="muted" style="font-size: 13px">[Category] · Match [n] · Court [—]</span>
+</header>
+<div style="flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 18px; position: relative">
+<div class="ann" style="top: 8px">Submit summary · goes Provisional if two-step approval is on</div>
+<div class="card" style="padding: 22px; display: flex; flex-direction: column; gap: 16px; border-color: #C9A45C">
+<span class="eyebrow" style="color: #D6B877">Winner</span>
+<span class="disp" style="font-size: 36px">[Side A] · [Team A]</span>
+<div style="display: flex; gap: 10px; flex-wrap: wrap"><span class="chip c-neutral" style="font-size: 16px; padding: 10px 14px">G1 <strong>[—]</strong>–[—]</span><span class="chip c-neutral" style="font-size: 16px; padding: 10px 14px">G2 [—]–<strong>[—]</strong></span><span class="chip c-neutral" style="font-size: 16px; padding: 10px 14px">G3 <strong>[—]</strong>–[—]</span></div>
+<span class="muted" style="font-size: 14px">Duration [—] min · [n] points logged</span>
+</div>
+<div class="card" style="padding: 14px 16px; font-size: 14px; display: flex; gap: 10px; align-items: center"><span class="chip c-prov">Provisional</span>After you submit, an official confirms the result before standings update. <span class="tbc">[ONE- OR TWO-STEP TBC]</span></div>
+<div class="g2"><button type="button" class="btn btn-out">Back to scoring</button><button type="button" class="btn btn-volt" style="min-height: 64px">Submit result</button></div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"screen":{"editor":"enum","options":["My matches","Pre-match check","Live scoring","Deuce","Game-end confirm","Offline","Game-by-game","Submit summary"],"default":"Live scoring","section":"Wireframe state"},"showNotes":{"editor":"boolean","default":false,"section":"Wireframe state"},"$preview":{"width":1194,"height":834}}'>
+class Component extends DCLogic {
+componentDidUpdate(prev) { if (prev.screen !== this.props.screen) this.setState({ s: null }); }
+seed(scr) {
+const d = { a: 14, b: 12, srv: 'A', games: [], hist: [], pending: false, queued: 0 };
+if (scr === 'Deuce') { d.a = 20; d.b = 20; d.games = [[21, 18]]; }
+if (scr === 'Game-end confirm') { d.a = 21; d.b = 18; d.pending = true; }
+if (scr === 'Offline') { d.a = 9; d.b = 7; d.queued = 3; d.games = [[21, 18]]; }
+return d;
+}
+renderVals() {
+const scr = this.props.screen ?? 'Live scoring';
+const s = (this.state && this.state.s) || this.seed(scr);
+const P = 21, BY = 2, CAP = 30;
+const set = (n) => this.setState({ s: Object.assign({}, s, n) });
+const ended = (x, y) => (x >= P && x - y >= BY) || x === CAP;
+const award = (side) => () => {
+if (s.pending) return;
+const a = s.a + (side === 'A' ? 1 : 0), b = s.b + (side === 'B' ? 1 : 0);
+set({ a: a, b: b, srv: side, hist: s.hist.concat([[s.a, s.b, s.srv]]), pending: ended(a, b) || ended(b, a), queued: s.queued ? s.queued + 1 : 0 });
+};
+const undo = () => { if (!s.hist.length) { set({ pending: false }); return; } const h = s.hist[s.hist.length - 1]; set({ a: h[0], b: h[1], srv: h[2], hist: s.hist.slice(0, -1), pending: false }); };
+const confirmGame = () => set({ games: s.games.concat([[s.a, s.b]]), a: 0, b: 0, hist: [], pending: false });
+let msgText = '';
+if (s.a === CAP - 1 && s.b === CAP - 1) msgText = 'Next point wins';
+else if (s.a >= P - 1 && s.b >= P - 1 && s.a === s.b) msgText = 'Deuce — win by 2';
+else if ((s.a >= P - 1 && s.a > s.b) || (s.b >= P - 1 && s.b > s.a)) msgText = 'Game point · Side ' + (s.a > s.b ? 'A' : 'B');
+const lead = s.a === s.b ? 0 : (s.a > s.b ? 1 : -1);
+const tiles = s.games.map((g, i) => ({ label: 'G' + (i + 1) + ' ' + g[0] + '–' + g[1], cls: 'c-neutral' })).concat([{ label: 'G' + (s.games.length + 1) + ' · in play', cls: 'c-live' }]);
+const live = ['Live scoring', 'Deuce', 'Game-end confirm', 'Offline'].indexOf(scr) >= 0;
+const pl = (n) => Array.from({ length: n }, (_, i) => ({ i }));
+return {
+annClass: (this.props.showNotes ?? false) ? '' : 'hide-ann',
+sList: scr === 'My matches', sPre: scr === 'Pre-match check', sLive: live, sManual: scr === 'Game-by-game', sSubmit: scr === 'Submit summary',
+a: s.a, b: s.b, srvA: s.srv === 'A', srvB: s.srv === 'B',
+opA: lead < 0 ? '.6' : '1', opB: lead > 0 ? '.6' : '1',
+bgA: s.srv === 'A' ? '#26303B' : '#191F27', bgB: s.srv === 'B' ? '#26303B' : '#191F27',
+ptA: award('A'), ptB: award('B'), undo: undo, confirmGame: confirmGame,
+pending: s.pending, gameNo: s.games.length + 1, winSide: s.a > s.b ? 'A' : 'B',
+msg: !!msgText && !s.pending, msgText: msgText,
+gameTiles: tiles,
+offline: s.queued > 0, online: !(s.queued > 0), queued: s.queued,
+groups: [
+{ name: 'Now', items: [{ edge: '#D8FF42', chip: 'c-live', status: 'Ready to start' }] },
+{ name: 'Next', items: [{ edge: 'rgba(245,247,250,.3)', chip: 'c-neutral', status: 'Scheduled' }, { edge: 'rgba(245,247,250,.3)', chip: 'c-neutral', status: 'Scheduled' }] },
+{ name: 'Done', items: [{ edge: '#82AEFF', chip: 'c-prov', status: 'Submitted' }, { edge: '#5CCF95', chip: 'c-ok', status: 'Confirmed' }] }
+],
+sides: [{ side: 'A', team: '[Team A]', band: '#F05A28', players: pl(2) }, { side: 'B', team: '[Team B]', band: '#1BA6B5', players: pl(2) }]
+};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NGBCL Design System — Foundations</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/8f7dbd951cd94d5d6ac221330072dab7">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700;1,800&amp;family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.dsf{width:1440px;background:#101318;color:#F5F7FA;font-family:'DM Sans',sans-serif}
+.dsf *{box-sizing:border-box}
+.cover{background:linear-gradient(90deg,#101318 30%,rgba(16,19,24,.55) 65%,rgba(16,19,24,.2)),linear-gradient(0deg,#101318,rgba(16,19,24,0) 45%),url(/_blob/327e5af290f3807629181c898ddab48c) 70% 60%/cover no-repeat}
+.blk{padding:64px 80px;border-top:1px solid rgba(245,247,250,.08)}
+.sw-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.sw-tile{border:1px solid rgba(245,247,250,.08);border-radius:8px;overflow:hidden;background:#191F27}
+.sw-chip{height:96px}
+.sw-meta{padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.spec{display:grid;grid-template-columns:200px minmax(0,1fr) 300px;gap:24px;align-items:baseline;padding:18px 0;border-bottom:1px solid rgba(245,247,250,.08)}
+.sec-h{display:flex;align-items:baseline;gap:16px;margin-bottom:28px}
+</style>
+</helmet>
+<div class="dsf">
+
+<section class="cover" style="position: relative; height: 560px; padding: 72px 80px; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden">
+<div style="display: flex; align-items: center; gap: 16px">
+<img src="/_blob/cdcfcb2d54393ecb009b0801816ef575" alt="NGBCL" style="height: 44px; width: auto">
+<span class="chip c-gold">Design system v1.0</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 760px; position: relative; z-index: 2">
+<span class="eyebrow" style="color: #D8FF42">Night Court</span>
+<h1 class="t-display-xxl" style="font-size: 120px">One court.<br>Four screens.</h1>
+<p class="t-body-l muted" style="margin: 0; max-width: 620px">The shared visual language for the NGBCL 1.0 public website, admin portal, live auction and match scoring. Lime marks what you can act on and what is live. Gold is reserved for the championship.</p>
+</div>
+<img src="/_blob/d2df927fd831471a90d655e303ab7a2b" alt="" aria-hidden="true" style="position: absolute; right: 150px; bottom: 40px; height: 440px; width: auto; filter: drop-shadow(0 30px 40px rgba(0,0,0,.7)) drop-shadow(0 0 60px rgba(201,164,92,.25))">
+<img src="/_blob/7478f30cedfda4689671cc7de8e57a93" alt="" aria-hidden="true" style="position: absolute; right: 520px; top: 70px; height: 170px; width: auto; transform: rotate(-18deg); filter: drop-shadow(0 20px 30px rgba(0,0,0,.6))">
+</section>
+
+<!-- COLOUR -->
+<section class="blk">
+<div class="sec-h"><span class="eyebrow">01</span><h2 class="t-display-l">Colour</h2></div>
+<p class="muted" style="margin: 0 0 28px; max-width: 760px">Contrast is measured against Main background (#101318). Every text colour passes WCAG AA on all three surfaces.</p>
+<span class="eyebrow" style="display: block; margin-bottom: 14px">Surfaces</span>
+<div class="sw-grid" style="margin-bottom: 36px">
+<div class="sw-tile"><div class="sw-chip" style="background: #101318; border-bottom: 1px solid rgba(245,247,250,.08)"></div><div class="sw-meta"><strong>Main background</strong><span class="mono muted">#101318 · --bg</span><span class="t-caption">Page canvas on every surface</span></div></div>
+<div class="sw-tile"><div class="sw-chip" style="background: #191F27"></div><div class="sw-meta"><strong>Secondary background</strong><span class="mono muted">#191F27 · --bg-2</span><span class="t-caption">Bands, sidebars, top bars, dialogs</span></div></div>
+<div class="sw-tile"><div class="sw-chip" style="background: #222A34"></div><div class="sw-meta"><strong>Surface</strong><span class="mono muted">#222A34 · --surface</span><span class="t-caption">Cards and panels</span></div></div>
+<div class="sw-tile"><div class="sw-chip" style="background: #2B3440"></div><div class="sw-meta"><strong>Surface raised</strong><span class="mono muted">#2B3440 · --surface-2</span><span class="t-caption">Hover, selected rows, tracks</span></div></div>
+</div>
+<span class="eyebrow" style="display: block; margin-bottom: 14px">Brand accents</span>
+<div class="sw-grid" style="margin-bottom: 36px">
+<div class="sw-tile"><div class="sw-chip" style="background: #D8FF42; display: flex; align-items: flex-end; padding: 12px; color: #101318; font-weight: 700">Aa 16.2:1</div><div class="sw-meta"><strong>Primary accent · Lime</strong><span class="mono muted">#D8FF42 · --lime</span><span class="t-caption">Primary actions, selected states, live. Text on lime is always #101318.</span></div></div>
+<div class="sw-tile"><div class="sw-chip" style="background: #E6FF7A"></div><div class="sw-meta"><strong>Lime hover</strong><span class="mono muted">#E6FF7A · --lime-hover</span><span class="t-caption">Hover on lime only</span></div></div>
+<div class="sw-tile"><div class="sw-chip" style="background: #C9A45C; display: flex; align-items: flex-end; padding: 12px; color: #16130C; font-weight: 700">Aa 7.9:1</div><div class="sw-meta"><strong>Championship accent · Gold</strong><span class="mono muted">#C9A45C · --gold</span><span class="t-caption">Prizes, trophies, SOLD, title sponsor. Never for buttons that aren't money or winning.</span></div></div>
+<div class="sw-tile"><div class="sw-chip" style="background: #D6B877"></div><div class="sw-meta"><strong>Gold light</strong><span class="mono muted">#D6B877 · --gold-2</span><span class="t-caption">Small gold text, placeholders</span></div></div>
+</div>
+<span class="eyebrow" style="display: block; margin-bottom: 14px">Text</span>
+<div class="sw-grid" style="margin-bottom: 36px">
+<div class="sw-tile"><div class="sw-chip" style="background: #101318; display: flex; align-items: center; padding: 0 16px; font-size: 32px; font-weight: 600; color: #F5F7FA">Aa <span class="t-caption" style="margin-left: auto">17.3:1</span></div><div class="sw-meta"><strong>Main text</strong><span class="mono muted">#F5F7FA · --text</span></div></div>
+<div class="sw-tile"><div class="sw-chip" style="background: #101318; display: flex; align-items: center; padding: 0 16px; font-size: 32px; font-weight: 600; color: #A5ADB8">Aa <span class="t-caption" style="margin-left: auto">8.2:1</span></div><div class="sw-meta"><strong>Secondary text</strong><span class="mono muted">#A5ADB8 · --text-2</span></div></div>
+<div class="sw-tile"><div class="sw-chip" style="background: #101318; display: flex; align-items: center; padding: 0 16px; font-size: 32px; font-weight: 600; color: #8A93A0">Aa <span class="t-caption" style="margin-left: auto">6.0:1</span></div><div class="sw-meta"><strong>Tertiary text</strong><span class="mono muted">#8A93A0 · --text-3</span><span class="t-caption">Column headers, hints</span></div></div>
+<div class="sw-tile"><div class="sw-chip" style="background: #101318; display: flex; flex-direction: column; justify-content: center; gap: 10px; padding: 0 16px"><div style="height: 1px; background: rgba(245,247,250,.08)"></div><div style="height: 1px; background: rgba(245,247,250,.16)"></div><div style="height: 1px; background: rgba(245,247,250,.28)"></div></div><div class="sw-meta"><strong>Lines</strong><span class="mono muted">8% · 16% · 28% of #F5F7FA</span><span class="t-caption">Dividers · inputs · emphasis</span></div></div>
+</div>
+<span class="eyebrow" style="display: block; margin-bottom: 14px">Status — one meaning each, always with a word</span>
+<div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px">
+<div class="sw-tile"><div class="sw-chip" style="background: #5CCF95; height: 64px"></div><div class="sw-meta"><strong>Approved · Confirmed</strong><span class="mono muted">#5CCF95 · 9.6:1</span></div></div>
+<div class="sw-tile"><div class="sw-chip" style="background: #F0B455; height: 64px"></div><div class="sw-meta"><strong>Pending</strong><span class="mono muted">#F0B455 · 10.1:1</span></div></div>
+<div class="sw-tile"><div class="sw-chip" style="background: #FF7178; height: 64px"></div><div class="sw-meta"><strong>Rejected · Error</strong><span class="mono muted">#FF7178 · 7.0:1</span></div></div>
+<div class="sw-tile"><div class="sw-chip" style="background: #82AEFF; height: 64px"></div><div class="sw-meta"><strong>Provisional</strong><span class="mono muted">#82AEFF · 8.4:1</span></div></div>
+<div class="sw-tile"><div class="sw-chip" style="background: #FF5A62; height: 64px"></div><div class="sw-meta"><strong>Live dot</strong><span class="mono muted">#FF5A62 · paired with lime</span></div></div>
+</div>
+</section>
+
+<!-- TYPE -->
+<section class="blk">
+<div class="sec-h"><span class="eyebrow">02</span><h2 class="t-display-l">Typography</h2></div>
+<p class="muted" style="margin: 0 0 20px; max-width: 760px">Barlow Condensed for sports display and every score, bid and price. DM Sans for everything you read or operate. Numbers are always tabular.</p>
+<div class="spec"><div><strong>Display XXL</strong><div class="t-caption">Barlow Condensed 800 italic · caps</div></div><div class="t-display-xxl" style="font-size: 112px">Rise. Rally.</div><span class="mono muted">clamp(64, 9vw, 152) / 0.92 · Hero, SOLD</span></div>
+<div class="spec"><div><strong>Display XL</strong><div class="t-caption">Barlow Condensed 800 italic</div></div><div class="t-display-xl">Rule the court</div><span class="mono muted">64 / 0.92 · Page heroes</span></div>
+<div class="spec"><div><strong>Display L</strong><div class="t-caption">Barlow Condensed 800 italic</div></div><div class="t-display-l">Upcoming fixtures</div><span class="mono muted">44 / 1.0 · Section titles</span></div>
+<div class="spec"><div><strong>Score</strong><div class="t-caption">Barlow Condensed 700 · tabular</div></div><div class="num" style="font-size: 96px; line-height: .9">21<span class="muted" style="opacity: .6">–</span><span style="opacity: .6">18</span> <span style="color: #C9A45C; font-size: 72px">Rs. 300,000</span></div><span class="mono muted">96 / 48 / 28 · scores, bids, money</span></div>
+<div class="spec"><div><strong>Heading 1</strong><div class="t-caption">DM Sans 600</div></div><div class="t-h1">Registrations</div><span class="mono muted">30 / 1.2 · Admin page titles</span></div>
+<div class="spec"><div><strong>Heading 2</strong><div class="t-caption">DM Sans 600</div></div><div class="t-h2">Review and submit</div><span class="mono muted">22 / 1.3 · Card and panel titles</span></div>
+<div class="spec"><div><strong>Heading 3</strong><div class="t-caption">DM Sans 600</div></div><div class="t-h3">What happens next</div><span class="mono muted">18 / 1.35 · Subsections, drawers</span></div>
+<div class="spec"><div><strong>Body L</strong><div class="t-caption">DM Sans 400</div></div><div class="t-body-l">Team owners build their squads through a live player auction.</div><span class="mono muted">18 / 1.6 · Public long text</span></div>
+<div class="spec"><div><strong>Body</strong><div class="t-caption">DM Sans 400</div></div><div class="t-body">Approved players appear on the website and enter the auction pool.</div><span class="mono muted">15 / 1.55 · Default UI</span></div>
+<div class="spec"><div><strong>Body S</strong><div class="t-caption">DM Sans 400</div></div><div class="t-body-s">Table cells, helper text and dense admin content.</div><span class="mono muted">13 / 1.5</span></div>
+<div class="spec"><div><strong>Caption</strong><div class="t-caption">DM Sans 400</div></div><div class="t-caption">Last saved [YYYY-MM-DD HH:MM] by [User]</div><span class="mono muted">12 / 1.4 · Meta, timestamps</span></div>
+<div class="spec" style="border-bottom: 0"><div><strong>Label</strong><div class="t-caption">DM Sans 600 · caps · +12%</div></div><div class="t-label">Round 2 · Court 1</div><span class="mono muted">11 / 1.2 · Eyebrows, column headers, chips</span></div>
+</section>
+
+<!-- SPACE / SHAPE / DEPTH -->
+<section class="blk" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px">
+<div>
+<div class="sec-h"><span class="eyebrow">03</span><h2 class="t-display-l">Spacing</h2></div>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 14px"><span class="mono muted" style="width: 36px">4</span><span style="height: 12px; width: 4px; background: #D8FF42"></span></div>
+<div style="display: flex; align-items: center; gap: 14px"><span class="mono muted" style="width: 36px">8</span><span style="height: 12px; width: 8px; background: #D8FF42"></span></div>
+<div style="display: flex; align-items: center; gap: 14px"><span class="mono muted" style="width: 36px">12</span><span style="height: 12px; width: 12px; background: #D8FF42"></span></div>
+<div style="display: flex; align-items: center; gap: 14px"><span class="mono muted" style="width: 36px">16</span><span style="height: 12px; width: 16px; background: #D8FF42"></span></div>
+<div style="display: flex; align-items: center; gap: 14px"><span class="mono muted" style="width: 36px">24</span><span style="height: 12px; width: 24px; background: #D8FF42"></span></div>
+<div style="display: flex; align-items: center; gap: 14px"><span class="mono muted" style="width: 36px">32</span><span style="height: 12px; width: 32px; background: #D8FF42"></span></div>
+<div style="display: flex; align-items: center; gap: 14px"><span class="mono muted" style="width: 36px">48</span><span style="height: 12px; width: 48px; background: #D8FF42"></span></div>
+<div style="display: flex; align-items: center; gap: 14px"><span class="mono muted" style="width: 36px">64</span><span style="height: 12px; width: 64px; background: #D8FF42"></span></div>
+<div style="display: flex; align-items: center; gap: 14px"><span class="mono muted" style="width: 36px">96</span><span style="height: 12px; width: 96px; background: #D8FF42"></span></div>
+</div>
+<p class="t-caption" style="margin-top: 16px">4 px base. Public grid 12 col · 1200 max · 32 gutter. Admin 240 sidebar · 24 gutter. Auction display fixed 1920 × 1080.</p>
+</div>
+<div>
+<div class="sec-h"><span class="eyebrow">04</span><h2 class="t-display-l">Shape</h2></div>
+<div style="display: flex; gap: 20px; align-items: flex-end">
+<div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div style="width: 72px; height: 40px; background: #222A34; border: 1px solid rgba(245,247,250,.16); border-radius: 3px"></div><span class="mono muted">3 · chips</span></div>
+<div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div style="width: 72px; height: 56px; background: #222A34; border: 1px solid rgba(245,247,250,.16); border-radius: 6px"></div><span class="mono muted">6 · controls</span></div>
+<div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div style="width: 92px; height: 80px; background: #222A34; border: 1px solid rgba(245,247,250,.16); border-radius: 8px"></div><span class="mono muted">8 · cards</span></div>
+</div>
+<p class="t-caption" style="margin-top: 16px">Three radii only. No pill containers — circles are reserved for avatars and the live dot. The 10° slant appears only on the auction lot bar and big score badges.</p>
+</div>
+<div>
+<div class="sec-h"><span class="eyebrow">05</span><h2 class="t-display-l">Depth</h2></div>
+<div style="display: flex; flex-direction: column; gap: 18px">
+<div class="card" style="padding: 16px"><strong>Card</strong><div class="t-caption">Surface + 8% line + 1 px inner highlight. No drop shadow.</div></div>
+<div class="ds-modal" style="padding: 16px"><strong>Overlay</strong><div class="t-caption">Dialogs and drawers only: 0 24 64 rgba(0,0,0,.55)</div></div>
+<div style="padding: 16px; border-radius: 8px; border: 2px solid #D8FF42"><strong>Focus · selected</strong><div class="t-caption">2 px lime ring, 2 px offset, on every control</div></div>
+</div>
+</div>
+</section>
+
+<!-- RULES -->
+<section class="blk" style="padding-bottom: 80px">
+<div class="sec-h"><span class="eyebrow">06</span><h2 class="t-display-l">Rules</h2></div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px">
+<div class="card" style="padding: 22px; border-top: 3px solid #5CCF95; display: flex; flex-direction: column; gap: 10px">
+<span class="chip c-ok" style="align-self: flex-start">Do</span>
+<span>Use lime for the one most important action, the selected item and anything live.</span>
+<span>Use gold only for prizes, trophies, SOLD and the title sponsor.</span>
+<span>Group with space and 1 px lines first; use a card only when it holds one thing you can act on.</span>
+<span>Show every status as a word, not colour alone.</span>
+<span>Mark unconfirmed facts with the gold dashed placeholder until official data arrives.</span>
+</div>
+<div class="card" style="padding: 22px; border-top: 3px solid #FF7178; display: flex; flex-direction: column; gap: 10px">
+<span class="chip c-err" style="align-self: flex-start">Don't</span>
+<span>Rows of four identical KPI cards, sparklines or gradient washes.</span>
+<span>Glass, blur stacks or glows outside the live auction and 3D hero moments.</span>
+<span>Pill-shaped containers, or more than one chip per cell.</span>
+<span>Gold buttons for ordinary actions, or lime text on white.</span>
+<span>Mixing radii inside one component.</span>
+</div>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3500}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

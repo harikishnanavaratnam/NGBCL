@@ -1,0 +1,23 @@
+# Dependencies & builds
+node_modules/
+.next/
+out/
+target/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# Env & secrets — never commit
+.env
+.env.*
+!.env.example
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+
+# Scratch / handover archives
+design/source-assets/_to_delete/

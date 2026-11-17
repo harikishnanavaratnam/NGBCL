@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NGBCL Design System — Components</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/8f7dbd951cd94d5d6ac221330072dab7">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700;1,800&amp;family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.dsc{width:1440px;background:#101318;color:#F5F7FA;font-family:'DM Sans',sans-serif}
+.dsc *{box-sizing:border-box}
+.blk{padding:56px 80px;border-top:1px solid rgba(245,247,250,.08)}
+.sec-h{display:flex;align-items:baseline;gap:16px;margin-bottom:24px}
+.row{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.scrim-bg{background:linear-gradient(rgba(8,10,13,.78),rgba(8,10,13,.78)),url(/_blob/64b2eeb9f50cabb2608078d66174f909) center/cover no-repeat}
+.lab{font:600 10.5px 'DM Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8A93A0;margin-bottom:10px;display:block}
+</style>
+</helmet>
+<div class="dsc">
+
+<section class="blk" style="border-top: 0; padding-top: 64px">
+<span class="eyebrow" style="color: #D8FF42">NGBCL design system · Components</span>
+<h1 class="t-display-xl" style="margin-top: 10px">Components</h1>
+<p class="t-body-l muted" style="margin: 8px 0 0; max-width: 820px">Every component lives in one shared stylesheet. The public website, admin portal, auction console, auction display and scorer all load it, so a change here updates every screen.</p>
+</section>
+
+<!-- NAVIGATION -->
+<section class="blk">
+<div class="sec-h"><span class="eyebrow">01</span><h2 class="t-display-l">Navigation</h2></div>
+<span class="lab">Public navigation bar</span>
+<nav class="ds-nav" aria-label="Example public navigation" style="border-radius: 8px; border: 1px solid rgba(245,247,250,.08)">
+<img src="/_blob/cdcfcb2d54393ecb009b0801816ef575" alt="NGBCL" style="height: 38px; width: auto">
+<span class="chip c-gold">1.0</span>
+<div style="display: flex; gap: 24px; margin-left: auto; align-self: stretch; align-items: stretch">
+<a href="#" style="display: flex; align-items: center">Home</a><a href="#" class="on" style="display: flex; align-items: center">Teams</a><a href="#" style="display: flex; align-items: center">Players</a><a href="#" style="display: flex; align-items: center">Auction</a><a href="#" style="display: flex; align-items: center">Fixtures</a><a href="#" style="display: flex; align-items: center">Standings</a><a href="#" style="display: flex; align-items: center">News</a>
+</div>
+<span class="chip c-live"><span class="dot"></span>Live</span>
+<a href="#" class="btn btn-volt btn-sm" style="color: #101318">Register</a>
+</nav>
+<div class="g2" style="margin-top: 28px">
+<div>
+<span class="lab">Admin top bar</span>
+<div style="display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 0 20px; background: #191F27; border: 1px solid rgba(245,247,250,.08); border-radius: 8px">
+<span class="eyebrow">Edition</span><select class="inp" style="width: auto; min-height: 36px; font-weight: 600" aria-label="Edition"><option>NGBCL 1.0</option></select>
+<input class="inp" type="search" placeholder="Search players, teams, PLY-…" aria-label="Search" style="min-height: 36px; max-width: 260px">
+<div class="ph ph-person" style="width: 32px; height: 32px; border-radius: 50%; margin-left: auto">U</div>
+</div>
+</div>
+<div>
+<span class="lab">Sidebar navigation</span>
+<nav class="ds-sidebar" aria-label="Example sidebar" style="border-radius: 8px; border: 1px solid rgba(245,247,250,.08)">
+<div style="display: flex; align-items: center; gap: 10px; padding: 4px 6px 14px"><img src="/_blob/7478f30cedfda4689671cc7de8e57a93" alt="" style="width: 36px; height: 36px; object-fit: contain"><strong>NGBCL Admin</strong></div>
+<a href="#">Overview</a>
+<a href="#" class="on">Registrations <span class="chip c-pend" style="margin-left: auto">[—]</span></a>
+<a href="#">Directory</a>
+<a href="#">Auction</a>
+<a href="#">Competition</a>
+</nav>
+</div>
+</div>
+</section>
+
+<!-- BUTTONS -->
+<section class="blk">
+<div class="sec-h"><span class="eyebrow">02</span><h2 class="t-display-l">Buttons and action links</h2></div>
+<div class="g2">
+<div style="display: flex; flex-direction: column; gap: 18px">
+<span class="lab">Hierarchy</span>
+<div class="row">
+<button type="button" class="btn btn-primary">Register as a player</button>
+<button type="button" class="btn btn-secondary">Enter a team</button>
+<button type="button" class="btn btn-ghost">Cancel</button>
+<a href="#" class="link">See the schedule</a>
+</div>
+<div class="row">
+<button type="button" class="btn btn-gold">Confirm sale</button>
+<button type="button" class="btn btn-danger">Reject</button>
+<button type="button" class="btn btn-primary" disabled>Approve</button>
+</div>
+<p class="t-caption" style="margin: 0">One lime button per view. Gold only for SOLD and prize actions. Danger is outlined until it sits inside a confirmation.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 18px">
+<span class="lab">Sizes · 36 / 44 / 64</span>
+<div class="row"><button type="button" class="btn btn-primary btn-sm">Small</button><button type="button" class="btn btn-primary">Default</button><button type="button" class="btn btn-primary btn-lg">Place bid</button></div>
+<div class="row"><button type="button" class="btn btn-gold btn-lg" style="min-width: 220px">Sold</button><button type="button" class="btn btn-secondary btn-lg">Unsold</button></div>
+<p class="t-caption" style="margin: 0">64 px for the auctioneer and scorer consoles (touch, under pressure).</p>
+</div>
+</div>
+</section>
+
+<!-- FORMS -->
+<section class="blk">
+<div class="sec-h"><span class="eyebrow">03</span><h2 class="t-display-l">Form fields</h2></div>
+<div class="g3">
+<div class="field"><label for="d1">Full name <span class="req">*</span></label><input id="d1" class="inp" placeholder="As it should appear on your player card"><span class="help">Public on your approved profile.</span></div>
+<div class="field"><label for="d2">Email address <span class="req">*</span></label><input id="d2" class="inp" value="name@" style="border-color: #D8FF42; box-shadow: 0 0 0 3px rgba(216,255,66,.15)"><span class="help">Focus state</span></div>
+<div class="field err"><label for="d3">Contact number <span class="req">*</span></label><input id="d3" class="inp" value="77"><span class="errmsg">Enter a 9-digit number after +94</span></div>
+<div class="field"><label for="d4">Home area</label><select id="d4" class="inp"><option>Select your area</option></select></div>
+<div class="field"><label for="d5">Initial team budget</label><div style="display: flex"><span style="display: flex; align-items: center; padding: 0 12px; border: 1px solid rgba(245,247,250,.16); border-right: 0; border-radius: 6px 0 0 6px; background: #222A34; font-size: 12px; font-weight: 700">LKR</span><input id="d5" class="inp" disabled placeholder="Locked" style="border-radius: 0 6px 6px 0"></div><span class="help">Disabled · locked after bidding starts</span></div>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<span class="lbl">Choices</span>
+<label style="display: flex; gap: 10px; align-items: center"><input type="checkbox" checked style="width: 18px; height: 18px"> I confirm I am a Jaffna player</label>
+<label style="display: flex; gap: 10px; align-items: center"><input type="radio" name="dr" checked style="width: 18px; height: 18px"> One-step approval</label>
+<label style="display: flex; gap: 10px; align-items: center; justify-content: space-between">Pin on homepage <input type="checkbox" class="sw" role="switch" checked aria-label="Pin"></label>
+</div>
+</div>
+<div class="row" style="margin-top: 24px">
+<label style="flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 16px; border: 2px solid #D8FF42; border-radius: 8px; background: rgba(216,255,66,.06)"><span style="display: flex; gap: 8px; font-weight: 600"><input type="radio" name="rc" checked> [Category 1]</span><span class="help">Radio card · selected</span></label>
+<label style="flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 16px; border: 1px solid rgba(245,247,250,.16); border-radius: 8px"><span style="display: flex; gap: 8px; font-weight: 600"><input type="radio" name="rc"> [Category 2]</span><span class="help">Radio card</span></label>
+<div style="flex: 1; border: 2px dashed rgba(245,247,250,.18); border-radius: 8px; padding: 16px; text-align: center; display: flex; flex-direction: column; gap: 6px; align-items: center"><strong>Drag a photo here</strong><span class="help">Uploader · JPEG, PNG or WebP</span></div>
+</div>
+</section>
+
+<!-- TABS / FILTERS / STATUS -->
+<section class="blk">
+<div class="g2">
+<div>
+<div class="sec-h"><span class="eyebrow">04</span><h2 class="t-display-l">Tabs and filters</h2></div>
+<span class="lab">Underline tabs</span>
+<div class="ds-tabs" role="tablist"><button type="button" role="tab" class="on" aria-selected="true">Profile</button><button type="button" role="tab">Registration history</button><button type="button" role="tab">Auction</button><button type="button" role="tab">Matches</button></div>
+<span class="lab" style="margin-top: 22px">Segmented control</span>
+<div class="seg" role="group" aria-label="Status"><button type="button" class="on">Pending</button><button type="button">Approved</button><button type="button">Rejected</button><button type="button">All</button></div>
+<span class="lab" style="margin-top: 22px">Filters</span>
+<div class="row"><span class="ds-filter on">Possible duplicates · [—]</span><span class="ds-filter">Needs photo verification</span><select class="inp" aria-label="Team" style="width: auto; min-height: 36px"><option>All teams</option></select></div>
+</div>
+<div>
+<div class="sec-h"><span class="eyebrow">05</span><h2 class="t-display-l">Status indicators</h2></div>
+<div style="display: grid; grid-template-columns: 150px 1fr; gap: 12px 16px; align-items: center">
+<span class="chip c-live" style="justify-self: start"><span class="dot"></span>Live</span><span class="t-body-s muted">Live lot, live match, current game. Pulses.</span>
+<span class="chip c-sold" style="justify-self: start">Sold</span><span class="t-body-s muted">Auction lot sold</span>
+<span class="chip c-pend" style="justify-self: start">Pending</span><span class="t-body-s muted">Awaiting review, fee not received</span>
+<span class="chip c-ok" style="justify-self: start">Confirmed</span><span class="t-body-s muted">Approved, confirmed result, verified file</span>
+<span class="chip c-prov" style="justify-self: start">Provisional</span><span class="t-body-s muted">Submitted, not yet confirmed</span>
+<span class="chip c-err" style="justify-self: start">Rejected</span><span class="t-body-s muted">Rejected, invalid bid, failed upload</span>
+<span class="chip c-neutral" style="justify-self: start">Unsold</span><span class="t-body-s muted">Unsold, withdrawn, draft</span>
+<span class="chip c-gold" style="justify-self: start">Jaffna players only</span><span class="t-body-s muted">Championship tag (outline gold)</span>
+<span class="chip c-neutral" style="justify-self: start"><span class="dot" style="background: #D8FF42; box-shadow: none"></span>Connected</span><span class="t-body-s muted">Connection indicator · Reconnecting / Offline variants</span>
+</div>
+</div>
+</div>
+</section>
+
+<!-- TABLES & ROWS -->
+<section class="blk">
+<div class="sec-h"><span class="eyebrow">06</span><h2 class="t-display-l">Tables and data rows</h2></div>
+<div class="g2">
+<div class="card" style="overflow: hidden">
+<table class="tbl">
+<thead><tr><th>Pos</th><th>Team</th><th class="r">P</th><th class="r">W</th><th class="r">Pts</th><th>Form</th></tr></thead>
+<tbody>
+<tr><td class="num" style="font-size: 20px">1</td><td><span style="border-left: 4px solid #F05A28; padding-left: 10px; font-weight: 600">[Team]</span></td><td class="r">—</td><td class="r">—</td><td class="r num" style="font-size: 20px">—</td><td><span class="chip c-ok">W</span></td></tr>
+<tr><td class="num" style="font-size: 20px">2</td><td><span style="border-left: 4px solid #1BA6B5; padding-left: 10px; font-weight: 600">[Team]</span> <span class="chip c-prov">Prov.</span></td><td class="r">—</td><td class="r">—</td><td class="r num" style="font-size: 20px">—</td><td><span class="chip c-neutral">L</span></td></tr>
+<tr><td colspan="6" style="padding: 6px 12px"><div style="display: flex; align-items: center; gap: 10px"><span style="flex: 1; border-top: 1px dashed rgba(245,247,250,.28)"></span><span class="t-label">Qualifies</span></div></td></tr>
+<tr><td class="num" style="font-size: 20px">3</td><td><span style="border-left: 4px solid #2F6FED; padding-left: 10px; font-weight: 600">[Team]</span></td><td class="r">—</td><td class="r">—</td><td class="r num" style="font-size: 20px">—</td><td><span class="chip c-ok">W</span></td></tr>
+</tbody>
+</table>
+<p class="t-caption" style="margin: 0; padding: 12px">Header in Label style, numbers right-aligned and tabular, team colour as a 4 px edge only.</p>
+</div>
+<div class="card" style="overflow: hidden">
+<div class="ds-row is-selected"><div class="ph ph-person" style="width: 36px; height: 45px">4:5</div><div style="flex: 1"><strong>[Full name]</strong><div class="t-caption">PLY-[…] · [Category] · in queue [—]d</div></div><span class="chip c-err">Duplicate?</span><span class="chip c-pend">Pending</span></div>
+<div class="ds-row"><div class="ph ph-person" style="width: 36px; height: 45px">4:5</div><div style="flex: 1"><strong>[Full name]</strong><div class="t-caption">PLY-[…] · [Category] · in queue [—]d</div></div><span class="chip c-ok">Photo verified</span></div>
+<div class="ds-row"><span class="mono muted">[HH:MM]</span><div style="flex: 1">Bid · [Team]</div><span class="num" style="font-size: 20px">LKR [—]</span><span class="chip c-live">Leading</span></div>
+<div class="ds-row" style="border-bottom: 0"><span class="mono muted">[HH:MM]</span><div style="flex: 1; opacity: .6">Bid · [Team]</div><span class="num" style="font-size: 20px; text-decoration: line-through; opacity: .5">LKR [—]</span><span class="chip c-err">Over budget</span></div>
+<p class="t-caption" style="margin: 0; padding: 12px 16px">Data rows: selected row gets the lime edge; rejected values are struck through and keep the server's reason.</p>
+</div>
+</div>
+</section>
+
+<!-- CARDS -->
+<section class="blk">
+<div class="sec-h"><span class="eyebrow">07</span><h2 class="t-display-l">Player and team profile cards</h2></div>
+<div style="display: grid; grid-template-columns: repeat(3, 220px) minmax(0,1fr); gap: 24px; align-items: start">
+<div class="ds-player-card" style="border-top: 4px solid #F05A28">
+<div class="ph ph-person" style="aspect-ratio: 4 / 5; border-radius: 0; border: 0">Photo</div>
+<div style="padding: 14px; display: flex; flex-direction: column; gap: 8px">
+<span>[First] <strong style="text-transform: uppercase">[Surname]</strong></span>
+<span class="chip c-neutral" style="align-self: flex-start">[Category]</span>
+<div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(245,247,250,.08); padding-top: 8px"><span class="t-caption">[Team]</span><span class="num" style="font-size: 18px; color: #C9A45C">Rs. [—]</span></div>
+</div>
+</div>
+<div class="ds-player-card" style="border-top: 4px solid rgba(245,247,250,.28)">
+<div class="ph ph-person" style="aspect-ratio: 4 / 5; border-radius: 0; border: 0">Photo</div>
+<div style="padding: 14px; display: flex; flex-direction: column; gap: 8px">
+<span>[First] <strong style="text-transform: uppercase">[Surname]</strong></span>
+<span class="chip c-neutral" style="align-self: flex-start">[Category]</span>
+<div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(245,247,250,.08); padding-top: 8px"><span class="t-caption">In auction pool</span><span class="num" style="font-size: 18px">Base [—]</span></div>
+</div>
+</div>
+<div class="ds-team-card" style="border-top: 4px solid #1BA6B5">
+<div class="ph ph-crest" style="width: 120px; height: 120px; box-shadow: inset 0 0 0 3px #1BA6B5">Crest</div>
+<strong style="font-size: 16px">[Team name]</strong>
+<span class="t-caption">[ABC] · Squad [—]/[—]</span>
+<div style="width: 100%; display: flex; gap: 4px"><span style="flex: 1; height: 6px; background: #C9A45C; border-radius: 2px"></span><span style="flex: 1; height: 6px; background: #C9A45C; border-radius: 2px"></span><span style="flex: 1; height: 6px; background: #2B3440; border-radius: 2px"></span><span style="flex: 1; height: 6px; background: #2B3440; border-radius: 2px"></span></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<span class="lab">Auction lot card (display scale)</span>
+<div class="ds-scoreboard" style="display: grid; grid-template-columns: 160px 1fr; gap: 20px; padding: 20px; align-items: center">
+<div class="ph ph-person" style="aspect-ratio: 4 / 5">Photo</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="t-label">Lot [n]</span>
+<span style="font-size: 20px">[First]</span><span class="t-display-l" style="font-size: 40px">[SURNAME]</span>
+<span class="t-label" style="margin-top: 8px">Current bid</span>
+<span class="num" style="font-size: 56px; line-height: .9; color: #D8FF42">Rs. [—]</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- STATS + METRICS -->
+<section class="blk">
+<div class="g2">
+<div>
+<div class="sec-h"><span class="eyebrow">08</span><h2 class="t-display-l">Tournament statistics</h2></div>
+<div style="display: flex; gap: 40px; flex-wrap: wrap; padding: 22px 0; border-top: 1px solid rgba(245,247,250,.08); border-bottom: 1px solid rgba(245,247,250,.08)">
+<div class="ds-stat"><span class="t-label">Prize pool</span><span class="v" style="color: #C9A45C">Rs. 600,000</span><span class="t-caption">Champions · Runners-up · Third</span></div>
+<div class="ds-stat"><span class="t-label">Matches won</span><span class="v">—</span><span class="t-caption">Confirmed results only</span></div>
+<div class="ds-stat"><span class="t-label">Games won</span><span class="v">—</span><span class="t-caption">of [—] played</span></div>
+</div>
+<p class="t-caption">Stats sit on the page, divided by lines — not boxed into identical cards. Gold only when the number is prize money.</p>
+</div>
+<div>
+<div class="sec-h"><span class="eyebrow">09</span><h2 class="t-display-l">Dashboard metrics</h2></div>
+<div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 16px">
+<a href="#" class="ds-metric" style="text-decoration: none; border-left: 3px solid #F0B455">
+<span class="t-label">Pending review</span>
+<span class="num" style="font-size: 52px; line-height: 1">—</span>
+<span class="t-caption">Players [—] · Teams [—] · oldest [—] days</span>
+<span style="font-size: 13px; font-weight: 600; color: #D8FF42">Open review queue →</span>
+</a>
+<div class="ds-metric">
+<span class="t-label">Team budget</span>
+<span class="num" style="font-size: 30px">LKR [—] <span class="muted" style="font-size: 18px">left</span></span>
+<div style="position: relative; height: 10px; background: #2B3440; border-radius: 2px; overflow: hidden"><span style="position: absolute; left: 0; top: 0; bottom: 0; width: 58%; background: #C9A45C"></span></div>
+<span class="t-caption">Spent LKR [—] of [—]</span>
+</div>
+</div>
+<p class="t-caption">Every metric links to the list behind it and carries context, never a bare number.</p>
+</div>
+</div>
+</section>
+
+<!-- FIXTURE + SCOREBOARD -->
+<section class="blk">
+<div class="g2">
+<div>
+<div class="sec-h"><span class="eyebrow">10</span><h2 class="t-display-l">Fixture panel</h2></div>
+<div class="card" style="overflow: hidden">
+<div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid rgba(245,247,250,.08)"><span class="t-label">Round [—] · Court [—]</span><span class="chip c-ok">Confirmed</span></div>
+<div class="ds-fixture" style="border: 0; border-radius: 0; background: transparent">
+<div style="display: flex; align-items: center; gap: 12px; justify-content: flex-end"><strong>[Team A]</strong><div class="ph ph-crest" style="width: 52px; height: 52px">C</div></div>
+<div style="display: flex; flex-direction: column; align-items: center"><span class="num" style="font-size: 48px; line-height: 1">[—]<span class="muted">–</span>[—]</span><span class="t-caption">Matches won</span></div>
+<div style="display: flex; align-items: center; gap: 12px"><div class="ph ph-crest" style="width: 52px; height: 52px">C</div><strong>[Team B]</strong></div>
+</div>
+<div class="ds-row" style="border-top: 1px solid rgba(245,247,250,.08)"><span class="t-label" style="width: 90px">[Category]</span><span style="flex: 1">[Player] v [Player]</span><span class="mono">[—–—] [—–—]</span></div>
+<div class="ds-row" style="border-bottom: 0"><span class="t-label" style="width: 90px">[Category]</span><span style="flex: 1">[Pair] v [Pair]</span><span class="mono">[—–—] [—–—] [—–—]</span></div>
+</div>
+<p class="t-caption">Three levels always visible: the tie, its matches, each match's games.</p>
+</div>
+<div>
+<div class="sec-h"><span class="eyebrow">11</span><h2 class="t-display-l">Scoreboard</h2></div>
+<div class="ds-scoreboard">
+<div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid rgba(245,247,250,.08)"><span class="chip c-live"><span class="dot"></span>Live</span><span class="t-label">[Category] · Match [n]</span><span class="chip c-neutral" style="margin-left: auto">G1 [—]–[—]</span><span class="chip c-live">G2</span></div>
+<div style="display: grid; grid-template-columns: 1fr 1fr">
+<div style="padding: 22px; display: flex; flex-direction: column; align-items: center; gap: 6px; background: #26303B; box-shadow: inset 0 4px 0 #F05A28">
+<span class="t-caption">[Team A]</span><span>[First] <strong>[SURNAME]</strong></span><span class="chip c-live">Serving</span>
+<span class="num" style="font-size: 120px; line-height: .85">14</span>
+</div>
+<div style="padding: 22px; display: flex; flex-direction: column; align-items: center; gap: 6px; box-shadow: inset 0 4px 0 #1BA6B5">
+<span class="t-caption">[Team B]</span><span>[First] <strong>[SURNAME]</strong></span><span style="height: 22px"></span>
+<span class="num" style="font-size: 120px; line-height: .85; opacity: .6">12</span>
+</div>
+</div>
+</div>
+<p class="t-caption">Example values. Leader at full strength, trailer at 60%; serve shown by word and position, never colour alone.</p>
+</div>
+</div>
+</section>
+
+<!-- MODALS -->
+<section class="blk" style="padding-bottom: 80px">
+<div class="sec-h"><span class="eyebrow">12</span><h2 class="t-display-l">Modals and confirmation dialogs</h2></div>
+<div class="ds-scrim scrim-bg" style="border-radius: 8px; padding: 48px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px">
+<div role="dialog" aria-label="Example sale confirmation" class="ds-modal" style="padding: 26px; display: flex; flex-direction: column; gap: 16px; border-color: rgba(201,164,92,.6)">
+<span class="chip c-sold" style="align-self: flex-start">Confirm sale</span>
+<h3 class="t-h2">Sell [First] <strong>[SURNAME]</strong> to [Team] for <span class="num" style="font-size: 28px; color: #C9A45C">Rs. [—]</span>?</h3>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px"><div class="card" style="padding: 12px"><span class="t-label">Budget after</span><div class="num" style="font-size: 24px">Rs. [—]</div></div><div class="card" style="padding: 12px"><span class="t-label">Squad after</span><div class="num" style="font-size: 24px">[—]/[—]</div></div></div>
+<div class="row" style="justify-content: flex-end"><button type="button" class="btn btn-secondary">Cancel</button><button type="button" class="btn btn-gold">Confirm sale</button></div>
+</div>
+<div role="dialog" aria-label="Example correction" class="ds-modal" style="padding: 26px; display: flex; flex-direction: column; gap: 14px">
+<h3 class="t-h2">Correct a confirmed result</h3>
+<span class="muted t-body-s">Standings and player stats will be recalculated. This is recorded in the audit log.</span>
+<div class="field"><label for="mr">Reason <span class="req">*</span></label><textarea id="mr" class="inp" rows="2"></textarea></div>
+<label style="display: flex; gap: 10px; font-size: 13px"><input type="checkbox"> I understand this updates public results</label>
+<div class="row" style="justify-content: flex-end"><button type="button" class="btn btn-secondary">Cancel</button><button type="button" class="btn btn-danger" style="background: #FF5A62; color: #101318; border-color: #FF5A62">Save correction</button></div>
+</div>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":5200}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NGBCL 1.0 — Homepage wireframe, mobile</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/8f7dbd951cd94d5d6ac221330072dab7">
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 390px; background: #101318">
+<dc-import name="Main" phase="{{phase}}" live-now="{{liveNow}}" show-notes="{{showNotes}}" hint-size="390px,14000px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"phase":{"editor":"enum","options":["Registration open","Auction day","Tournament running","Completed"],"default":"Registration open","section":"Wireframe state"},"liveNow":{"editor":"boolean","default":true,"section":"Wireframe state"},"showNotes":{"editor":"boolean","default":false,"section":"Wireframe state"},"$preview":{"width":390,"height":14000}}'>
+class Component extends DCLogic {
+renderVals() {
+return {
+phase: this.props.phase ?? 'Registration open',
+liveNow: this.props.liveNow ?? true,
+showNotes: this.props.showNotes ?? false
+};
+}
+}
+</script>
+</body>
+</html>

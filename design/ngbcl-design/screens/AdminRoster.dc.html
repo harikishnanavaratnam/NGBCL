@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NGBCL 1.0 — Team roster wireframes</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/8f7dbd951cd94d5d6ac221330072dab7">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700;1,800&amp;family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#F5F7FA}a:hover{color:#D8FF42}
+.ad{container-type:inline-size;background:#101318;color:#F5F7FA;font-family:'DM Sans',"Noto Sans Tamil","Noto Sans Sinhala",system-ui,sans-serif;font-size:15px;line-height:1.5;min-height:100%}
+.ad *{box-sizing:border-box}
+.shell{display:flex;flex-wrap:wrap;min-height:100%}
+.side{flex:0 0 240px;background:#191F27;border-right:1px solid rgba(245,247,250,.08);color:#F5F7FA;display:flex;flex-direction:column}
+.side a{color:#A5ADB8;text-decoration:none}
+.main{flex:999 1 560px;min-width:0;display:flex;flex-direction:column}
+.burger{display:none}
+.split{display:grid;grid-template-columns:minmax(0,1fr) 440px;gap:20px;align-items:start}
+.tp{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.slot{width:40px;height:50px;border-radius:4px;border:1px dashed rgba(245,247,250,.18);background:#101318;display:flex;align-items:center;justify-content:center;font-size:9px;color:#A5ADB8;font-family:'DM Sans', sans-serif}
+.slot.f{border:1px solid #C9A45C;background:rgba(201,164,92,.16)}
+
+.ptabs{display:flex;gap:4px;border-bottom:1px solid rgba(245,247,250,.09);overflow-x:auto}
+.ptabs button{min-height:44px;padding:0 14px;border:0;background:transparent;font:500 14px 'DM Sans',sans-serif;color:#A5ADB8;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.ptabs .on{color:#F5F7FA;font-weight:600;border-bottom-color:#D8FF42}
+@container (max-width:1100px){
+.side{display:none}.burger{display:inline-flex}
+.split,.tp{grid-template-columns:minmax(0,1fr)}
+}
+@container (max-width:700px){
+.g3,.g2{grid-template-columns:minmax(0,1fr)}
+.pad{padding:16px !important}
+.hide-s{display:none}
+}
+</style>
+</helmet>
+<div class="ad {{annClass}}">
+
+<!-- ================= ADMIN SHELL (team page, correction, comparison) ================= -->
+<sc-if value="{{isAdmin}}" hint-placeholder-val="{{ true }}">
+<div class="shell">
+<aside class="side" aria-label="Admin navigation">
+<div style="display: flex; align-items: center; gap: 10px; padding: 20px">
+<img src="/_blob/7478f30cedfda4689671cc7de8e57a93" alt="" aria-hidden="true" style="width: 40px; height: 40px; object-fit: contain">
+<div style="display: flex; flex-direction: column"><strong style="font-size: 14px">NGBCL Admin</strong><span style="font-size: 12px; color: #A5ADB8">Tournament management</span></div>
+</div>
+<nav style="display: flex; flex-direction: column; padding: 0 12px 24px; gap: 2px">
+<sc-for list="{{nav}}" as="g" hint-placeholder-count="8">
+<div style="display: flex; flex-direction: column">
+<a href="#" style="display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 10px; border-radius: 6px; font-weight: 500; font-size: 14px; color: {{g.color}}"><span style="width: 18px; height: 18px; border: 1.5px solid currentColor; border-radius: 4px; opacity: .7"></span>{{g.label}}</a>
+<sc-if value="{{g.open}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; padding: 0 0 6px 38px">
+<a href="#" style="font-size: 13px; padding: 3px 0">Setup</a>
+<a href="#" style="font-size: 13px; padding: 3px 0">Open console</a>
+<a href="#" aria-current="page" style="font-size: 13px; padding: 3px 8px; margin-left: -8px; color: #F5F7FA; font-weight: 600; border-radius: 4px; background: rgba(216,255,66,.12); box-shadow: inset 3px 0 0 #D8FF42">Results and budgets</a>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</nav>
+</aside>
+
+<div class="main">
+<header class="pad" style="display: flex; align-items: center; gap: 16px; min-height: 64px; padding: 0 28px; background: #191F27; border-bottom: 1px solid rgba(245,247,250,.09); flex-wrap: wrap">
+<button type="button" class="burger btn btn-out" aria-label="Open navigation" style="width: 44px; padding: 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+<label style="display: flex; align-items: center; gap: 8px"><span class="eyebrow">Edition</span><select class="inp" style="width: auto; min-height: 36px; font-weight: 600"><option>NGBCL 1.0</option></select></label>
+<span class="muted" style="font-size: 13px">Auction / Results and budgets{{crumbTail}}</span>
+<div style="margin-left: auto; display: flex; align-items: center; gap: 8px"><div class="ph ph-person" style="width: 32px; height: 32px; border-radius: 50%; padding: 0; font-size: 8px">AV</div><span style="font-size: 13px; font-weight: 600">[User name]</span></div>
+</header>
+
+<div class="pad" style="padding: 28px; display: flex; flex-direction: column; gap: 20px">
+
+<!-- ===== TEAM PAGE (+ correction drawer) ===== -->
+<sc-if value="{{showTeam}}" hint-placeholder-val="{{ true }}">
+<section class="card" style="overflow: hidden; position: relative">
+<div class="ann" style="top: 8px">Team header · colour band, crest L, source, contact (admin only)</div>
+<div style="height: 8px; background: #F05A28"></div>
+<div class="pad" style="padding: 24px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
+<div class="ph ph-crest" style="width: 96px; height: 96px; border: 3px solid #F05A28">Crest L</div>
+<div style="display: flex; flex-direction: column; gap: 6px; flex: 1 1 280px">
+<div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap"><h1 style="margin: 0; font-size: 28px; font-weight: 600">[Team name]</h1><span class="mono muted">[ABC]</span></div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap"><span class="chip c-ok">Approved</span><span class="chip c-neutral">Public registration</span><span class="chip c-ok">Fee received · [DD MMM] · [User]</span></div>
+<span class="help">Contact (private): [Name] · [email] · +94 [—]</span>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><a href="#" class="btn btn-out">Public team page</a><button type="button" class="btn btn-out">Edit team</button></div>
+</div>
+</section>
+
+<div class="{{teamGrid}}">
+<div style="display: flex; flex-direction: column; gap: 20px; min-width: 0">
+
+<section class="card pad" style="padding: 22px; display: flex; flex-direction: column; gap: 16px; position: relative">
+<div class="ann">Budget panel</div>
+<div class="g3">
+<div><span class="eyebrow">Initial</span><div class="num" style="font-size: 44px; line-height: 1">LKR [—]</div></div>
+<div><span class="eyebrow">Spent</span><div class="num" style="font-size: 44px; line-height: 1; color: #C9A45C">LKR [—]</div></div>
+<div><span class="eyebrow">Remaining</span><div class="num" style="font-size: 44px; line-height: 1">LKR [—]</div></div>
+</div>
+<div style="position: relative; height: 14px; background: #222A34; border-radius: 2px; overflow: hidden"><div style="position: absolute; left: 0; top: 0; bottom: 0; width: 55%; background: #C9A45C"></div><div style="position: absolute; left: 78%; top: -2px; bottom: -2px; width: 2px; background: #D8FF42" title="Max next bid"></div></div>
+<div style="display: flex; gap: 24px; flex-wrap: wrap; font-size: 13px"><span class="muted">Average price <strong class="mono" style="color: #F5F7FA">LKR [—]</strong></span><span class="muted">Most expensive <strong style="color: #F5F7FA">[Player] · LKR [—]</strong></span><span class="muted">Max next bid <strong class="mono" style="color: #F5F7FA">LKR [—]</strong></span></div>
+</section>
+
+<section class="card pad" style="padding: 22px; display: flex; flex-direction: column; gap: 14px; position: relative">
+<div class="ann">Squad slots + roster</div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<h2 style="margin: 0; font-size: 20px; font-weight: 600">Squad <span class="muted" style="font-weight: 500">[—] / [—]</span></h2>
+<div style="display: flex; gap: 8px"><div class="seg" role="group" aria-label="View"><button type="button" class="on">Table</button><button type="button" style="border-right: 0">Cards</button></div><button type="button" class="btn btn-out">Correct allocation…</button></div>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><sc-for list="{{slots}}" as="s" hint-placeholder-count="8"><span class="slot {{s.c}}">{{s.t}}</span></sc-for></div>
+<div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 6px; background: rgba(240,180,85,.14); font-size: 14px"><span class="chip c-pend">Gap</span><span>Squad checks against match-category needs appear here once categories are confirmed — e.g. “No players eligible for <span class="tbc">[CATEGORY]</span> yet”.</span></div>
+<div class="scroll">
+<table class="tbl" style="min-width: 720px">
+<thead><tr><th>Player</th><th>Category</th><th class="hide-s">Gender</th><th class="r">Price</th><th>Acquired</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td><div style="display: flex; gap: 10px; align-items: center"><div class="ph ph-person" style="width: 32px; height: 40px; padding: 0; font-size: 7px">4:5</div><span>[First] <strong style="text-transform: uppercase">[Surname]</strong></span></div></td><td>[Category]</td><td class="hide-s">[—]</td><td class="r mono">LKR [—]</td><td class="mono muted">Lot #[—] · [HH:MM]</td><td><span class="chip c-sold">Sold</span></td></tr>
+<tr><td><div style="display: flex; gap: 10px; align-items: center"><div class="ph ph-person" style="width: 32px; height: 40px; padding: 0; font-size: 7px">4:5</div><span>[First] <strong style="text-transform: uppercase">[Surname]</strong></span></div></td><td>[Category]</td><td class="hide-s">[—]</td><td class="r mono">LKR [—]</td><td class="mono muted">Lot #[—] · [HH:MM]</td><td><span class="chip c-sold">Sold</span></td></tr>
+<tr><td><div style="display: flex; gap: 10px; align-items: center"><div class="ph ph-person" style="width: 32px; height: 40px; padding: 0; font-size: 7px">4:5</div><span>[First] <strong style="text-transform: uppercase">[Surname]</strong></span></div></td><td>[Category]</td><td class="hide-s">[—]</td><td class="r mono">LKR [—]</td><td class="mono muted">Correction · [DD MMM]</td><td><span class="chip c-prov">Moved in</span></td></tr>
+<tr style="opacity: .6"><td><div style="display: flex; gap: 10px; align-items: center"><div class="ph ph-person" style="width: 32px; height: 40px; padding: 0; font-size: 7px">4:5</div><span>[First] <strong style="text-transform: uppercase">[Surname]</strong></span></div></td><td>[Category]</td><td class="hide-s">[—]</td><td class="r mono">LKR [—]</td><td class="mono muted">Lot #[—] · [HH:MM]</td><td><span class="chip c-neutral">Withdrawn</span></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+
+<!-- side: fixtures + audit (team page) OR correction drawer -->
+<sc-if value="{{teamSide}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 20px">
+<section class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 10px; position: relative">
+<div class="ann">Fixtures</div>
+<h2 style="margin: 0; font-size: 17px; font-weight: 600">Fixtures</h2>
+<div style="display: flex; justify-content: space-between; font-size: 14px; padding: 8px 0; border-bottom: 1px solid rgba(245,247,250,.06)"><span>v [Team]</span><span class="chip c-neutral">[DD MMM]</span></div>
+<div style="display: flex; justify-content: space-between; font-size: 14px; padding: 8px 0; border-bottom: 1px solid rgba(245,247,250,.06)"><span>v [Team]</span><span class="chip c-neutral">[DD MMM]</span></div>
+<span class="help">Published after the schedule is set</span>
+</section>
+<section class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 8px; position: relative">
+<div class="ann">Audit</div>
+<h2 style="margin: 0; font-size: 17px; font-weight: 600">Recent changes</h2>
+<span style="font-size: 13px"><span class="mono muted">[DD MMM HH:MM]</span> Bought [Player] · LKR [—]</span>
+<span style="font-size: 13px"><span class="mono muted">[DD MMM HH:MM]</span> [User] moved [Player] in · reason logged</span>
+<span style="font-size: 13px"><span class="mono muted">[DD MMM HH:MM]</span> [User] marked fee received</span>
+</section>
+</div>
+</sc-if>
+
+<sc-if value="{{showCorrection}}" hint-placeholder-val="{{ false }}">
+<aside class="card drawer" style="padding: 22px; display: flex; flex-direction: column; gap: 16px; position: relative">
+<div class="ann">Allocation correction drawer · guarded, audited</div>
+<div style="display: flex; justify-content: space-between; align-items: center"><h2 style="margin: 0; font-size: 18px; font-weight: 600">Correct allocation</h2><button type="button" class="btn btn-out" aria-label="Close" style="width: 40px; padding: 0">×</button></div>
+<div class="field"><label for="cr-p">Player</label><select id="cr-p" class="inp"><option>[First SURNAME] · LKR [—] · Lot #[—]</option></select></div>
+<fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+<legend class="lbl" style="padding: 0; margin-bottom: 8px">Action</legend>
+<label style="display: flex; gap: 10px; padding: 10px 12px; border: 2px solid #D8FF42; border-radius: 6px; font-size: 14px"><input type="radio" name="cr" checked><span><strong>Move to another team</strong><br><span class="muted" style="font-size: 13px">Same price moves with the player unless changed</span></span></label>
+<label style="display: flex; gap: 10px; padding: 10px 12px; border: 1px solid rgba(245,247,250,.18); border-radius: 6px; font-size: 14px"><input type="radio" name="cr"><span><strong>Release to auction pool</strong><br><span class="muted" style="font-size: 13px">Refunds the price to this team</span></span></label>
+</fieldset>
+<div class="g2" style="gap: 12px"><div class="field"><label for="cr-t">To team</label><select id="cr-t" class="inp"><option>[Team B]</option></select></div><div class="field"><label for="cr-pr">Price</label><input id="cr-pr" class="inp mono" value="LKR [—]"></div></div>
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 6px; background: #101318; border: 1px solid rgba(245,247,250,.09)">
+<span class="eyebrow">Budget impact preview</span>
+<div style="display: grid; grid-template-columns: 1fr auto auto auto; gap: 6px 10px; font-size: 13px; align-items: center">
+<strong>[Team A]</strong><span class="mono muted">LKR [—]</span><span aria-hidden="true">→</span><span class="mono" style="color: #5CCF95">LKR [—] (+)</span>
+<span class="muted">Squad</span><span class="mono muted">[—]</span><span aria-hidden="true">→</span><span class="mono">[—]</span>
+<strong>[Team B]</strong><span class="mono muted">LKR [—]</span><span aria-hidden="true">→</span><span class="mono" style="color: #FF7178">LKR [—] (−)</span>
+<span class="muted">Squad</span><span class="mono muted">[—]</span><span aria-hidden="true">→</span><span class="mono">[—]</span>
+</div>
+<span class="chip c-err" style="align-self: flex-start">Blocked if [Team B] would exceed budget or squad limit</span>
+</div>
+<div class="field"><label for="cr-r">Reason <span style="color: #FF7178">*</span></label><textarea id="cr-r" class="inp" rows="3" placeholder="Required — saved to the audit log"></textarea></div>
+<label style="display: flex; gap: 10px; font-size: 13px; align-items: flex-start"><input type="checkbox" style="margin-top: 3px"><span>I understand this changes both teams' budgets and rosters and is recorded in the audit log.</span></label>
+<div style="display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid rgba(245,247,250,.09); padding-top: 14px"><button type="button" class="btn btn-out">Cancel</button><button type="button" class="btn btn-danger" disabled>Confirm correction</button></div>
+</aside>
+</sc-if>
+</div>
+</sc-if>
+
+<!-- ===== ALL-TEAMS COMPARISON ===== -->
+<sc-if value="{{showCompare}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 28px; font-weight: 600">All teams</h1><span class="muted" style="font-size: 14px">Spend, budgets and squad make-up after the auction.</span></div>
+<div style="display: flex; gap: 8px"><button type="button" class="btn btn-out">Export CSV</button><button type="button" class="btn btn-out">Export PDF</button></div>
+</div>
+<section class="card" style="position: relative">
+<div class="ann">Comparison table · sortable, exportable (REP-002–003)</div>
+<div class="scroll">
+<table class="tbl" style="min-width: 1040px">
+<thead><tr><th>Team</th><th class="r">Initial</th><th class="r">Spent ▾</th><th class="r">Remaining</th><th>Budget</th><th class="r">Squad</th><th class="r">Avg price</th><th>Top buy</th><th>Category mix</th></tr></thead>
+<tbody>
+<tr><td><span style="border-left: 4px solid #F05A28; padding-left: 10px; font-weight: 600">[Team A]</span></td><td class="r mono">[—]</td><td class="r mono">[—]</td><td class="r mono">[—]</td><td style="width: 140px"><div style="height: 8px; background: #222A34; border-radius: 2px"><div style="height: 8px; width: 70%; background: #C9A45C; border-radius: 2px"></div></div></td><td class="r mono">[—]/[—]</td><td class="r mono">[—]</td><td>[Player] · [—]</td><td><div style="display: flex; height: 10px; width: 140px; border-radius: 2px; overflow: hidden"><span style="flex: 3; background: #D9DEE7"></span><span style="flex: 2; background: #8A93A0"></span><span style="flex: 1; background: #2E3743"></span></div></td></tr>
+<tr><td><span style="border-left: 4px solid #1BA6B5; padding-left: 10px; font-weight: 600">[Team B]</span></td><td class="r mono">[—]</td><td class="r mono">[—]</td><td class="r mono">[—]</td><td><div style="height: 8px; background: #222A34; border-radius: 2px"><div style="height: 8px; width: 62%; background: #C9A45C; border-radius: 2px"></div></div></td><td class="r mono">[—]/[—]</td><td class="r mono">[—]</td><td>[Player] · [—]</td><td><div style="display: flex; height: 10px; width: 140px; border-radius: 2px; overflow: hidden"><span style="flex: 2; background: #D9DEE7"></span><span style="flex: 2; background: #8A93A0"></span><span style="flex: 2; background: #2E3743"></span></div></td></tr>
+<tr><td><span style="border-left: 4px solid #2F6FED; padding-left: 10px; font-weight: 600">[Team C]</span></td><td class="r mono">[—]</td><td class="r mono">[—]</td><td class="r mono">[—]</td><td><div style="height: 8px; background: #222A34; border-radius: 2px"><div style="height: 8px; width: 48%; background: #C9A45C; border-radius: 2px"></div></div></td><td class="r mono">[—]/[—]</td><td class="r mono">[—]</td><td>[Player] · [—]</td><td><div style="display: flex; height: 10px; width: 140px; border-radius: 2px; overflow: hidden"><span style="flex: 1; background: #D9DEE7"></span><span style="flex: 3; background: #8A93A0"></span><span style="flex: 2; background: #2E3743"></span></div></td></tr>
+<tr><td><span style="border-left: 4px solid #A23B72; padding-left: 10px; font-weight: 600">[Team D]</span></td><td class="r mono">[—]</td><td class="r mono">[—]</td><td class="r mono">[—]</td><td><div style="height: 8px; background: #222A34; border-radius: 2px"><div style="height: 8px; width: 85%; background: #C9A45C; border-radius: 2px"></div></div></td><td class="r mono">[—]/[—]</td><td class="r mono">[—]</td><td>[Player] · [—]</td><td><div style="display: flex; height: 10px; width: 140px; border-radius: 2px; overflow: hidden"><span style="flex: 4; background: #D9DEE7"></span><span style="flex: 1; background: #8A93A0"></span><span style="flex: 1; background: #2E3743"></span></div></td></tr>
+<tr style="background: #101318; font-weight: 600"><td>All teams</td><td class="r mono">[—]</td><td class="r mono">[—]</td><td class="r mono">[—]</td><td></td><td class="r mono">[—]</td><td class="r mono">[—]</td><td class="muted">—</td><td class="muted">—</td></tr>
+</tbody>
+</table>
+</div>
+<div style="padding: 12px 16px; display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px" class="muted"><span style="display: flex; gap: 6px; align-items: center"><span style="width: 12px; height: 12px; background: #D9DEE7"></span>[Category 1]</span><span style="display: flex; gap: 6px; align-items: center"><span style="width: 12px; height: 12px; background: #8A93A0"></span>[Category 2]</span><span style="display: flex; gap: 6px; align-items: center"><span style="width: 12px; height: 12px; background: #2E3743"></span>[Category 3 / none]</span><span class="ann-note">Bars are illustrative widths, not data.</span></div>
+</section>
+</sc-if>
+
+</div>
+</div>
+</div>
+</sc-if>
+
+<!-- ================= TEAM MANAGER PORTAL (read-only) ================= -->
+<sc-if value="{{isPortal}}" hint-placeholder-val="{{ false }}">
+<header style="background: #191F27; color: #F5F7FA; position: relative; border-bottom: 1px solid rgba(245,247,250,.08)">
+<div class="ann" style="top: 8px; background: #F5F7FA; color: #101318">Team Manager portal · feature flag · own team only</div>
+<div style="height: 6px; background: #F05A28"></div>
+<div class="pad" style="padding: 20px 28px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; max-width: 1200px; margin: 0 auto">
+<div class="ph ph-crest" style="width: 56px; height: 56px; border: 2px solid #F05A28; background: rgba(245,247,250,.06); color: #A5ADB8">Crest</div>
+<div style="display: flex; flex-direction: column"><span style="font-size: 12px; color: #A5ADB8; letter-spacing: .08em; text-transform: uppercase; font-weight: 600">NGBCL 1.0 · Team portal</span><strong style="font-size: 22px">[Team name]</strong></div>
+<span class="chip" style="background: rgba(245,247,250,.1); color: #F5F7FA; margin-left: auto">Read-only</span>
+<span style="font-size: 13px; color: #A5ADB8">[Manager name] · Sign out</span>
+</div>
+</header>
+<div style="background: #191F27; border-bottom: 1px solid rgba(245,247,250,.09)">
+<div class="ptabs" role="tablist" style="max-width: 1200px; margin: 0 auto; padding: 0 20px; border: 0">
+<sc-for list="{{ptabs}}" as="t" hint-placeholder-count="4">
+<sc-if value="{{t.on}}" hint-placeholder-val="{{ false }}"><button type="button" role="tab" aria-selected="true" class="on" onClick="{{t.go}}">{{t.label}}</button></sc-if>
+<sc-if value="{{t.off}}" hint-placeholder-val="{{ true }}"><button type="button" role="tab" aria-selected="false" onClick="{{t.go}}">{{t.label}}</button></sc-if>
+</sc-for>
+</div>
+</div>
+<div class="pad" style="padding: 28px; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px">
+<sc-if value="{{pTeam}}" hint-placeholder-val="{{ true }}">
+<div class="g3">
+<div class="card" style="padding: 18px"><span class="eyebrow">Remaining budget</span><div class="num" style="font-size: 40px">LKR [—]</div><span class="help">of LKR [—]</span></div>
+<div class="card" style="padding: 18px"><span class="eyebrow">Squad</span><div class="num" style="font-size: 40px">[—] / [—]</div><span class="help">players signed</span></div>
+<div class="card" style="padding: 18px"><span class="eyebrow">Next fixture</span><div style="font-size: 18px; font-weight: 600; margin-top: 6px">v [Team] · [DD MMM HH:MM]</div><span class="help">Court [—]</span></div>
+</div>
+<div class="card" style="padding: 18px; display: flex; flex-direction: column; gap: 8px"><strong>Announcements</strong><span class="muted" style="font-size: 14px">[Latest organiser announcement…]</span></div>
+<p class="help" style="margin: 0">Team Managers can't edit anything. To change contact details or the roster, they contact the organisers.</p>
+</sc-if>
+<sc-if value="{{pRoster}}" hint-placeholder-val="{{ false }}">
+<div class="g3">
+<sc-for list="{{rosterCards}}" as="r" hint-placeholder-count="6">
+<div class="card" style="overflow: hidden; display: flex; border-top: 4px solid #F05A28"><div class="ph ph-person" style="width: 80px; border-radius: 0; border-width: 0 1px 0 0; font-size: 9px">4:5</div><div style="padding: 12px; display: flex; flex-direction: column; gap: 4px"><span>[First] <strong style="text-transform: uppercase">[Surname]</strong></span><span class="chip c-neutral" style="align-self: flex-start">[Category]</span><span class="mono help">LKR [—]</span></div></div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{pBudget}}" hint-placeholder-val="{{ false }}">
+<div class="card" style="padding: 22px; display: flex; flex-direction: column; gap: 14px">
+<div class="g3"><div><span class="eyebrow">Initial</span><div class="num" style="font-size: 36px">LKR [—]</div></div><div><span class="eyebrow">Spent</span><div class="num" style="font-size: 36px; color: #C9A45C">LKR [—]</div></div><div><span class="eyebrow">Remaining</span><div class="num" style="font-size: 36px">LKR [—]</div></div></div>
+<div style="height: 14px; background: #222A34; border-radius: 2px"><div style="height: 14px; width: 55%; background: #C9A45C; border-radius: 2px"></div></div>
+<span class="help">Each purchase: player, lot, price, time (same rows as the admin roster, read-only).</span>
+</div>
+</sc-if>
+<sc-if value="{{pFix}}" hint-placeholder-val="{{ false }}">
+<div class="card" style="overflow: hidden">
+<div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid rgba(245,247,250,.06); gap: 8px; flex-wrap: wrap"><span>v [Team] · Round [—]</span><span class="mono muted">[DD MMM HH:MM] · Court [—]</span><span class="chip c-neutral">Scheduled</span></div>
+<div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid rgba(245,247,250,.06); gap: 8px; flex-wrap: wrap"><span>v [Team] · Round [—]</span><span class="mono muted">[DD MMM HH:MM] · Court [—]</span><span class="chip c-ok">Won [—]–[—] · confirmed</span></div>
+<div style="display: flex; justify-content: space-between; padding: 14px 18px; gap: 8px; flex-wrap: wrap"><span>v [Team] · Round [—]</span><span class="mono muted">[DD MMM HH:MM] · Court [—]</span><span class="chip c-prov">Lost [—]–[—] · provisional</span></div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"screen":{"editor":"enum","options":["Team page","Allocation correction","All-teams comparison","Team Manager portal"],"default":"Team page","section":"Wireframe state"},"showNotes":{"editor":"boolean","default":false,"section":"Wireframe state"},"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+renderVals() {
+const scr = this.props.screen ?? 'Team page';
+const portal = scr === 'Team Manager portal';
+const nav = ['Overview', 'Registrations', 'Directory', 'Auction', 'Competition', 'Results', 'Content', 'System'].map((l) => ({ label: l, open: l === 'Auction', color: l === 'Auction' ? '#F5F7FA' : '#A5ADB8' }));
+const pNames = ['Team', 'Roster', 'Budget', 'Fixtures'];
+const pt = (this.state && this.state.pt) || 'Team';
+return {
+annClass: (this.props.showNotes ?? false) ? '' : 'hide-ann',
+isAdmin: !portal, isPortal: portal,
+nav: nav,
+crumbTail: scr === 'All-teams comparison' ? ' / All teams' : ' / [Team name]',
+showTeam: scr === 'Team page' || scr === 'Allocation correction',
+teamGrid: scr === 'Allocation correction' ? 'split' : 'tp',
+teamSide: scr === 'Team page',
+showCorrection: scr === 'Allocation correction',
+showCompare: scr === 'All-teams comparison',
+slots: Array.from({ length: 8 }, (_, i) => ({ c: i < 5 ? 'f' : '', t: i < 5 ? 'P' : 'open' })),
+ptabs: pNames.map((n) => ({ label: n, on: n === pt, off: n !== pt, go: () => this.setState({ pt: n }) })),
+pTeam: pt === 'Team', pRoster: pt === 'Roster', pBudget: pt === 'Budget', pFix: pt === 'Fixtures',
+rosterCards: Array.from({ length: 6 }, (_, i) => ({ i }))
+};
+}
+}
+</script>
+</body>
+</html>
