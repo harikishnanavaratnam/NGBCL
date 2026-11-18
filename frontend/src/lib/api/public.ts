@@ -1,4 +1,4 @@
-import { cacheLife } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 import { API_URL } from './client';
 import type { TournamentPhase, TournamentStatus, WindowState } from './settings';
 
@@ -34,6 +34,7 @@ export interface PublicTournament {
 export async function getPublicTournament(): Promise<PublicTournament | null> {
   'use cache';
   cacheLife('minutes');
+  cacheTag('tournament');
   try {
     const res = await fetch(`${API_URL}/api/public/tournament`, { headers: { Accept: 'application/json' } });
     if (!res.ok) return null;
@@ -41,4 +42,145 @@ export async function getPublicTournament(): Promise<PublicTournament | null> {
   } catch {
     return null;
   }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Public website data (M3). Every fetcher is cached for a few minutes and tagged, so the API can
+// refresh pages immediately after a change (POST /api/revalidate). On API errors they return
+// null / [] and pages show their empty states instead of failing the build.
+// ---------------------------------------------------------------------------------------------
+
+export interface PublicTeam {
+  slug: string;
+  name: string;
+  shortCode: string;
+  colorSlot: number | null;
+  description: string | null;
+  logoUrl: string | null;
+}
+export interface PublicTeamDetail extends PublicTeam {
+  squad: PublicPlayer[];
+}
+export interface PublicPlayer {
+  slug: string;
+  fullName: string;
+  categoryName: string | null;
+  photoUrl: string | null;
+}
+export interface PublicPlayerDetail extends PublicPlayer {
+  experience: string | null;
+}
+export interface PublicNewsItem {
+  slug: string;
+  title: string;
+  excerpt: string;
+  coverUrl: string | null;
+  pinned: boolean;
+  publishedAt: string;
+}
+export interface PublicNewsArticle {
+  slug: string;
+  title: string;
+  body: string;
+  coverUrl: string | null;
+  publishedAt: string;
+}
+export type SponsorTier = 'TITLE' | 'PLATINUM' | 'GOLD' | 'SILVER' | 'BRONZE' | 'MEDIA';
+export interface PublicSponsor {
+  name: string;
+  tier: SponsorTier;
+  logoUrl: string | null;
+  websiteUrl: string | null;
+  awardName: string | null;
+  showOnWall: boolean;
+  showOnTicker: boolean;
+}
+export interface PublicCommitteeGroup {
+  name: string;
+  style: 'LEAD' | 'COMPACT';
+  members: { fullName: string; role: string; bio: string | null; photoUrl: string | null }[];
+}
+interface NewsPage {
+  content: PublicNewsItem[];
+  page: number;
+  totalPages: number;
+  totalElements: number;
+}
+
+async function getJson<T>(path: string): Promise<T | null> {
+  try {
+    const res = await fetch(`${API_URL}/api/public${path}`, { headers: { Accept: 'application/json' } });
+    if (!res.ok) return null;
+    return (await res.json()) as T;
+  } catch {
+    return null;
+  }
+}
+
+export async function getPublicTeams(): Promise<PublicTeam[]> {
+  'use cache';
+  cacheLife('minutes');
+  cacheTag('teams');
+  return (await getJson<PublicTeam[]>('/teams')) ?? [];
+}
+
+export async function getPublicTeam(slug: string): Promise<PublicTeamDetail | null> {
+  'use cache';
+  cacheLife('minutes');
+  cacheTag('teams');
+  return getJson<PublicTeamDetail>(`/teams/${encodeURIComponent(slug)}`);
+}
+
+export async function getPublicPlayers(): Promise<PublicPlayer[]> {
+  'use cache';
+  cacheLife('minutes');
+  cacheTag('players');
+  return (await getJson<PublicPlayer[]>('/players')) ?? [];
+}
+
+export async function getPublicPlayer(slug: string): Promise<PublicPlayerDetail | null> {
+  'use cache';
+  cacheLife('minutes');
+  cacheTag('players');
+  return getJson<PublicPlayerDetail>(`/players/${encodeURIComponent(slug)}`);
+}
+
+export async function getNews(page = 0, size = 12): Promise<NewsPage> {
+  'use cache';
+  cacheLife('minutes');
+  cacheTag('news');
+  return (await getJson<NewsPage>(`/news?page=${page}&size=${size}`)) ?? { content: [], page: 0, totalPages: 0, totalElements: 0 };
+}
+
+export async function getArticle(slug: string): Promise<PublicNewsArticle | null> {
+  'use cache';
+  cacheLife('minutes');
+  cacheTag('news');
+  return getJson<PublicNewsArticle>(`/news/${encodeURIComponent(slug)}`);
+}
+
+export async function getSponsors(): Promise<PublicSponsor[]> {
+  'use cache';
+  cacheLife('minutes');
+  cacheTag('sponsors');
+  return (await getJson<PublicSponsor[]>('/sponsors')) ?? [];
+}
+
+export async function getCommittee(): Promise<PublicCommitteeGroup[]> {
+  'use cache';
+  cacheLife('minutes');
+  cacheTag('committee');
+  return (await getJson<PublicCommitteeGroup[]>('/committee')) ?? [];
+}
+
+/** Slugs to prerender at build time. Cache Components needs at least one, so fall back to a placeholder. */
+export async function staticSlugs(kind: 'teams' | 'players' | 'news'): Promise<{ slug: string }[]> {
+  const list =
+    kind === 'teams'
+      ? await getPublicTeams()
+      : kind === 'players'
+        ? (await getPublicPlayers()).slice(0, 50)
+        : (await getNews(0, 20)).content;
+  const slugs = list.map((x) => ({ slug: x.slug }));
+  return slugs.length ? slugs : [{ slug: '_' }];
 }

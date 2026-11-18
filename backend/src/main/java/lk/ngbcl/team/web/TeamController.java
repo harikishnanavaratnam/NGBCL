@@ -75,6 +75,12 @@ public class TeamController {
         return teams.setStatus(id, body.status(), body.reason(), body.version());
     }
 
+    @GetMapping("/api/public/teams/{slug}")
+    public ResponseEntity<TeamService.PublicTeamDetail> publicDetail(@PathVariable String slug) {
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(Duration.ofSeconds(30)).cachePublic())
+                .body(teams.publicDetail(slug));
+    }
+
     @GetMapping("/api/public/teams")
     public ResponseEntity<List<PublicTeam>> publicList() {
         return ResponseEntity.ok().cacheControl(CacheControl.maxAge(Duration.ofSeconds(30)).cachePublic())

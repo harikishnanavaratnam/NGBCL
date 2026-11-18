@@ -53,6 +53,12 @@ public class PlayerController {
         return players.changeCategory(id, body.categoryId(), body.version());
     }
 
+    @GetMapping("/api/public/players/{slug}")
+    public ResponseEntity<PlayerService.PublicPlayerDetail> publicDetail(@PathVariable String slug) {
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(Duration.ofSeconds(30)).cachePublic())
+                .body(players.publicDetail(slug));
+    }
+
     @GetMapping("/api/public/players")
     public ResponseEntity<List<PublicPlayer>> publicList() {
         return ResponseEntity.ok().cacheControl(CacheControl.maxAge(Duration.ofSeconds(30)).cachePublic())

@@ -11,7 +11,8 @@ export type FilePurpose =
   | 'ORGANISER_LOGO'
   | 'POSTER'
   | 'SPONSOR_LOGO'
-  | 'COMMITTEE_PHOTO';
+  | 'COMMITTEE_PHOTO'
+  | 'NEWS_COVER';
 
 export interface FileAssetView {
   id: string;
@@ -50,6 +51,7 @@ export const PURPOSE_RULES: Record<FilePurpose, { aspect?: number; minWidth: num
   POSTER: { aspect: 16 / 9, minWidth: 1280, minHeight: 720, label: '16 : 9 landscape' },
   SPONSOR_LOGO: { minWidth: 200, minHeight: 100, label: 'any shape' },
   COMMITTEE_PHOTO: { aspect: 4 / 5, minWidth: 300, minHeight: 375, label: '4 : 5 portrait' },
+  NEWS_COVER: { aspect: 16 / 9, minWidth: 960, minHeight: 540, label: '16 : 9 landscape' },
 };
 
 export const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
@@ -60,8 +62,18 @@ function putWithProgress(url: string, blob: Blob, headers: Record<string, string
     xhr.open('PUT', url);
     Object.entries(headers).forEach(([k, v]) => xhr.setRequestHeader(k, v));
     xhr.upload.onprogress = (e) => e.lengthComputable && onProgress(Math.round((e.loaded / e.total) * 100));
-    xhr.onload = () => (xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new ApiError(xhr.status, { status: xhr.status, code: 'UPLOAD_FAILED', detail: 'The upload was refused by storage. Try again.' })));
-    xhr.onerror = () => reject(new ApiError(0, { status: 0, code: 'UPLOAD_FAILED', detail: 'The upload failed. Check your connection and try again.' }));
+    xhr.onload = () =>
+      xhr.status >= 200 && xhr.status < 300
+        ? resolve()
+        : reject(
+            new ApiError(xhr.status, {
+              status: xhr.status,
+              code: 'UPLOAD_FAILED',
+              detail: 'The upload was refused by storage. Try again.',
+            }),
+          );
+    xhr.onerror = () =>
+      reject(new ApiError(0, { status: 0, code: 'UPLOAD_FAILED', detail: 'The upload failed. Check your connection and try again.' }));
     xhr.send(blob);
   });
 }

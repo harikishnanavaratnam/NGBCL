@@ -17,6 +17,7 @@ import lk.ngbcl.files.service.UploadContext;
 import lk.ngbcl.security.CurrentUser;
 import lk.ngbcl.shared.domain.Ids;
 import lk.ngbcl.shared.domain.Slugs;
+import lk.ngbcl.shared.site.SiteRevalidator;
 import lk.ngbcl.shared.web.ApiException;
 import lk.ngbcl.team.domain.Team;
 import lk.ngbcl.team.domain.TeamRepository;
@@ -38,9 +39,11 @@ public class TeamService {
     private final UploadContext tournament;
     private final AuditService audit;
     private final Clock clock;
+    private final SiteRevalidator site;
 
     public TeamService(TeamRepository teams, FileService files, UploadContext tournament, AuditService audit,
-            Clock clock) {
+            Clock clock, SiteRevalidator site) {
+        this.site = site;
         this.teams = teams;
         this.files = files;
         this.tournament = tournament;
@@ -56,6 +59,21 @@ public class TeamService {
 
     public record PublicTeam(String slug, String name, String shortCode, Short colorSlot, String description,
             String logoUrl) {
+    }
+
+    /** Public team page. Squad, spend and standing arrive with the auction (M4) and competition (M5–M7). */
+    public record PublicTeamDetail(String slug, String name, String shortCode, Short colorSlot, String description,
+            String logoUrl, List<Object> squad) {
+    }
+
+    @Transactional(readOnly = true)
+    public PublicTeamDetail publicDetail(String slug) {
+        UUID tid = tournament.currentTournamentId();
+        Team t = teams.findByTournamentIdOrderByNameAsc(tid).stream()
+                .filter(x -> x.getSlug().equalsIgnoreCase(slug) && x.getStatus() == TeamStatus.ACTIVE)
+                .findFirst().orElseThrow(() -> ApiException.notFound("Team"));
+        return new PublicTeamDetail(t.getSlug(), t.getName(), t.getShortCode(), t.getColorSlot(), t.getDescription(),
+                files.publicUrl(t.getLogoAssetId()).orElse(null), List.of());
     }
 
     public record TeamInput(String name, String shortCode, Short colorSlot, String description, UUID logoAssetId,
@@ -171,6 +189,7 @@ public class TeamService {
             t.setLogo(publishLogo(in.logoAssetId()));
         }
         teams.save(t);
+        site.touch(SiteRevalidator.TEAMS);
         return t;
     }
 
@@ -235,13 +254,8 @@ public class TeamService {
     // ---- Helpers ------------------------------------------------------------------------
 
     private UUID publishLogo(UUID assetId) {
-        FileAsset logo = files.require(assetId, FilePurpose.TEAM_LOGO);
-        if (logo.getVerificationStatus() != VerificationStatus.VERIFIED) {
-            // Staff choosing the logo themselves counts as checking it.
-            files.verify(assetId, true, null);
-        }
-        files.publish(assetId);
-        return assetId;
+        // Staff choosing the logo themselves counts as checking it.
+        return files.publishStaffImage(assetId, FilePurpose.TEAM_LOGO);
     }
 
     private static String requireName(String name) {
@@ -290,6 +304,7 @@ public class TeamService {
 
     private TeamView respond(Team t) {
         teams.flush();
+        site.touch(SiteRevalidator.TEAMS);
         return view(t);
     }
 

@@ -15,6 +15,8 @@ public interface PlayerRepository extends JpaRepository<Player, UUID> {
 
     boolean existsBySlug(String slug);
 
+    java.util.Optional<Player> findBySlug(String slug);
+
     @Query("select p from Player p where lower(p.fullName) = :name and p.dateOfBirth = :dob")
     List<Player> findByNameAndDob(@Param("name") String lowerName, @Param("dob") LocalDate dob);
 }

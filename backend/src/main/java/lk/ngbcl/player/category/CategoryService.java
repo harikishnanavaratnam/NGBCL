@@ -21,8 +21,11 @@ public class CategoryService {
     private final PlayerCategoryRepository repository;
     private final UploadContext tournament;
     private final AuditService audit;
+    private final lk.ngbcl.shared.site.SiteRevalidator site;
 
-    public CategoryService(PlayerCategoryRepository repository, UploadContext tournament, AuditService audit) {
+    public CategoryService(PlayerCategoryRepository repository, UploadContext tournament, AuditService audit,
+            lk.ngbcl.shared.site.SiteRevalidator site) {
+        this.site = site;
         this.repository = repository;
         this.tournament = tournament;
         this.audit = audit;
@@ -85,6 +88,7 @@ public class CategoryService {
         requireUniqueName(t, name, Ids.newId());
         PlayerCategory c = new PlayerCategory(t, name, description, repository.maxOrder(t) + 1);
         repository.saveAndFlush(c);
+        site.touch(lk.ngbcl.shared.site.SiteRevalidator.PLAYERS);
         audit.record(AuditEvent.of("category.created", "PlayerCategory", c.getId()).inTournament(t)
                 .withChange(null, Map.of("name", c.getName())));
         return CategoryResponse.from(c);
@@ -105,6 +109,7 @@ public class CategoryService {
         if (active != null) {
             c.setActive(active);
         }
+        site.touch(lk.ngbcl.shared.site.SiteRevalidator.PLAYERS);
         audit.record(AuditEvent.of("category.updated", "PlayerCategory", c.getId()).inTournament(c.getTournamentId())
                 .withChange(before, snapshot(c)));
         repository.flush(); // bump @Version now so the response carries the version the client must send next
@@ -134,6 +139,7 @@ public class CategoryService {
         for (int i = 0; i < ordered.size(); i++) {
             ordered.get(i).moveTo(i + 1);
         }
+        site.touch(lk.ngbcl.shared.site.SiteRevalidator.PLAYERS);
         audit.record(AuditEvent.of("category.reordered", "PlayerCategory", null).inTournament(t)
                 .withChange(Map.of("order", before), Map.of("order", ordered.stream().map(PlayerCategory::getName).toList())));
         repository.flush();

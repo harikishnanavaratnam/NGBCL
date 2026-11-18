@@ -295,7 +295,7 @@ public class PlayerReviewService {
         }
         UUID playerId = players.upsertProfile(r.getLinkedPlayerId(),
                 new PlayerService.ProfileData(r.getFullName(), r.getDateOfBirth(), r.getGender(), r.getEmail(),
-                        r.getPhone(), r.getAddress(), r.getHomeArea()),
+                        r.getPhone(), r.getAddress(), r.getHomeArea(), r.getExperience()),
                 r.getPhotoAssetId());
         players.enrol(r.getTournamentId(), playerId, r.getId(), r.getSkillCategoryId());
         files.publish(r.getPhotoAssetId());

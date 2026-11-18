@@ -21,6 +21,12 @@ src/
   proxy.ts             coarse route gate for /admin, /console, /score (UX only — the API enforces auth)
 ```
 
+## Public pages and caching
+
+Public pages read the API through tagged `'use cache'` fetchers (`src/lib/api/public.ts`) and refresh every few
+minutes. For instant updates after an admin change, set the same random value as `REVALIDATE_SECRET` here and
+`NGBCL_SITE_REVALIDATE_SECRET` on the API, with `NGBCL_SITE_REVALIDATE_URL=https://<site>/api/revalidate`.
+
 ## Conventions
 
 - Every data view handles **loading → empty → error → content**; mutations end in a toast or inline field errors from the server.
