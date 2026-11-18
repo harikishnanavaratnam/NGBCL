@@ -91,8 +91,11 @@ class SettingsCategoriesFilesIT {
         reg.put("settingsVersion", s.get("settingsVersion").asLong());
         JsonNode saved = body(put("/api/admin/settings/registration").content(reg.toString()), 200);
 
-        // Still a draft → registration stays closed to the public
-        assertThat(saved.at("/registration/playerState").asText()).isEqualTo("NOT_OPEN");
+        // A draft keeps registration closed to the public. (Other test classes share this database
+        // and may already have moved the tournament past DRAFT, so only assert it while still draft.)
+        if ("DRAFT".equals(saved.at("/general/status").asText())) {
+            assertThat(saved.at("/registration/playerState").asText()).isEqualTo("NOT_OPEN");
+        }
 
         if ("DRAFT".equals(saved.at("/general/status").asText())) {
             body(put("/api/admin/tournament/status").content("{\"status\":\"UPCOMING\"}"), 200);

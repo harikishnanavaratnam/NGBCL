@@ -58,6 +58,26 @@ public class CategoryService {
                 .toList();
     }
 
+    /** Category names for this edition (internal use by registration/directory views). */
+    @Transactional(readOnly = true)
+    public java.util.Map<UUID, String> namesById(UUID tournamentId) {
+        java.util.Map<UUID, String> names = new java.util.HashMap<>();
+        repository.findByTournamentIdOrderByDisplayOrderAscNameAsc(tournamentId)
+                .forEach(c -> names.put(c.getId(), c.getName()));
+        return names;
+    }
+
+    /** Throws unless the category exists in this edition and is active (PLY-003). */
+    @Transactional(readOnly = true)
+    public void requireActive(UUID tournamentId, UUID categoryId) {
+        PlayerCategory c = repository.findById(categoryId)
+                .filter(x -> x.getTournamentId().equals(tournamentId))
+                .orElseThrow(() -> ApiException.badRequest("CATEGORY_INVALID", "Choose one of the listed categories."));
+        if (!c.isActive()) {
+            throw ApiException.badRequest("CATEGORY_INACTIVE", "That category is no longer available. Choose another.");
+        }
+    }
+
     @Transactional
     @PreAuthorize("hasAuthority('CATEGORY_MANAGE')")
     public CategoryResponse create(String name, String description) {

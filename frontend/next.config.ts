@@ -9,7 +9,8 @@ const storageOrigin = process.env.NEXT_PUBLIC_STORAGE_ORIGIN ?? '';
 const csp = [
   "default-src 'self'",
   `connect-src 'self' ${apiUrl} ${wsUrl} ${storageOrigin}`.trim(),
-  `img-src 'self' data: blob: ${cdnUrl} ${storageOrigin}`.trim(),
+  // apiUrl: local-disk dev storage serves previews from the API itself
+  `img-src 'self' data: blob: ${apiUrl} ${cdnUrl} ${storageOrigin}`.trim(),
   `media-src 'self' ${cdnUrl}`.trim(),
   "style-src 'self' 'unsafe-inline'",
   "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com" + (process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : ''),

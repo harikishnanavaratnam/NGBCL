@@ -5,3 +5,4 @@ target/
 
 # Local R2 keys
 local-secrets.yml
+.dev-storage/

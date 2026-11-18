@@ -84,6 +84,10 @@ public class FileAsset extends AuditedEntity {
     @Column(name = "deleted_at")
     private Instant deletedAt;
 
+    /** Set for anonymous registration uploads: only that session may complete or use the file. */
+    @Column(name = "upload_session_id")
+    private UUID uploadSessionId;
+
     protected FileAsset() {
     }
 
@@ -97,6 +101,10 @@ public class FileAsset extends AuditedEntity {
         this.uploadedBy = uploadedBy;
         // Unique, server-generated key — never the user's filename (SRS §7.3).
         this.objectKey = "tournaments/" + tournamentId + "/" + purpose.folder + "/" + getId();
+    }
+
+    public void bindToSession(UUID sessionId) {
+        this.uploadSessionId = sessionId;
     }
 
     public void markUploaded(String contentType, String extension, long size, int width, int height, String checksum) {
@@ -229,5 +237,9 @@ public class FileAsset extends AuditedEntity {
 
     public UUID getUploadedBy() {
         return uploadedBy;
+    }
+
+    public UUID getUploadSessionId() {
+        return uploadSessionId;
     }
 }

@@ -75,6 +75,19 @@ public class FileService {
     @Transactional
     public UploadTicket createUpload(UUID tournamentId, FilePurpose purpose, String filename, String contentType,
             long size, UploadLimits limits) {
+        UUID uploader = CurrentUser.get().map(CurrentUser.Actor::id).orElse(null);
+        return issue(tournamentId, purpose, filename, contentType, size, limits, uploader, null);
+    }
+
+    /** Anonymous upload scoped to a registration session (SRS §7.2 short-lived upload token). */
+    @Transactional
+    public UploadTicket createSessionUpload(UUID tournamentId, FilePurpose purpose, String filename,
+            String contentType, long size, UploadLimits limits, UUID sessionId) {
+        return issue(tournamentId, purpose, filename, contentType, size, limits, null, sessionId);
+    }
+
+    private UploadTicket issue(UUID tournamentId, FilePurpose purpose, String filename, String contentType, long size,
+            UploadLimits limits, UUID uploader, UUID sessionId) {
         String type = contentType == null ? "" : contentType.trim().toLowerCase();
         if (!ALLOWED_TYPES.contains(type)) {
             throw ApiException.badRequest("FILE_TYPE_NOT_ALLOWED", "Use a JPEG, PNG or WebP image.");
@@ -83,8 +96,8 @@ public class FileService {
             throw ApiException.badRequest("FILE_TOO_LARGE",
                     "The image must be smaller than " + (limits.maxBytes() / (1024 * 1024)) + " MB.");
         }
-        UUID uploader = CurrentUser.get().map(CurrentUser.Actor::id).orElse(null);
         FileAsset asset = new FileAsset(tournamentId, purpose, sanitize(filename), type, size, uploader);
+        asset.bindToSession(sessionId);
         repository.save(asset);
         ObjectStorage.PresignedUpload put = storage.presignPrivatePut(asset.getObjectKey(), type, size, props.presignTtl());
         return new UploadTicket(asset.getId(), put.url(), "PUT", put.headers(), put.expiresAt(), limits.maxBytes(),
@@ -99,8 +112,41 @@ public class FileService {
     public FileAssetView complete(UUID assetId, UploadLimits limits) {
         FileAsset asset = load(assetId);
         requireUploader(asset);
+        return view(doComplete(asset, limits));
+    }
+
+    /** Completes an anonymous upload; the asset must belong to this registration session. */
+    @Transactional(noRollbackFor = ApiException.class)
+    public FileAsset completeForSession(UUID assetId, UUID sessionId, UploadLimits limits) {
+        FileAsset asset = loadForSession(assetId, sessionId);
+        return doComplete(asset, limits);
+    }
+
+    /** An uploaded, valid asset of the given purpose that belongs to this registration session. */
+    @Transactional(readOnly = true)
+    public FileAsset requireForSession(UUID assetId, FilePurpose purpose, UUID sessionId) {
+        FileAsset asset = loadForSession(assetId, sessionId);
+        if (asset.getPurpose() != purpose) {
+            throw ApiException.badRequest("FILE_WRONG_PURPOSE", "This image was uploaded for a different use.");
+        }
+        if (asset.getUploadStatus() != UploadStatus.UPLOADED) {
+            throw ApiException.unprocessable("FILE_NOT_READY", "This image hasn't finished uploading.");
+        }
+        return asset;
+    }
+
+    private FileAsset loadForSession(UUID assetId, UUID sessionId) {
+        FileAsset asset = repository.findById(assetId).orElseThrow(() -> ApiException.notFound("File"));
+        if (sessionId == null || !sessionId.equals(asset.getUploadSessionId())) {
+            // Same answer as "missing" so asset ids can't be probed.
+            throw ApiException.notFound("File");
+        }
+        return asset;
+    }
+
+    private FileAsset doComplete(FileAsset asset, UploadLimits limits) {
         if (asset.getUploadStatus() == UploadStatus.UPLOADED) {
-            return view(asset);
+            return asset;
         }
         if (asset.getUploadStatus() != UploadStatus.PENDING) {
             throw ApiException.conflict("FILE_WRONG_STATE", "This upload can no longer be completed.");
@@ -134,7 +180,7 @@ public class FileService {
         }
         asset.markUploaded(format.contentType, format.extension, bytes.length, d.width(), d.height(),
                 sha256(bytes));
-        return view(asset);
+        return asset;
     }
 
     @Transactional
@@ -206,6 +252,15 @@ public class FileService {
         return asset;
     }
 
+    /** Staff views for many assets at once (list screens). */
+    @Transactional(readOnly = true)
+    public Map<UUID, FileAssetView> views(java.util.Collection<UUID> ids) {
+        Map<UUID, FileAssetView> out = new java.util.HashMap<>();
+        repository.findAllById(ids.stream().filter(java.util.Objects::nonNull).distinct().toList())
+                .forEach(a -> out.put(a.getId(), view(a)));
+        return out;
+    }
+
     public Optional<String> publicUrl(UUID assetId) {
         if (assetId == null) {
             return Optional.empty();
@@ -229,6 +284,21 @@ public class FileService {
             a.markDeleted(clock.instant());
         }
         return stale.size();
+    }
+
+    /** Removes registration uploads whose form was never submitted (kept 24 h for slow applicants). */
+    @Transactional
+    public int purgeOrphanedSessionUploads(Duration olderThan) {
+        List<FileAsset> orphans = repository.findOrphanedSessionUploads(clock.instant().minus(olderThan));
+        for (FileAsset a : orphans) {
+            try {
+                storage.deletePrivate(a.getObjectKey());
+            } catch (RuntimeException e) {
+                log.debug("Could not delete orphaned object {}: {}", a.getObjectKey(), e.getMessage());
+            }
+            a.markDeleted(clock.instant());
+        }
+        return orphans.size();
     }
 
     public FileAssetView view(FileAsset a) {
@@ -257,6 +327,9 @@ public class FileService {
     }
 
     private static void requireUploader(FileAsset asset) {
+        if (asset.getUploadSessionId() != null) {
+            throw ApiException.forbidden("FORBIDDEN", "This upload belongs to a public registration.");
+        }
         UUID me = CurrentUser.get().map(CurrentUser.Actor::id).orElse(null);
         if (asset.getUploadedBy() != null && !asset.getUploadedBy().equals(me)) {
             throw ApiException.forbidden("FORBIDDEN", "You can only complete your own uploads.");
