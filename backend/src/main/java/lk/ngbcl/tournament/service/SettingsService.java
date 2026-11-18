@@ -35,9 +35,11 @@ public class SettingsService {
     private final AuditService audit;
     private final Clock clock;
     private final EntityManager em;
+    private final lk.ngbcl.shared.site.SiteRevalidator site;
 
     public SettingsService(TournamentService tournaments, FileService files, AuditService audit, Clock clock,
-            EntityManager em) {
+            EntityManager em, lk.ngbcl.shared.site.SiteRevalidator site) {
+        this.site = site;
         this.tournaments = tournaments;
         this.files = files;
         this.audit = audit;
@@ -168,6 +170,7 @@ public class SettingsService {
     private void record(String action, Tournament t, Map<String, Object> before, Map<String, Object> after, String reason) {
         audit.record(AuditEvent.of(action, "Tournament", t.getId()).inTournament(t.getId()).withChange(before, after)
                 .withReason(reason));
+        site.touch(lk.ngbcl.shared.site.SiteRevalidator.TOURNAMENT);
     }
 
     private static Map<String, Object> generalSnapshot(Tournament t, TournamentSettings s) {

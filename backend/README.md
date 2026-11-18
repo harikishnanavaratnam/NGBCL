@@ -41,6 +41,7 @@ docker compose -f ../docker-compose.yml up -d        # PostgreSQL
 | `NGBCL_STORAGE_PUBLIC_BASE_URL` | URL serving the public bucket (custom domain or `https://pub-….r2.dev`) |
 | `NGBCL_STORAGE_PATH_STYLE` | `true` for MinIO, `false` for R2 |
 | `NGBCL_TURNSTILE_SECRET` / `NGBCL_TURNSTILE_SITE_KEY` | Cloudflare Turnstile for the public forms. Empty secret = bot check off (a warning is logged). Test keys that always pass: site `1x00000000000000000000AA`, secret `1x0000000000000000000000000000000AA` |
+| `NGBCL_SITE_REVALIDATE_URL` / `_SECRET` | Public website refresh after content changes, e.g. `https://ngbcl.lk/api/revalidate` + a random secret (same value as the web app's `REVALIDATE_SECRET`). Empty = pages refresh within a few minutes |
 | `NGBCL_REG_SESSIONS_PER_IP` | Registration sessions one IP may start per hour (default 30) |
 
 ## Cloudflare R2 setup (M1)

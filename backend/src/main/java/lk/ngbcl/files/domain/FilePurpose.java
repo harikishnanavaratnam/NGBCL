@@ -13,7 +13,8 @@ public enum FilePurpose {
     ORGANISER_LOGO("branding", 0, 0, 128, 128, PublicFormat.PNG, 1024),
     POSTER("branding", 16, 9, 1280, 720, PublicFormat.JPEG, 1920),
     SPONSOR_LOGO("sponsors", 0, 0, 200, 100, PublicFormat.PNG, 1200),
-    COMMITTEE_PHOTO("committee", 4, 5, 300, 375, PublicFormat.JPEG, 1000);
+    COMMITTEE_PHOTO("committee", 4, 5, 300, 375, PublicFormat.JPEG, 1000),
+    NEWS_COVER("news", 16, 9, 960, 540, PublicFormat.JPEG, 1600);
 
     public enum PublicFormat {
         JPEG("image/jpeg", "jpg"),

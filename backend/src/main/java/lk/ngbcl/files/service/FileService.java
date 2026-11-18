@@ -230,6 +230,20 @@ public class FileService {
         return storage.publicUrl(key);
     }
 
+    /**
+     * For images chosen by staff in admin screens (team logos, sponsor logos, committee photos,
+     * news covers): picking the image counts as checking it, so verify if needed, then publish.
+     */
+    @Transactional
+    public UUID publishStaffImage(UUID assetId, FilePurpose purpose) {
+        FileAsset asset = require(assetId, purpose);
+        if (asset.getVerificationStatus() != VerificationStatus.VERIFIED) {
+            verify(assetId, true, null);
+        }
+        publish(assetId);
+        return assetId;
+    }
+
     @Transactional
     public void unpublish(UUID assetId) {
         unpublishIfNeeded(load(assetId));

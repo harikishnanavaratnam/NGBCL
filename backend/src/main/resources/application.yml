@@ -91,6 +91,11 @@ ngbcl:
     session-ttl: 2h
     # Registration sessions one IP may start per hour (abuse limit).
     sessions-per-ip-per-hour: ${NGBCL_REG_SESSIONS_PER_IP:30}
+  site:
+    # Public website on-demand cache refresh: POST {tags:[...]} after content changes. Empty = off
+    # (pages then refresh within a few minutes). Example: https://ngbcl.lk/api/revalidate
+    revalidate-url: ${NGBCL_SITE_REVALIDATE_URL:}
+    revalidate-secret: ${NGBCL_SITE_REVALIDATE_SECRET:}
   bootstrap:
     # Creates the first Super Administrator on an empty database, then is ignored.
     admin-email: ${NGBCL_BOOTSTRAP_ADMIN_EMAIL:}

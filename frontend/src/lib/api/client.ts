@@ -50,12 +50,7 @@ async function send(path: string, opts: RequestOptions, token: string | null) {
     ...opts,
     headers,
     credentials: 'include',
-    body:
-      opts.body === undefined
-        ? undefined
-        : opts.body instanceof FormData
-          ? opts.body
-          : JSON.stringify(opts.body),
+    body: opts.body === undefined ? undefined : opts.body instanceof FormData ? opts.body : JSON.stringify(opts.body),
   });
 }
 

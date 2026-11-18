@@ -22,6 +22,7 @@ import lk.ngbcl.player.domain.TournamentPlayer;
 import lk.ngbcl.player.domain.TournamentPlayerRepository;
 import lk.ngbcl.player.domain.TournamentPlayerStatus;
 import lk.ngbcl.shared.domain.Slugs;
+import lk.ngbcl.shared.site.SiteRevalidator;
 import lk.ngbcl.shared.web.ApiException;
 import lk.ngbcl.shared.web.PageResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,9 +41,11 @@ public class PlayerService {
     private final UploadContext tournament;
     private final AuditService audit;
     private final EntityManager em;
+    private final SiteRevalidator site;
 
     public PlayerService(PlayerRepository players, TournamentPlayerRepository entries, CategoryService categories,
-            FileService files, UploadContext tournament, AuditService audit, EntityManager em) {
+            FileService files, UploadContext tournament, AuditService audit, EntityManager em, SiteRevalidator site) {
+        this.site = site;
         this.players = players;
         this.entries = entries;
         this.categories = categories;
@@ -55,7 +58,7 @@ public class PlayerService {
     // ---- Used by the registration module (inside its transaction) --------------------
 
     public record ProfileData(String fullName, LocalDate dateOfBirth, String gender, String email, String phone,
-            String address, String homeArea) {
+            String address, String homeArea, String experience) {
     }
 
     /** A possible match for duplicate detection — internal only. */
@@ -89,12 +92,12 @@ public class PlayerService {
         if (linkedPlayerId != null) {
             Player p = players.findById(linkedPlayerId).orElseThrow(() -> ApiException.notFound("Linked player"));
             p.update(d.fullName(), d.dateOfBirth(), d.gender(), d.email(), d.phone(), d.address(), d.homeArea(),
-                    photoAssetId);
+                    d.experience(), photoAssetId);
             return p.getId();
         }
         String slug = Slugs.unique(d.fullName(), players::existsBySlug);
         Player p = new Player(d.fullName(), d.dateOfBirth(), d.gender(), d.email(), d.phone(), d.address(),
-                d.homeArea(), photoAssetId, slug);
+                d.homeArea(), d.experience(), photoAssetId, slug);
         players.save(p);
         return p.getId();
     }
@@ -107,6 +110,7 @@ public class PlayerService {
         }
         TournamentPlayer tp = new TournamentPlayer(tournamentId, playerId, registrationId, categoryId);
         entries.save(tp);
+        site.touch(SiteRevalidator.PLAYERS);
         return tp.getId();
     }
 
@@ -213,6 +217,7 @@ public class PlayerService {
 
     private PlayerRow respond(TournamentPlayer tp) {
         em.flush();
+        site.touch(SiteRevalidator.PLAYERS);
         Player p = players.findById(tp.getPlayerId()).orElseThrow();
         return row(tp, p, categories.namesById(tp.getTournamentId()));
     }
@@ -238,7 +243,24 @@ public class PlayerService {
 
     // ---- Public directory (PUB-004) — no contact details -------------------------------
 
-    public record PublicPlayer(String slug, String fullName, String homeArea, String categoryName, String photoUrl) {
+    public record PublicPlayer(String slug, String fullName, String categoryName, String photoUrl) {
+    }
+
+    /** Public player page — public fields only (PUB-008). Team and price arrive with the auction (M4). */
+    public record PublicPlayerDetail(String slug, String fullName, String categoryName, String photoUrl,
+            String experience) {
+    }
+
+    @Transactional(readOnly = true)
+    public PublicPlayerDetail publicDetail(String slug) {
+        UUID t = tournament.currentTournamentId();
+        Player p = players.findBySlug(slug == null ? "" : slug.toLowerCase(java.util.Locale.ROOT))
+                .orElseThrow(() -> ApiException.notFound("Player"));
+        TournamentPlayer tp = entries.findByTournamentIdAndPlayerId(t, p.getId())
+                .filter(e -> e.getStatus() == TournamentPlayerStatus.APPROVED)
+                .orElseThrow(() -> ApiException.notFound("Player"));
+        return new PublicPlayerDetail(p.getSlug(), p.getFullName(), categories.namesById(t).get(tp.getSkillCategoryId()),
+                files.publicUrl(p.getProfilePhotoAssetId()).orElse(null), p.getExperience());
     }
 
     @Transactional(readOnly = true)
@@ -255,7 +277,7 @@ public class PlayerService {
         return rows.stream().map(r -> {
             TournamentPlayer tp = (TournamentPlayer) r[0];
             Player p = (Player) r[1];
-            return new PublicPlayer(p.getSlug(), p.getFullName(), p.getHomeArea(), cats.get(tp.getSkillCategoryId()),
+            return new PublicPlayer(p.getSlug(), p.getFullName(), cats.get(tp.getSkillCategoryId()),
                     files.publicUrl(p.getProfilePhotoAssetId()).orElse(null));
         }).toList();
     }

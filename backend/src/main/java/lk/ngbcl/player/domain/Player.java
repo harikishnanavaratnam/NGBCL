@@ -33,6 +33,9 @@ public class Player extends AuditedEntity {
     @Column(name = "home_area", length = 80)
     private String homeArea;
 
+    @Column(name = "experience", length = 300)
+    private String experience;
+
     @Column(name = "profile_photo_asset_id")
     private UUID profilePhotoAssetId;
 
@@ -43,14 +46,15 @@ public class Player extends AuditedEntity {
     }
 
     public Player(String fullName, LocalDate dateOfBirth, String gender, String email, String phone, String address,
-            String homeArea, UUID photoAssetId, String slug) {
+            String homeArea, String experience, UUID photoAssetId, String slug) {
         this.slug = slug;
-        update(fullName, dateOfBirth, gender, email, phone, address, homeArea, photoAssetId);
+        update(fullName, dateOfBirth, gender, email, phone, address, homeArea, experience, photoAssetId);
     }
 
     /** Latest approved registration wins (the registration keeps what was submitted). */
     public void update(String fullName, LocalDate dateOfBirth, String gender, String email, String phone,
-            String address, String homeArea, UUID photoAssetId) {
+            String address, String homeArea, String experience, UUID photoAssetId) {
+        this.experience = experience;
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
@@ -85,6 +89,10 @@ public class Player extends AuditedEntity {
 
     public String getHomeArea() {
         return homeArea;
+    }
+
+    public String getExperience() {
+        return experience;
     }
 
     public UUID getProfilePhotoAssetId() {
