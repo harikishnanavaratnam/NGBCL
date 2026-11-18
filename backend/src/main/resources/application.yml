@@ -76,6 +76,21 @@ ngbcl:
     public-base-url: ${NGBCL_STORAGE_PUBLIC_BASE_URL:}
     path-style: ${NGBCL_STORAGE_PATH_STYLE:false}
     presign-ttl: 10m
+    # Development only — used when no endpoint is set. Off by default; the local profile turns it on.
+    local-disk:
+      enabled: ${NGBCL_STORAGE_LOCAL_DISK:false}
+      directory: ${NGBCL_STORAGE_LOCAL_DIR:./.dev-storage}
+      base-url: ${NGBCL_STORAGE_LOCAL_BASE_URL:http://localhost:8080}
+      signing-key: ${NGBCL_STORAGE_LOCAL_SIGNING_KEY:}
+  registration:
+    # Cloudflare Turnstile. Empty secret = check skipped (local/test only — a warning is logged).
+    # Cloudflare's always-pass test keys: site 1x00000000000000000000AA, secret 1x0000000000000000000000000000000AA
+    turnstile-secret: ${NGBCL_TURNSTILE_SECRET:}
+    turnstile-site-key: ${NGBCL_TURNSTILE_SITE_KEY:}
+    consent-version: "2026-1"
+    session-ttl: 2h
+    # Registration sessions one IP may start per hour (abuse limit).
+    sessions-per-ip-per-hour: ${NGBCL_REG_SESSIONS_PER_IP:30}
   bootstrap:
     # Creates the first Super Administrator on an empty database, then is ignored.
     admin-email: ${NGBCL_BOOTSTRAP_ADMIN_EMAIL:}

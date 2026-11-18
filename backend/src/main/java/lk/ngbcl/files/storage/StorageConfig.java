@@ -11,11 +11,16 @@ public class StorageConfig {
 
     @Bean
     ObjectStorage objectStorage(StorageProperties props) {
-        if (!props.configured()) {
-            LoggerFactory.getLogger(StorageConfig.class)
-                    .warn("ngbcl.storage.endpoint is not set — uploads are disabled (STORAGE_NOT_CONFIGURED)");
-            return new UnconfiguredObjectStorage();
+        if (props.configured()) {
+            return new S3ObjectStorage(props);
         }
-        return new S3ObjectStorage(props);
+        if (props.localDiskMode()) {
+            LoggerFactory.getLogger(StorageConfig.class)
+                    .warn("Using LOCAL-DISK file storage in {} — development only", props.localDisk().directory());
+            return new LocalDiskObjectStorage(props.localDisk());
+        }
+        LoggerFactory.getLogger(StorageConfig.class)
+                .warn("ngbcl.storage.endpoint is not set — uploads are disabled (STORAGE_NOT_CONFIGURED)");
+        return new UnconfiguredObjectStorage();
     }
 }

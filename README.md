@@ -12,7 +12,7 @@ Official platform for the **Next Gen Badminton Champions League 1.0**, presented
 
 ## Prerequisites
 
-- Node.js 22 LTS + pnpm 10 (`corepack enable`)
+- Node.js 22 LTS (npm comes with it)
 - JDK 21 (Temurin recommended) — Maven is downloaded by `./mvnw`
 - Docker Desktop (PostgreSQL for local dev and for backend integration tests)
 
@@ -29,17 +29,19 @@ cd backend
 
 # 3) Web app → http://localhost:3000
 cd frontend
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
-Useful pages: `/` (home), `/login` (staff), `/admin`, `/ds` (living design system), `/display/auction` (big screen).
+Useful pages: `/` (home), `/register/player` and `/register/team` (public forms — open the windows in Settings → Registration first), `/login` (staff), `/admin`, `/ds` (living design system), `/display/auction` (big screen).
 
 ## Checks
 
 ```bash
-cd frontend && pnpm lint && pnpm typecheck && pnpm test && pnpm build
+cd frontend && npm run lint && npm run typecheck && npm test && npm run build
 cd backend  && ./mvnw verify      # needs Docker for Testcontainers
+# End-to-end (API on :8080 with the local profile, web built and started on :3000)
+cd frontend && npx playwright install chromium && npm run e2e
 ```
 
 ## Ground rules

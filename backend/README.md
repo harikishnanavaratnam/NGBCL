@@ -40,6 +40,8 @@ docker compose -f ../docker-compose.yml up -d        # PostgreSQL
 | `NGBCL_STORAGE_PRIVATE_BUCKET` / `_PUBLIC_BUCKET` | Default `ngbcl-private` / `ngbcl-public` |
 | `NGBCL_STORAGE_PUBLIC_BASE_URL` | URL serving the public bucket (custom domain or `https://pub-….r2.dev`) |
 | `NGBCL_STORAGE_PATH_STYLE` | `true` for MinIO, `false` for R2 |
+| `NGBCL_TURNSTILE_SECRET` / `NGBCL_TURNSTILE_SITE_KEY` | Cloudflare Turnstile for the public forms. Empty secret = bot check off (a warning is logged). Test keys that always pass: site `1x00000000000000000000AA`, secret `1x0000000000000000000000000000000AA` |
+| `NGBCL_REG_SESSIONS_PER_IP` | Registration sessions one IP may start per hour (default 30) |
 
 ## Cloudflare R2 setup (M1)
 
@@ -57,9 +59,13 @@ Upload flow: `POST /api/files/uploads` → browser `PUT`s to the presigned URL �
 (server reads the object back and checks real type, size, dimensions and ratio) → verify → publish
 (re-encoded JPEG/PNG copy in the public bucket, EXIF/GPS stripped). Abandoned uploads are removed hourly.
 
-## Local uploads (optional)
+## Local uploads
 
-Everything except image uploads works without storage. To test uploads locally, create two **dev** buckets in
+With the `local` profile uploads work out of the box: when no R2 endpoint is set, files are kept in
+`backend/.dev-storage/` (git-ignored) and served by the API under `/dev-storage/**` through short-lived signed
+links. This mode is development-only and never activates when a real endpoint is configured.
+
+To test against real R2 instead, create two **dev** buckets in
 R2 (`ngbcl-dev-private`, `ngbcl-dev-public`) following the steps above, then copy `local-secrets.example.yml`
 to `local-secrets.yml` (git-ignored) and fill it in. In `frontend/.env.local` set
 `NEXT_PUBLIC_STORAGE_ORIGIN=https://<ACCOUNT_ID>.r2.cloudflarestorage.com` and `NEXT_PUBLIC_CDN_URL=https://pub-<ID>.r2.dev`.

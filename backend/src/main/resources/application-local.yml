@@ -9,6 +9,11 @@ ngbcl:
     cookie-secure: false
     allowed-origins: http://localhost:3000
     ip-hash-salt: local
+  storage:
+    # Uploads work out of the box: files go to backend/.dev-storage unless local-secrets.yml sets an R2 endpoint.
+    local-disk:
+      enabled: true
+      signing-key: local-dev-storage-key
   bootstrap:
     admin-email: admin@ngbcl.local
     admin-password: ChangeMe-Local-123

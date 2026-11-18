@@ -3,9 +3,9 @@
 Next.js 16 (App Router, Cache Components) · React 19 · TypeScript · `motion` (Framer Motion) · TanStack Query · react-hook-form + zod · STOMP.
 
 ```bash
-pnpm install
+npm install
 cp .env.example .env.local   # already present for local dev
-pnpm dev                      # http://localhost:3000
+npm run dev                   # http://localhost:3000
 ```
 
 ## Structure
@@ -27,6 +27,6 @@ src/
 - Money: `Money` component (`LKR` label in admin, `Rs.` on public pages, compact only on the big display).
 - Status: `StatusChip status="PENDING"` — never pick status colours by hand.
 - Animations use `design-system/motion/presets.ts` durations and respect reduced motion via `MotionProvider`.
-- API types: `pnpm gen:api` (with the backend running) regenerates `src/lib/api/schema.d.ts` from OpenAPI.
+- API types: `npm run gen:api` (with the backend running) regenerates `src/lib/api/schema.d.ts` from OpenAPI.
 
 Read `AGENTS.md` — this Next.js version has breaking changes (e.g. `middleware` → `proxy`, async `params`).

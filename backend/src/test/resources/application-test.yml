@@ -8,3 +8,5 @@ ngbcl:
     admin-email: admin@test.local
     admin-password: Test-Admin-Password-1
     admin-name: Test Admin
+  registration:
+    sessions-per-ip-per-hour: 1000

@@ -20,6 +20,11 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /** Every error leaves the API as problem+json with a stable {@code code} (see frontend ApiError). */
+/**
+ * Highest precedence so these mappings win over Spring Boot's built-in problem-details handler
+ * (which would otherwise answer bean-validation errors without our {@code code} / {@code errors}).
+ */
+@org.springframework.core.annotation.Order(org.springframework.core.Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -34,6 +39,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ApiException.class)
     ResponseEntity<ProblemDetail> handleApi(ApiException ex) {
+        if (ex instanceof FieldErrors.Exception fe) {
+            ProblemDetail pd = problem(ex.getStatus(), ex.getCode(), ex.getMessage());
+            pd.setProperty("errors", fe.getErrors());
+            return ResponseEntity.status(ex.getStatus()).body(pd);
+        }
         return ResponseEntity.status(ex.getStatus()).body(problem(ex.getStatus(), ex.getCode(), ex.getMessage()));
     }
 
@@ -49,6 +59,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HandlerMethodValidationException.class)
     ResponseEntity<ProblemDetail> handleMethodValidation(HandlerMethodValidationException ex) {
+        return ResponseEntity.badRequest()
+                .body(problem(HttpStatus.BAD_REQUEST, "VALIDATION_FAILED", "Some parameters are invalid."));
+    }
+
+    @ExceptionHandler({org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class,
+            org.springframework.web.bind.MissingServletRequestParameterException.class,
+            org.springframework.web.bind.MissingRequestHeaderException.class})
+    ResponseEntity<ProblemDetail> handleBadParameter(Exception ex) {
         return ResponseEntity.badRequest()
                 .body(problem(HttpStatus.BAD_REQUEST, "VALIDATION_FAILED", "Some parameters are invalid."));
     }
