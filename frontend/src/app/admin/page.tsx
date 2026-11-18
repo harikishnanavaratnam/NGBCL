@@ -37,7 +37,8 @@ export default function AdminOverview() {
       </section>
       <EmptyState
         title="Start by setting up the tournament"
-        description="Tournament details, registration windows and skill categories are configured in Milestone 1."
+        description="Add the dates and venue, set the registration windows, choose skill categories and upload branding."
+        action={{ label: 'Open settings', href: '/admin/system/settings' }}
       />
     </div>
   );

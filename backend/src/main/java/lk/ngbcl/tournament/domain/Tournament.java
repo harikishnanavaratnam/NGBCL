@@ -54,11 +54,23 @@ public class Tournament extends AuditedEntity {
     @Column(name = "is_current", nullable = false)
     private boolean currentEdition;
 
+    @Column(name = "tagline", length = 160)
+    private String tagline;
+
+    @Column(name = "organiser", length = 160)
+    private String organiser;
+
+    @Column(name = "presenter_line", length = 160)
+    private String presenterLine;
+
+    @Column(name = "courts")
+    private Short courts;
+
     protected Tournament() {
     }
 
-    public void updateDetails(String name, String shortName, String description, LocalDate startsOn, LocalDate endsOn,
-            String venue, String city) {
+    public void updateDetails(String name, String shortName, String tagline, String description, String organiser,
+            String presenterLine, LocalDate startsOn, LocalDate endsOn, String venue, String city, Short courts) {
         if (startsOn != null && endsOn != null && endsOn.isBefore(startsOn)) {
             throw ApiException.badRequest("INVALID_DATES", "The end date must be on or after the start date.");
         }
@@ -69,9 +81,29 @@ public class Tournament extends AuditedEntity {
         this.endsOn = endsOn;
         this.venue = venue == null || venue.isBlank() ? null : venue.trim();
         this.city = city == null || city.isBlank() ? null : city.trim();
+        this.tagline = blankToNull(tagline);
+        this.organiser = blankToNull(organiser);
+        this.presenterLine = blankToNull(presenterLine);
+        this.courts = courts;
     }
 
+    private static String blankToNull(String v) {
+        return v == null || v.isBlank() ? null : v.trim();
+    }
+
+    /** TRN-004 lifecycle. Archived is final; completed can be reopened for corrections. */
     public void changeStatus(TournamentStatus next) {
+        boolean allowed = switch (status) {
+            case DRAFT -> next == TournamentStatus.UPCOMING;
+            case UPCOMING -> next == TournamentStatus.DRAFT || next == TournamentStatus.ACTIVE;
+            case ACTIVE -> next == TournamentStatus.COMPLETED;
+            case COMPLETED -> next == TournamentStatus.ACTIVE || next == TournamentStatus.ARCHIVED;
+            case ARCHIVED -> false;
+        };
+        if (!allowed) {
+            throw ApiException.unprocessable("INVALID_STATUS_CHANGE",
+                    "A tournament can't move from " + status.name().toLowerCase() + " to " + next.name().toLowerCase() + ".");
+        }
         this.status = next;
     }
 
@@ -125,5 +157,21 @@ public class Tournament extends AuditedEntity {
 
     public boolean isCurrentEdition() {
         return currentEdition;
+    }
+
+    public String getTagline() {
+        return tagline;
+    }
+
+    public String getOrganiser() {
+        return organiser;
+    }
+
+    public String getPresenterLine() {
+        return presenterLine;
+    }
+
+    public Short getCourts() {
+        return courts;
     }
 }

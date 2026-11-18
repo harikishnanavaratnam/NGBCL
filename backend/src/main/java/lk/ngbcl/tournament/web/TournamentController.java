@@ -1,114 +1,79 @@
 package lk.ngbcl.tournament.web;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import lk.ngbcl.audit.service.AuditEvent;
-import lk.ngbcl.audit.service.AuditService;
-import lk.ngbcl.shared.web.ApiException;
+import lk.ngbcl.files.service.FileService;
 import lk.ngbcl.tournament.domain.Tournament;
-import lk.ngbcl.tournament.domain.TournamentRepository;
+import lk.ngbcl.tournament.domain.TournamentPhase;
+import lk.ngbcl.tournament.domain.TournamentSettings;
 import lk.ngbcl.tournament.domain.TournamentStatus;
+import lk.ngbcl.tournament.domain.WindowState;
+import lk.ngbcl.tournament.service.TournamentService;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Current edition. The public view exposes only publishable fields (PUB-008); the admin view
- * adds status and audit-relevant data. Full settings (registration windows, publication flags)
- * arrive in M1.
+ * Public view of the current edition for the home page and registration forms.
+ * Only publishable fields — the organiser contact is intentionally public; no personal data
+ * or internal notes ever appear here (PUB-008).
  */
 @RestController
 public class TournamentController {
 
-    private final TournamentRepository repository;
-    private final AuditService audit;
+    private final TournamentService tournaments;
+    private final FileService files;
+    private final Clock clock;
 
-    public TournamentController(TournamentRepository repository, AuditService audit) {
-        this.repository = repository;
-        this.audit = audit;
+    public TournamentController(TournamentService tournaments, FileService files, Clock clock) {
+        this.tournaments = tournaments;
+        this.files = files;
+        this.clock = clock;
     }
 
-    /** Public — never add contact details or internal notes here. */
-    public record PublicTournamentResponse(String slug, String name, String shortName, String edition,
-            String description, LocalDate startsOn, LocalDate endsOn, String venue, String city, TournamentStatus status,
-            String timezone, String currency) {
-
-        static PublicTournamentResponse from(Tournament t) {
-            return new PublicTournamentResponse(t.getSlug(), t.getName(), t.getShortName(), t.getEdition(),
-                    t.getDescription(), t.getStartsOn(), t.getEndsOn(), t.getVenue(), t.getCity(), t.getStatus(),
-                    t.getTimezone(), t.getCurrency());
-        }
+    public record PublicWindow(WindowState state, Instant opensAt, Instant closesAt) {
     }
 
-    public record AdminTournamentResponse(UUID id, String slug, String name, String shortName, String edition,
-            String description, LocalDate startsOn, LocalDate endsOn, String venue, String city, TournamentStatus status,
-            String timezone, String currency, Long version) {
-
-        static AdminTournamentResponse from(Tournament t) {
-            return new AdminTournamentResponse(t.getId(), t.getSlug(), t.getName(), t.getShortName(), t.getEdition(),
-                    t.getDescription(), t.getStartsOn(), t.getEndsOn(), t.getVenue(), t.getCity(), t.getStatus(),
-                    t.getTimezone(), t.getCurrency(), t.getVersion());
-        }
+    public record PublicPrizes(Long first, Long second, Long third) {
     }
 
-    public record UpdateTournamentRequest(@NotBlank @Size(max = 160) String name, @NotBlank @Size(max = 40) String shortName,
-            @Size(max = 4000) String description, LocalDate startsOn, LocalDate endsOn, @Size(max = 200) String venue,
-            @Size(max = 80) String city, Long version) {
+    public record PublicBranding(String logoUrl, String faviconUrl, String organiserLogoUrl, String posterUrl) {
+    }
+
+    public record PublicTournamentResponse(String slug, String name, String shortName, String edition, String tagline,
+            String description, String organiser, String presenterLine, LocalDate startsOn, LocalDate endsOn,
+            String venue, String city, TournamentStatus status, String timezone, String currency, TournamentPhase phase,
+            PublicWindow playerRegistration, PublicWindow teamRegistration, PublicPrizes prizes, Long teamEntryFee,
+            String facebookUrl, String contactEmail, String contactPhone, boolean showPlayerPrices,
+            boolean showTeamBudgets, PublicBranding branding, Instant serverTime) {
     }
 
     @GetMapping("/api/public/tournament")
-    @Transactional(readOnly = true)
-    public ResponseEntity<PublicTournamentResponse> current() {
-        return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(java.time.Duration.ofSeconds(60)).cachePublic())
-                .body(PublicTournamentResponse.from(load()));
-    }
-
-    @GetMapping("/api/admin/tournament")
-    @PreAuthorize("hasAuthority('TOURNAMENT_VIEW')")
-    @Transactional(readOnly = true)
-    public AdminTournamentResponse adminView() {
-        return AdminTournamentResponse.from(load());
-    }
-
-    @PutMapping("/api/admin/tournament")
-    @PreAuthorize("hasAuthority('TOURNAMENT_MANAGE')")
     @Transactional
-    public AdminTournamentResponse update(@Valid @RequestBody UpdateTournamentRequest body) {
-        Tournament t = load();
-        if (body.version() != null && !body.version().equals(t.getVersion())) {
-            throw ApiException.conflict("STALE_DATA", "Someone else changed the tournament. Reload and try again.");
-        }
-        Map<String, Object> before = snapshot(t);
-        t.updateDetails(body.name(), body.shortName(), body.description(), body.startsOn(), body.endsOn(), body.venue(),
-                body.city());
-        audit.record(AuditEvent.of("tournament.updated", "Tournament", t.getId()).inTournament(t.getId())
-                .withChange(before, snapshot(t)));
-        return AdminTournamentResponse.from(t);
+    public ResponseEntity<PublicTournamentResponse> current() {
+        Tournament t = tournaments.current();
+        TournamentSettings s = tournaments.settingsFor(t.getId());
+        Instant now = clock.instant();
+        PublicBranding branding = new PublicBranding(url(s.getLogoAssetId()), url(s.getFaviconAssetId()),
+                url(s.getOrganiserLogoAssetId()), url(s.getPosterAssetId()));
+        var body = new PublicTournamentResponse(t.getSlug(), t.getName(), t.getShortName(), t.getEdition(),
+                t.getTagline(), t.getDescription(), t.getOrganiser(), t.getPresenterLine(), t.getStartsOn(), t.getEndsOn(),
+                t.getVenue(), t.getCity(), t.getStatus(), t.getTimezone(), t.getCurrency(), s.phase(now, t.getStatus()),
+                new PublicWindow(s.playerWindow(now, t.getStatus()), s.getPlayerRegOpensAt(), s.getPlayerRegClosesAt()),
+                new PublicWindow(s.teamWindow(now, t.getStatus()), s.getTeamRegOpensAt(), s.getTeamRegClosesAt()),
+                new PublicPrizes(s.getPrizeFirst(), s.getPrizeSecond(), s.getPrizeThird()), s.getTeamEntryFee(),
+                s.getFacebookUrl(), s.getContactEmail(), s.getContactPhone(), s.isShowPlayerPrices(),
+                s.isShowTeamBudgets(), branding, now);
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(Duration.ofSeconds(30)).cachePublic())
+                .body(body);
     }
 
-    private Tournament load() {
-        return repository.findByCurrentEditionTrue().orElseThrow(() -> ApiException.notFound("Tournament"));
-    }
-
-    private static Map<String, Object> snapshot(Tournament t) {
-        Map<String, Object> m = new HashMap<>();
-        m.put("name", t.getName());
-        m.put("shortName", t.getShortName());
-        m.put("startsOn", t.getStartsOn() == null ? null : t.getStartsOn().toString());
-        m.put("endsOn", t.getEndsOn() == null ? null : t.getEndsOn().toString());
-        m.put("venue", t.getVenue());
-        m.put("city", t.getCity());
-        return m;
+    private String url(java.util.UUID assetId) {
+        return files.publicUrl(assetId).orElse(null);
     }
 }

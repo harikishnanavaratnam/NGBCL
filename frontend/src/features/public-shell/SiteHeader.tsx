@@ -14,7 +14,8 @@ export interface LiveSummary {
 }
 
 /** Sticky top bar: wordmark + 1.0 seal, 8 links, Live pill, Facebook, Register (export Main · 01). */
-export function SiteHeader({ live }: { live?: LiveSummary | null }) {
+export function SiteHeader({ live, facebookUrl }: { live?: LiveSummary | null; facebookUrl?: string | null }) {
+  const fb = facebookUrl ?? FACEBOOK_URL;
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [lastPath, setLastPath] = useState(pathname);
@@ -57,7 +58,7 @@ export function SiteHeader({ live }: { live?: LiveSummary | null }) {
               Live
             </Link>
           )}
-          <a href={FACEBOOK_URL} className="link" style={{ fontSize: 13 }} target="_blank" rel="noopener noreferrer">
+          <a href={fb} className="link" style={{ fontSize: 13 }} target="_blank" rel="noopener noreferrer">
             <span className={styles.fbFull}>Follow on </span>Facebook
           </a>
           <Link href="/register/player" className="btn btn-volt btn-sm">
@@ -104,7 +105,7 @@ export function SiteHeader({ live }: { live?: LiveSummary | null }) {
               <Link href="/register/team" className="btn btn-out">
                 Enter a team
               </Link>
-              <a href={FACEBOOK_URL} className="btn btn-ghost" target="_blank" rel="noopener noreferrer">
+              <a href={fb} className="btn btn-ghost" target="_blank" rel="noopener noreferrer">
                 Follow on Facebook
               </a>
             </div>
