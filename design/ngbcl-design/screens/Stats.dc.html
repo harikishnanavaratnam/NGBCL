@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NGBCL 1.0 — Standings and statistics wireframe</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/8f7dbd951cd94d5d6ac221330072dab7">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700;1,800&amp;family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#F5F7FA}a:hover{color:#D8FF42}
+.st{container-type:inline-size;background:#101318;color:#F5F7FA;font-family:'DM Sans',"Noto Sans Tamil","Noto Sans Sinhala",system-ui,sans-serif;font-size:15px;line-height:1.5;min-height:100%}
+.st *{box-sizing:border-box}
+.wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+.h1{font-size:clamp(30px,4.6cqi,56px);line-height:1}
+.w{display:inline-flex;width:22px;height:22px;align-items:center;justify-content:center;border-radius:2px;font-size:11px;font-weight:700}
+.w.W{background:#D8FF42;color:#101318}.w.L{background:transparent;border:1px solid rgba(245,247,250,.4);color:#A5ADB8}
+.sec{padding:44px 0;position:relative}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.navlinks{display:flex;gap:22px;align-items:center}
+.navlinks a{text-decoration:none;font-size:14px;font-weight:500;color:#A5ADB8;padding:24px 0;border-bottom:2px solid transparent}
+.navlinks a.on{color:#F5F7FA;border-bottom-color:#D8FF42}
+.burger{display:none}
+@container (max-width:1100px){.navlinks{display:none}.burger{display:inline-flex}.g2{grid-template-columns:minmax(0,1fr)}}
+@container (max-width:700px){.wrap{padding:0 16px}.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.hide-s{display:none}}
+.court-hdr{background:linear-gradient(90deg,#101318 22%,rgba(16,19,24,.78) 55%,rgba(16,19,24,.45)),linear-gradient(0deg,#101318,rgba(16,19,24,0) 55%),url(/_blob/327e5af290f3807629181c898ddab48c) 65% 58%/cover no-repeat}</style>
+</helmet>
+<div class="st {{annClass}}">
+
+<header style="position: sticky; top: 0; z-index: 20; background: rgba(12,14,18,.95); border-bottom: 1px solid rgba(245,247,250,.12)">
+<nav class="wrap" style="display: flex; align-items: center; gap: 20px; min-height: 72px" aria-label="Main">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none"><img src="/_blob/cdcfcb2d54393ecb009b0801816ef575" alt="NGBCL — Next Gen Badminton Champions League" style="height: 40px; width: auto; max-width: 100%; display: block; object-fit: contain"><span class="chip" style="border: 1px solid #C9A45C; color: #D6B877; padding: 4px 6px">1.0</span></a>
+<div class="navlinks" style="margin-left: auto">
+<a href="Main.dc.html">Home</a><a href="#">Teams</a><a href="#">Players</a><a href="#">Auction</a><a href="#" class="{{fixCls}}">Fixtures</a><a href="#">Live</a><a href="#" class="{{stCls}}">Standings</a><a href="#">News</a>
+</div>
+<button type="button" class="burger btn" aria-label="Open menu" style="width: 44px; padding: 0; margin-left: auto"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+</nav>
+</header>
+
+<section class="court-hdr sec" style="padding-bottom: 24px">
+<div class="wrap" style="display: flex; flex-direction: column; gap: 14px">
+<div class="eyebrow">NGBCL 1.0</div>
+<h1 class="disp h1">{{title}}</h1>
+<div class="seg" role="tablist" aria-label="Section" style="align-self: flex-start">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="5"><button type="button" role="tab" class="{{t.cls}}">{{t.label}}</button></sc-for>
+</div>
+</div>
+</section>
+
+<!-- ================= STANDINGS ================= -->
+<sc-if value="{{sStand}}" hint-placeholder-val="{{ true }}">
+<section class="sec">
+<div class="ann">Standings · provisional banner, qualification line, form</div>
+<div class="wrap" style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 6px; background: rgba(130,174,255,.08); border: 1px solid rgba(130,174,255,.7); flex-wrap: wrap"><span class="chip c-prov">Provisional</span><span>Includes <span class="tbc">[N]</span> provisional results. Only confirmed results are official.</span><a href="#" style="margin-left: auto; font-size: 13px; font-weight: 600">How ties are broken</a></div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><div class="seg"><button type="button" class="on">Group A</button><button type="button">Group B</button><button type="button">Overall</button></div><span class="muted" style="font-size: 13px; align-self: center">Format <span class="tbc">[TBC]</span></span></div>
+<div class="card scroll" style="padding: 4px 8px">
+<table class="tbl" style="min-width: 360px">
+<thead><tr><th>Pos</th><th>Team</th><th class="r">P</th><th class="r">W</th><th class="r">L</th><th class="r hide-s">Match W–L</th><th class="r hide-s">Game W–L</th><th class="r hide-s">Pts diff</th><th class="r">Pts</th><th class="hide-s">Form</th></tr></thead>
+<tbody>
+<tr><td class="num" style="font-size: 20px">1</td><td><div style="display: flex; gap: 10px; align-items: center; border-left: 4px solid #F05A28; padding-left: 8px"><span class="ph ph-crest" style="width: 32px; height: 32px; padding: 0; font-size: 7px">C</span>[Team]</div></td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r hide-s">— – —</td><td class="r hide-s">— – —</td><td class="r hide-s">—</td><td class="r num" style="font-size: 20px">—</td><td class="hide-s"><span class="w W">W</span> <span class="w W">W</span> <span class="w L">L</span></td></tr>
+<tr><td class="num" style="font-size: 20px">2</td><td><div style="display: flex; gap: 10px; align-items: center; border-left: 4px solid #1BA6B5; padding-left: 8px"><span class="ph ph-crest" style="width: 32px; height: 32px; padding: 0; font-size: 7px">C</span>[Team] <span class="chip c-prov">Prov.</span></div></td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r hide-s">— – —</td><td class="r hide-s">— – —</td><td class="r hide-s">—</td><td class="r num" style="font-size: 20px">—</td><td class="hide-s"><span class="w W">W</span> <span class="w L">L</span> <span class="w W">W</span></td></tr>
+<tr><td colspan="10" style="padding: 4px 10px; border-bottom: 0"><div style="display: flex; align-items: center; gap: 10px"><span style="flex: 1; border-top: 1px dashed rgba(245,247,250,.5)"></span><span class="eyebrow">Qualifies · top <span class="tbc">[N]</span></span></div></td></tr>
+<tr><td class="num" style="font-size: 20px">3</td><td><div style="display: flex; gap: 10px; align-items: center; border-left: 4px solid #2F6FED; padding-left: 8px"><span class="ph ph-crest" style="width: 32px; height: 32px; padding: 0; font-size: 7px">C</span>[Team]</div></td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r hide-s">— – —</td><td class="r hide-s">— – —</td><td class="r hide-s">—</td><td class="r num" style="font-size: 20px">—</td><td class="hide-s"><span class="w L">L</span> <span class="w W">W</span> <span class="w L">L</span></td></tr>
+<tr><td class="num" style="font-size: 20px">4</td><td><div style="display: flex; gap: 10px; align-items: center; border-left: 4px solid #A23B72; padding-left: 8px"><span class="ph ph-crest" style="width: 32px; height: 32px; padding: 0; font-size: 7px">C</span>[Team]</div></td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r hide-s">— – —</td><td class="r hide-s">— – —</td><td class="r hide-s">—</td><td class="r num" style="font-size: 20px">—</td><td class="hide-s"><span class="w L">L</span> <span class="w L">L</span> <span class="w W">W</span></td></tr>
+</tbody>
+</table>
+</div>
+<div class="card" style="padding: 16px; display: flex; flex-direction: column; gap: 6px; max-width: 520px; position: relative">
+<div class="ann" style="top: -12px">Tie-break popover</div>
+<strong style="font-size: 14px">How ties are broken</strong>
+<span class="muted" style="font-size: 13px">In order: <span class="tbc">[ORDER FROM SETTINGS]</span> — e.g. points, tie wins, match difference, game difference, points difference, head-to-head.</span>
+</div>
+<p class="ann-note muted" style="margin: 0; font-size: 13px">Form tiles use a word (W/L) and fill, never colour alone. On phones the table keeps Pos, Team, P, W, L, Pts.</p>
+</div>
+</section>
+</sc-if>
+
+<!-- ================= FIXTURE RESULTS ================= -->
+<sc-if value="{{sResults}}" hint-placeholder-val="{{ false }}">
+<section class="sec">
+<div class="ann">Fixture results · tie → matches → games</div>
+<div class="wrap" style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><select class="inp" aria-label="Round"><option>All rounds</option></select><select class="inp" aria-label="Team"><option>All teams</option></select></div>
+<span class="eyebrow">Round [—]</span>
+<div class="card" style="overflow: hidden; border-color: rgba(245,247,250,.3)">
+<div style="padding: 18px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: center">
+<div style="display: flex; align-items: center; gap: 12px; justify-content: flex-end"><strong>[Team A]</strong><span class="ph ph-crest" style="width: 48px; height: 48px; font-size: 7px">Crest</span></div>
+<div style="display: flex; flex-direction: column; align-items: center"><span class="num" style="font-size: 48px; line-height: 1">[—]–[—]</span><span class="chip c-ok">Confirmed</span></div>
+<div style="display: flex; align-items: center; gap: 12px"><span class="ph ph-crest" style="width: 48px; height: 48px; font-size: 7px">Crest</span><strong>[Team B]</strong></div>
+</div>
+<div class="scroll" style="border-top: 1px solid rgba(245,247,250,.12)">
+<table class="tbl" style="min-width: 560px">
+<thead><tr><th>Match</th><th>[Team A]</th><th>[Team B]</th><th>Games</th><th>Winner</th></tr></thead>
+<tbody>
+<tr><td class="muted">[Category]</td><td>[Player]</td><td>[Player]</td><td class="mono"><strong>[—]</strong>–[—] · [—]–<strong>[—]</strong> · <strong>[—]</strong>–[—]</td><td>[Team A]</td></tr>
+<tr><td class="muted">[Category]</td><td>[Player] / [Player]</td><td>[Player] / [Player]</td><td class="mono">[—]–<strong>[—]</strong> · [—]–<strong>[—]</strong></td><td>[Team B]</td></tr>
+<tr><td class="muted">[Category]</td><td>[Player] / [Player]</td><td>[Player] / [Player]</td><td class="mono"><strong>[—]</strong>–[—] · <strong>[—]</strong>–[—]</td><td>[Team A]</td></tr>
+</tbody>
+</table>
+</div>
+<div style="padding: 10px 18px; display: flex; gap: 12px; font-size: 13px" class="muted"><span>[DD MMM] · Court [—]</span><a href="#" style="margin-left: auto">Share result</a></div>
+</div>
+<div class="card" style="padding: 16px 18px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap"><strong>[Team C]</strong><span class="num" style="font-size: 28px">[—]–[—]</span><strong>[Team D]</strong><span class="chip c-prov">Provisional</span><span class="ann-note muted" style="margin-left: auto; font-size: 13px">Collapsed · tap to expand matches</span></div>
+<div class="card" style="padding: 16px 18px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap"><strong>[Team E]</strong><span class="num" style="font-size: 28px">[—]–[—]</span><strong>[Team F]</strong><span class="chip c-live">Live</span><span class="ann-note muted" style="margin-left: auto; font-size: 13px">Opens the live match page</span></div>
+</div>
+</section>
+</sc-if>
+
+<!-- ================= LEADERBOARD ================= -->
+<sc-if value="{{sLeader}}" hint-placeholder-val="{{ false }}">
+<section class="sec">
+<div class="ann">Player leaderboard · tabs and filters</div>
+<div class="wrap" style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center"><div class="seg"><button type="button" class="on">Matches won</button><button type="button">Win %</button><button type="button">Games won</button><button type="button">Points scored</button></div><select class="inp" aria-label="Category"><option>All categories</option></select><select class="inp" aria-label="Team"><option>All teams</option></select></div>
+<div class="card scroll" style="padding: 4px 8px">
+<table class="tbl" style="min-width: 520px">
+<thead><tr><th>#</th><th>Player</th><th>Team</th><th class="r">Played</th><th class="r">Won</th><th class="r hide-s">Win %</th></tr></thead>
+<tbody>
+<tr><td class="num" style="font-size: 20px; color: #D6B877">1</td><td><div style="display: flex; gap: 10px; align-items: center"><span class="ph ph-person" style="width: 32px; height: 40px; font-size: 7px">4:5</span>[First] <strong>[SURNAME]</strong></div></td><td>[Team]</td><td class="r">—</td><td class="r num" style="font-size: 18px">—</td><td class="r hide-s">—</td></tr>
+<tr><td class="num" style="font-size: 20px">2</td><td><div style="display: flex; gap: 10px; align-items: center"><span class="ph ph-person" style="width: 32px; height: 40px; font-size: 7px">4:5</span>[First] <strong>[SURNAME]</strong></div></td><td>[Team]</td><td class="r">—</td><td class="r num" style="font-size: 18px">—</td><td class="r hide-s">—</td></tr>
+<tr><td class="num" style="font-size: 20px">3</td><td><div style="display: flex; gap: 10px; align-items: center"><span class="ph ph-person" style="width: 32px; height: 40px; font-size: 7px">4:5</span>[First] <strong>[SURNAME]</strong></div></td><td>[Team]</td><td class="r">—</td><td class="r num" style="font-size: 18px">—</td><td class="r hide-s">—</td></tr>
+<tr><td class="num" style="font-size: 20px">4</td><td><div style="display: flex; gap: 10px; align-items: center"><span class="ph ph-person" style="width: 32px; height: 40px; font-size: 7px">4:5</span>[First] <strong>[SURNAME]</strong></div></td><td>[Team]</td><td class="r">—</td><td class="r num" style="font-size: 18px">—</td><td class="r hide-s">—</td></tr>
+</tbody>
+</table>
+</div>
+<p class="muted" style="margin: 0; font-size: 13px">Confirmed results only. Minimum matches to appear on Win % <span class="tbc">[TBC]</span>.</p>
+</div>
+</section>
+</sc-if>
+
+<!-- ================= PLAYER STATS PAGE ================= -->
+<sc-if value="{{sPlayer}}" hint-placeholder-val="{{ false }}">
+<section class="sec">
+<div class="ann">Player stats page · totals, by category, match log</div>
+<div class="wrap" style="display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap"><div class="ph ph-person" style="width: 96px; height: 120px; border-top: 4px solid #F05A28">4:5</div><div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 22px">[First] <strong class="disp" style="font-size: 30px">[SURNAME]</strong></span><span class="muted">[Team] · [Category]</span><a href="#" style="font-size: 13px; font-weight: 600">Full player profile</a></div></div>
+<div class="g4">
+<div class="card" style="padding: 16px"><span class="eyebrow">Played</span><div class="num" style="font-size: 40px">—</div></div>
+<div class="card" style="padding: 16px"><span class="eyebrow">Won</span><div class="num" style="font-size: 40px">—</div></div>
+<div class="card" style="padding: 16px"><span class="eyebrow">Games won</span><div class="num" style="font-size: 40px">—</div></div>
+<div class="card" style="padding: 16px"><span class="eyebrow">Points scored</span><div class="num" style="font-size: 40px">—</div></div>
+</div>
+<div class="g2">
+<div class="card scroll" style="padding: 4px 8px"><table class="tbl"><thead><tr><th>By category</th><th class="r">P</th><th class="r">W</th><th class="r">Games</th></tr></thead><tbody><tr><td>[Category]</td><td class="r">—</td><td class="r">—</td><td class="r">— – —</td></tr><tr><td>[Category]</td><td class="r">—</td><td class="r">—</td><td class="r">— – —</td></tr></tbody></table></div>
+<div class="card scroll" style="padding: 4px 8px"><table class="tbl" style="min-width: 420px"><thead><tr><th>Match log</th><th>Opponent</th><th>Games</th><th></th></tr></thead><tbody><tr><td>R[—] · [Cat]</td><td>[Player]</td><td class="mono">[—–—] [—–—]</td><td><span class="chip c-ok">W</span></td></tr><tr><td>R[—] · [Cat]</td><td>[Pair]</td><td class="mono">[—–—] [—–—] [—–—]</td><td><span class="chip c-prov">Prov.</span></td></tr></tbody></table></div>
+</div>
+</div>
+</section>
+</sc-if>
+
+<!-- ================= HEAD-TO-HEAD ================= -->
+<sc-if value="{{sH2H}}" hint-placeholder-val="{{ false }}">
+<section class="sec">
+<div class="ann">Team head-to-head matrix + category win rates</div>
+<div class="wrap" style="display: flex; flex-direction: column; gap: 20px">
+<div class="card scroll" style="padding: 4px 8px">
+<table class="tbl" style="min-width: 640px">
+<thead><tr><th>Row v column</th><th class="c">[A]</th><th class="c">[B]</th><th class="c">[C]</th><th class="c">[D]</th></tr></thead>
+<tbody>
+<tr><th style="border-left: 4px solid #F05A28">[Team A]</th><td class="c" style="background: rgba(245,247,250,.06)"></td><td class="c"><span class="chip c-ok">W [—]–[—]</span></td><td class="c"><span class="chip c-neutral">L [—]–[—]</span></td><td class="c muted">—</td></tr>
+<tr><th style="border-left: 4px solid #1BA6B5">[Team B]</th><td class="c"><span class="chip c-neutral">L [—]–[—]</span></td><td class="c" style="background: rgba(245,247,250,.06)"></td><td class="c muted">—</td><td class="c"><span class="chip c-prov">W · prov.</span></td></tr>
+<tr><th style="border-left: 4px solid #2F6FED">[Team C]</th><td class="c"><span class="chip c-ok">W [—]–[—]</span></td><td class="c muted">—</td><td class="c" style="background: rgba(245,247,250,.06)"></td><td class="c muted">—</td></tr>
+<tr><th style="border-left: 4px solid #A23B72">[Team D]</th><td class="c muted">—</td><td class="c"><span class="chip c-prov">L · prov.</span></td><td class="c muted">—</td><td class="c" style="background: rgba(245,247,250,.06)"></td></tr>
+</tbody>
+</table>
+</div>
+<div class="card scroll" style="padding: 4px 8px">
+<table class="tbl" style="min-width: 560px">
+<thead><tr><th>Category win rate</th><th class="r">[Cat 1]</th><th class="r">[Cat 2]</th><th class="r">[Cat 3]</th><th class="r">[Cat n]</th></tr></thead>
+<tbody>
+<tr><td>[Team A]</td><td class="r">—%</td><td class="r">—%</td><td class="r">—%</td><td class="r">—%</td></tr>
+<tr><td>[Team B]</td><td class="r">—%</td><td class="r">—%</td><td class="r">—%</td><td class="r">—%</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</sc-if>
+
+<footer style="background: #191F27; border-top: 1px solid rgba(245,247,250,.12); padding: 28px 0">
+<div class="wrap" style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 13px"><span class="muted">NGBCL 1.0 · Mighty Sharks Battalion, Jaffna</span><span class="ann-note muted">Same full footer as the homepage</span></div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"screen":{"editor":"enum","options":["Standings","Fixture results","Player leaderboard","Player stats","Head-to-head"],"default":"Standings","section":"Wireframe state"},"showNotes":{"editor":"boolean","default":false,"section":"Wireframe state"},"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+renderVals() {
+const s = this.props.screen ?? 'Standings';
+const tabsFor = s === 'Fixture results' ? ['Fixtures', 'Results', 'Bracket'] : ['Table', 'Players', 'Head-to-head'];
+const onTab = { 'Standings': 'Table', 'Fixture results': 'Results', 'Player leaderboard': 'Players', 'Player stats': 'Players', 'Head-to-head': 'Head-to-head' }[s];
+return {
+annClass: (this.props.showNotes ?? false) ? '' : 'hide-ann',
+title: s === 'Fixture results' ? 'Results' : s === 'Player stats' ? 'Player stats' : 'Standings and stats',
+stCls: s === 'Fixture results' ? '' : 'on', fixCls: s === 'Fixture results' ? 'on' : '',
+tabs: tabsFor.map((t) => ({ label: t, cls: t === onTab ? 'on' : '' })),
+sStand: s === 'Standings', sResults: s === 'Fixture results', sLeader: s === 'Player leaderboard', sPlayer: s === 'Player stats', sH2H: s === 'Head-to-head'
+};
+}
+}
+</script>
+</body>
+</html>

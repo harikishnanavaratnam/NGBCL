@@ -1,0 +1,71 @@
+spring:
+  application:
+    name: ngbcl-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/ngbcl}
+    username: ${DB_USERNAME:ngbcl}
+    password: ${DB_PASSWORD:ngbcl}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:10}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+  mvc:
+    problemdetails:
+      enabled: true
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+  error:
+    include-message: never
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+ngbcl:
+  security:
+    # HS256 key — at least 32 bytes. MUST be set via env in every non-local environment.
+    jwt-secret: ${NGBCL_JWT_SECRET:}
+    jwt-issuer: ngbcl-api
+    access-token-ttl: 15m
+    refresh-token-ttl: 14d
+    cookie-secure: ${NGBCL_COOKIE_SECURE:true}
+    # Parent domain so the Next.js proxy can see the session hint cookie, e.g. ".ngbcl.lk". Empty = host-only.
+    cookie-domain: ${NGBCL_COOKIE_DOMAIN:}
+    allowed-origins: ${NGBCL_ALLOWED_ORIGINS:http://localhost:3000}
+    ip-hash-salt: ${NGBCL_IP_HASH_SALT:change-me}
+  bootstrap:
+    # Creates the first Super Administrator on an empty database, then is ignored.
+    admin-email: ${NGBCL_BOOTSTRAP_ADMIN_EMAIL:}
+    admin-password: ${NGBCL_BOOTSTRAP_ADMIN_PASSWORD:}
+    admin-name: ${NGBCL_BOOTSTRAP_ADMIN_NAME:Super Admin}

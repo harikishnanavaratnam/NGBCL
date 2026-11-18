@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NGBCL 1.0 Admin — Settings wireframe</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/8f7dbd951cd94d5d6ac221330072dab7">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700;1,800&amp;family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#F5F7FA}a:hover{color:#D8FF42}
+.ad{container-type:inline-size;background:#101318;color:#F5F7FA;font-family:'DM Sans',"Noto Sans Tamil","Noto Sans Sinhala",system-ui,sans-serif;font-size:15px;line-height:1.5;min-height:100%}
+.ad *{box-sizing:border-box}
+.togrow{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid rgba(245,247,250,.06)}
+.shell{display:flex;flex-wrap:wrap;min-height:100%}
+.side{flex:0 0 240px;background:#191F27;border-right:1px solid rgba(245,247,250,.08);color:#F5F7FA;display:flex;flex-direction:column}
+.side a{color:#A5ADB8;text-decoration:none}
+.main{flex:999 1 560px;min-width:0;display:flex;flex-direction:column}
+.burger{display:none}
+.setgrid{display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px;align-items:start}
+.tabs{display:flex;flex-direction:column;gap:2px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@container (max-width:1100px){
+.side{display:none}.burger{display:inline-flex}
+.setgrid{grid-template-columns:minmax(0,1fr)}
+.tabs{flex-direction:row;overflow-x:auto;gap:4px;border-bottom:1px solid rgba(245,247,250,.09);padding-bottom:4px}
+.tabs button{white-space:nowrap;flex-shrink:0}
+}
+@container (max-width:700px){
+.g2,.g3,.g4{grid-template-columns:minmax(0,1fr)}
+.pad{padding:16px !important}
+}
+</style>
+</helmet>
+<div class="ad {{annClass}}">
+<div class="shell">
+
+<!-- SIDEBAR (same as Overview) -->
+<aside class="side" aria-label="Admin navigation">
+<div style="display: flex; align-items: center; gap: 10px; padding: 20px">
+<img src="/_blob/7478f30cedfda4689671cc7de8e57a93" alt="" aria-hidden="true" style="width: 40px; height: 40px; object-fit: contain">
+<div style="display: flex; flex-direction: column"><strong style="font-size: 14px">NGBCL Admin</strong><span style="font-size: 12px; color: #A5ADB8">Tournament management</span></div>
+</div>
+<nav style="display: flex; flex-direction: column; padding: 0 12px 24px; gap: 2px">
+<sc-for list="{{nav}}" as="g" hint-placeholder-count="8">
+<div style="display: flex; flex-direction: column">
+<a href="#" style="display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 10px; border-radius: 6px; font-weight: 500; font-size: 14px; color: {{g.color}}"><span style="width: 18px; height: 18px; border: 1.5px solid currentColor; border-radius: 4px; opacity: .7"></span>{{g.label}}</a>
+<sc-if value="{{g.open}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; padding: 0 0 6px 38px">
+<a href="#" style="font-size: 13px; padding: 3px 0">Users and roles</a>
+<a href="#" style="font-size: 13px; padding: 3px 0">Audit log</a>
+<a href="#" style="font-size: 13px; padding: 3px 0">Reports</a>
+<a href="#" aria-current="page" style="font-size: 13px; padding: 3px 8px; margin-left: -8px; color: #F5F7FA; font-weight: 600; border-radius: 4px; background: rgba(216,255,66,.12); box-shadow: inset 3px 0 0 #D8FF42">Settings</a>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</nav>
+</aside>
+
+<div class="main">
+<header class="pad" style="display: flex; align-items: center; gap: 16px; min-height: 64px; padding: 0 28px; background: #191F27; border-bottom: 1px solid rgba(245,247,250,.09); flex-wrap: wrap">
+<button type="button" class="burger btn btn-out" aria-label="Open navigation" style="width: 44px; padding: 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+<label style="display: flex; align-items: center; gap: 8px"><span class="eyebrow">Edition</span><select class="inp" style="width: auto; min-height: 36px; font-weight: 600"><option>NGBCL 1.0</option></select></label>
+<span class="muted" style="font-size: 13px">System / Settings / <strong style="color: #F5F7FA">{{tabLabel}}</strong></span>
+<div style="margin-left: auto; display: flex; align-items: center; gap: 8px"><div class="ph ph-person" style="width: 32px; height: 32px; border-radius: 50%; padding: 0; font-size: 8px">AV</div><span style="font-size: 13px; font-weight: 600">[User name]</span></div>
+</header>
+
+<div class="pad" style="padding: 28px; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 600; line-height: 1.2">Tournament settings</h1>
+<span class="muted" style="font-size: 14px">Every change is saved to the audit log with who changed it and when.</span>
+</div>
+
+<div class="setgrid">
+<nav class="tabs" aria-label="Settings sections" style="position: relative">
+<div class="ann">Settings tabs · vertical on desktop, scrolling row on tablet</div>
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="8">
+<sc-if value="{{t.active}}" hint-placeholder-val="{{ false }}">
+<button type="button" aria-current="page" onClick="{{t.go}}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 40px; padding: 0 12px; border: 0; border-radius: 6px; background: #D8FF42; color: #101318; font: 600 14px 'DM Sans', sans-serif; text-align: left; cursor: pointer">{{t.label}}<span style="font-size: 11px; opacity: .8">{{t.flag}}</span></button>
+</sc-if>
+<sc-if value="{{t.inactive}}" hint-placeholder-val="{{ true }}">
+<button type="button" onClick="{{t.go}}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 40px; padding: 0 12px; border: 0; border-radius: 6px; background: transparent; color: #F5F7FA; font: 500 14px 'DM Sans', sans-serif; text-align: left; cursor: pointer">{{t.label}}<span class="muted" style="font-size: 11px">{{t.flag}}</span></button>
+</sc-if>
+</sc-for>
+</nav>
+
+<div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+
+<!-- 1 GENERAL -->
+<sc-if value="{{tGeneral}}" hint-placeholder-val="{{ true }}">
+<section class="card pad" style="padding: 24px; display: flex; flex-direction: column; gap: 18px; position: relative">
+<div class="ann">General · name, edition, dates, venue, status</div>
+<h2 style="margin: 0; font-size: 20px; font-weight: 600">General</h2>
+<div class="g2">
+<div class="field"><label for="g-name">Tournament name</label><input id="g-name" class="inp" value="Next Gen Badminton Champions League"></div>
+<div class="g2" style="gap: 12px"><div class="field"><label for="g-short">Short name</label><input id="g-short" class="inp" value="NGBCL"></div><div class="field"><label for="g-ed">Edition</label><input id="g-ed" class="inp" value="1.0"></div></div>
+</div>
+<div class="field"><label for="g-tag">Tagline</label><input id="g-tag" class="inp" value="Rise. Rally. Rule the Court."></div>
+<div class="field"><label for="g-desc">Public description</label><textarea id="g-desc" class="inp" rows="3" placeholder="Shown in the homepage introduction"></textarea></div>
+<div class="g2">
+<div class="field"><label for="g-org">Organiser</label><input id="g-org" class="inp" value="Mighty Sharks Battalion"></div>
+<div class="field"><label for="g-pres">Presenter line</label><input id="g-pres" class="inp" value="Mighty Sharks Battalion presents"></div>
+</div>
+<div class="g3">
+<div class="field"><label for="g-start">Start date</label><input id="g-start" class="inp" placeholder="DD / MM / YYYY"><span class="help"><span class="tbc">[TBC]</span></span></div>
+<div class="field"><label for="g-end">End date</label><input id="g-end" class="inp" placeholder="DD / MM / YYYY"><span class="help"><span class="tbc">[TBC]</span></span></div>
+<div class="field"><label for="g-tz">Time zone</label><select id="g-tz" class="inp"><option>Asia/Colombo (UTC+05:30)</option></select><span class="help">Stored in UTC, shown in this zone</span></div>
+</div>
+<div class="g2">
+<div class="field"><label for="g-venue">Venue</label><input id="g-venue" class="inp" placeholder="Venue name, Jaffna"><span class="help"><span class="tbc">[VENUE TBC]</span> · multiple venues/courts <span class="tbc">[TBC]</span></span></div>
+<div class="field"><label for="g-courts">Courts</label><input id="g-courts" class="inp" placeholder="Number of courts"><span class="help">Used by the schedule board</span></div>
+</div>
+<div class="g2">
+<div class="field"><label for="g-status">Status</label><select id="g-status" class="inp"><option>Draft</option><option>Upcoming</option><option>Active</option><option>Completed</option><option>Archived</option></select><span class="help">Draft is hidden from the public site</span></div>
+<div class="field"><label for="g-cur">Currency display</label><select id="g-cur" class="inp"><option>LKR — public “Rs. 300,000”, admin “LKR 300,000”</option></select></div>
+</div>
+</section>
+</sc-if>
+
+<!-- 2 BRANDING -->
+<sc-if value="{{tBranding}}" hint-placeholder-val="{{ false }}">
+<section class="card pad" style="padding: 24px; display: flex; flex-direction: column; gap: 20px; position: relative">
+<div class="ann">Branding · logo, banner, team palette</div>
+<h2 style="margin: 0; font-size: 20px; font-weight: 600">Branding</h2>
+<div class="g3">
+<div class="field"><span class="lbl">Tournament logo</span><div class="ph" style="height: 120px">Logo · navy + gold</div><button type="button" class="btn btn-out">Replace</button></div>
+<div class="field"><span class="lbl">Favicon / app icon</span><div class="ph" style="height: 120px">Shuttle mark · 1:1</div><button type="button" class="btn btn-out">Replace</button></div>
+<div class="field"><span class="lbl">Organiser logo</span><div class="ph" style="height: 120px">Mighty Sharks logo</div><button type="button" class="btn btn-out">Replace</button></div>
+</div>
+<div class="g2">
+<div class="field"><span class="lbl">Hero background video</span><div class="ph" style="height: 140px">MP4 + WebM · muted loop · under 3 MB</div><span class="help">Pauses off-screen and with reduced motion</span></div>
+<div class="field"><span class="lbl">Poster frame (first paint, slow connections)</span><div class="ph" style="height: 140px">Still image · 16:9</div><span class="help">Also used as the share image</span></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span class="lbl">Team palette</span><span class="help">One colour per team · used only as a 4 px band, crest ring and chart colour</span></div>
+<div class="scroll">
+<table class="tbl" style="min-width: 520px">
+<thead><tr><th>Slot</th><th>Colour</th><th>Assigned team</th></tr></thead>
+<tbody>
+<tr><td class="mono">T1 Ember</td><td><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 20px; height: 20px; border-radius: 4px; background: #F05A28"></span><span class="mono">#F05A28</span></span></td><td><select class="inp" style="max-width: 240px"><option>[Unassigned]</option></select></td></tr>
+<tr><td class="mono">T2 Lagoon</td><td><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 20px; height: 20px; border-radius: 4px; background: #1BA6B5"></span><span class="mono">#1BA6B5</span></span></td><td><select class="inp" style="max-width: 240px"><option>[Unassigned]</option></select></td></tr>
+<tr><td class="mono">T3 Royal</td><td><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 20px; height: 20px; border-radius: 4px; background: #2F6FED"></span><span class="mono">#2F6FED</span></span></td><td><select class="inp" style="max-width: 240px"><option>[Unassigned]</option></select></td></tr>
+<tr><td class="mono muted">T4 – T10</td><td class="muted">Plum, Violet, Rose, Forest, Sky, Copper, Slate</td><td class="muted">Shown when more teams are approved</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</sc-if>
+
+<!-- 3 REGISTRATION -->
+<sc-if value="{{tReg}}" hint-placeholder-val="{{ false }}">
+<section class="card pad" style="padding: 24px; display: flex; flex-direction: column; gap: 20px; position: relative">
+<div class="ann">Registration windows and required fields</div>
+<h2 style="margin: 0; font-size: 20px; font-weight: 600">Registration</h2>
+<div class="g2">
+<div style="border: 1px solid rgba(245,247,250,.09); border-radius: 6px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: center"><strong>Player registration</strong><span class="chip c-neutral">[Not open / Open / Closed]</span></div>
+<div class="g2" style="gap: 10px"><div class="field"><label for="r-po">Opens</label><input id="r-po" class="inp" placeholder="Date and time"></div><div class="field"><label for="r-pc">Closes</label><input id="r-pc" class="inp" placeholder="Date and time"></div></div>
+</div>
+<div style="border: 1px solid rgba(245,247,250,.09); border-radius: 6px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: center"><strong>Team registration</strong><span class="chip c-neutral">[Not open / Open / Closed]</span></div>
+<div class="g2" style="gap: 10px"><div class="field"><label for="r-to">Opens</label><input id="r-to" class="inp" placeholder="Date and time"></div><div class="field"><label for="r-tc">Closes</label><input id="r-tc" class="inp" placeholder="Date and time"></div></div>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<span class="lbl">Player form fields</span>
+<div class="scroll">
+<table class="tbl" style="min-width: 560px">
+<thead><tr><th>Field</th><th>Collect</th><th>Required</th><th>Public on profile</th></tr></thead>
+<tbody>
+<tr><td>Full name <span class="help"></span></td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Collect Full name"></td><td><input type="checkbox" class="sw" role="switch" aria-label="Require Full name"></td><td class="muted">Yes</td></tr>
+<tr><td>Date of birth <span class="help"></span></td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Collect Date of birth"></td><td><input type="checkbox" class="sw" role="switch" aria-label="Require Date of birth"></td><td class="muted">No</td></tr>
+<tr><td>Gender <span class="help"></span></td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Collect Gender"></td><td><input type="checkbox" class="sw" role="switch" aria-label="Require Gender"></td><td class="muted">Optional</td></tr>
+<tr><td>Email / Contact number / Address <span class="help">· private</span></td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Collect Email / Contact number / Address"></td><td><input type="checkbox" class="sw" role="switch" aria-label="Require Email / Contact number / Address"></td><td class="muted">Never</td></tr>
+<tr><td>Home area <span class="help">· Jaffna eligibility</span></td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Collect Home area"></td><td><input type="checkbox" class="sw" role="switch" aria-label="Require Home area"></td><td class="muted">Optional</td></tr>
+<tr><td>Player photograph <span class="help">· always required</span></td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Collect Player photograph"></td><td><input type="checkbox" class="sw" role="switch" aria-label="Require Player photograph"></td><td class="muted">Yes</td></tr>
+<tr><td>Skill category <span class="help"></span></td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Collect Skill category"></td><td><input type="checkbox" class="sw" role="switch" aria-label="Require Skill category"></td><td class="muted">Yes</td></tr>
+<tr><td>Playing experience <span class="help"></span></td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Collect Playing experience"></td><td><input type="checkbox" class="sw" role="switch" aria-label="Require Playing experience"></td><td class="muted">Optional</td></tr>
+<tr><td>Emergency contact <span class="help">· private</span></td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Collect Emergency contact"></td><td><input type="checkbox" class="sw" role="switch" aria-label="Require Emergency contact"></td><td class="muted">Never</td></tr>
+</tbody>
+</table>
+</div>
+<span class="help">Photo is always required (BR-005). Contact fields can never be made public (PUB-008). Final field set <span class="tbc">[TBC]</span>.</span>
+</div>
+<div class="g2">
+<div style="display: flex; flex-direction: column; gap: 6px"><span class="lbl">Duplicate matching on</span><label style="display: flex; gap: 8px; font-size: 14px"><input type="checkbox" checked> Email address</label><label style="display: flex; gap: 8px; font-size: 14px"><input type="checkbox" checked> Phone number</label><label style="display: flex; gap: 8px; font-size: 14px"><input type="checkbox"> Full name + date of birth</label></div>
+<div style="display: flex; flex-direction: column; gap: 10px"><span class="lbl">Photo limits</span><div class="g2" style="gap: 10px"><div class="field"><label for="r-max">Max file size</label><input id="r-max" class="inp" placeholder="[TBC] MB"></div><div class="field"><label for="r-min">Min dimensions</label><input id="r-min" class="inp" value="600 × 750 px"></div></div></div>
+</div>
+<div class="togrow"><span style="display: flex; flex-direction: column"><strong style="font-size: 14px">Send “registration received” notices</strong><span class="help">Channel <span class="tbc">[Email / SMS / WhatsApp TBC]</span></span></span><input type="checkbox" class="sw" role="switch" aria-label="Send notices"></div>
+</section>
+</sc-if>
+
+<!-- 4 SKILL CATEGORIES -->
+<sc-if value="{{tCat}}" hint-placeholder-val="{{ false }}">
+<section class="card pad" style="padding: 24px; display: flex; flex-direction: column; gap: 18px; position: relative">
+<div class="ann">Skill categories · drag to reorder, activate / deactivate</div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap"><h2 style="margin: 0; font-size: 20px; font-weight: 600">Skill categories</h2><button type="button" class="btn btn-navy">Add category</button></div>
+<div class="togrow" style="border: 1px solid rgba(245,247,250,.09); border-radius: 6px; padding: 12px 16px"><span style="display: flex; flex-direction: column"><strong style="font-size: 14px">Required at registration</strong><span class="help">Off: players may skip choosing a category (default)</span></span><input type="checkbox" class="sw" role="switch" aria-label="Category required"></div>
+<div class="scroll">
+<table class="tbl" style="min-width: 600px">
+<thead><tr><th style="width: 32px"></th><th>Name</th><th>Description</th><th>Players</th><th>Active</th><th></th></tr></thead>
+<tbody>
+<tr><td class="handle" aria-label="Drag to reorder">⋮⋮</td><td><strong>[Category 1]</strong></td><td class="muted">[Description]</td><td class="mono">—</td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Active"></td><td><a href="#" style="font-size: 13px; font-weight: 600">Edit</a></td></tr>
+<tr><td class="handle" aria-label="Drag to reorder">⋮⋮</td><td><strong>[Category 2]</strong></td><td class="muted">[Description]</td><td class="mono">—</td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Active"></td><td><a href="#" style="font-size: 13px; font-weight: 600">Edit</a></td></tr>
+<tr style="background: #101318"><td class="handle" aria-label="Drag to reorder">⋮⋮</td><td><strong class="muted">[Category 3]</strong> <span class="chip c-neutral">Hidden from new registrations</span></td><td class="muted">[Description]</td><td class="mono">—</td><td><input type="checkbox" class="sw" role="switch" aria-label="Active"></td><td><a href="#" style="font-size: 13px; font-weight: 600">Edit</a></td></tr>
+</tbody>
+</table>
+</div>
+<span class="help">Names are admin-defined (SRS gives Beginner / Intermediate / Advanced only as examples) <span class="tbc">[CATEGORIES TBC]</span>. Deactivated categories stay on existing players' records.</span>
+</section>
+</sc-if>
+
+<!-- 5 AUCTION -->
+<sc-if value="{{tAuc}}" hint-placeholder-val="{{ false }}">
+<section class="card pad" style="padding: 24px; display: flex; flex-direction: column; gap: 18px; position: relative">
+<div class="ann">Auction settings · locked once bidding starts</div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap"><h2 style="margin: 0; font-size: 20px; font-weight: 600">Auction settings</h2><span class="chip c-pend">Locked · bidding started</span></div>
+<div style="display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 1px solid #F0B455; background: rgba(240,180,85,.14); border-radius: 6px; font-size: 14px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F0B455" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 2px"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+<span>These settings were locked when the auction started. Only a Tournament Admin can change them, and each change needs a reason and is recorded in the audit log.</span>
+</div>
+<div class="g2">
+<div class="field"><label for="a-bud">Initial budget per team</label><div style="display: flex"><span style="display: flex; align-items: center; padding: 0 10px; border: 1px solid rgba(245,247,250,.18); border-right: 0; border-radius: 6px 0 0 6px; background: #222A34; font-size: 12px; font-weight: 600">LKR</span><input id="a-bud" class="inp" disabled placeholder="[TBC]" style="border-radius: 0 6px 6px 0"></div><span class="help">Same for every team (BR-010)</span></div>
+<div class="field"><label for="a-squad">Maximum squad size</label><input id="a-squad" class="inp" disabled placeholder="[TBC]"></div>
+<div class="field"><label for="a-base">Base price</label><div style="display: flex"><span style="display: flex; align-items: center; padding: 0 10px; border: 1px solid rgba(245,247,250,.18); border-right: 0; border-radius: 6px 0 0 6px; background: #222A34; font-size: 12px; font-weight: 600">LKR</span><input id="a-base" class="inp" disabled placeholder="[TBC]" style="border-radius: 0 6px 6px 0"></div></div>
+<div class="field"><label for="a-inc">Minimum bid increment</label><div style="display: flex"><span style="display: flex; align-items: center; padding: 0 10px; border: 1px solid rgba(245,247,250,.18); border-right: 0; border-radius: 6px 0 0 6px; background: #222A34; font-size: 12px; font-weight: 600">LKR</span><input id="a-inc" class="inp" disabled placeholder="[TBC]" style="border-radius: 0 6px 6px 0"></div></div>
+</div>
+<div class="togrow"><span><strong style="font-size: 14px">Allow re-auction of unsold players</strong></span><input type="checkbox" class="sw" role="switch" disabled aria-label="Allow re-auction"></div>
+<div class="togrow"><span><strong style="font-size: 14px">Allow manual budget adjustments</strong> <span class="help">· permission + audit record required</span></span><input type="checkbox" class="sw" role="switch" disabled aria-label="Allow manual adjustment"></div>
+<div class="togrow"><span><strong style="font-size: 14px">Show team budgets on the public site</strong></span><input type="checkbox" class="sw" role="switch" aria-label="Public budgets"></div>
+<div><button type="button" class="btn btn-danger">Request change…</button></div>
+
+<div style="border: 1px solid rgba(245,247,250,.09); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 14px; background: #101318; position: relative; max-width: 560px">
+<div class="ann">Audited change dialog (opens from “Request change…”)</div>
+<strong style="font-size: 16px">Change a locked auction setting</strong>
+<div class="field"><label for="d-field">Setting</label><select id="d-field" class="inp"><option>Minimum bid increment</option></select></div>
+<div style="display: flex; align-items: center; gap: 10px; font-size: 14px"><span class="mono muted">LKR [old]</span><span aria-hidden="true">→</span><input class="inp" style="max-width: 160px" placeholder="New value" aria-label="New value"></div>
+<div class="field"><label for="d-reason">Reason <span style="color: #FF7178">*</span></label><textarea id="d-reason" class="inp" rows="2" placeholder="Required — saved to the audit log"></textarea></div>
+<span class="help">Affects bids from the next lot. Past sales are not changed.</span>
+<div style="display: flex; gap: 8px; justify-content: flex-end"><button type="button" class="btn btn-out">Cancel</button><button type="button" class="btn btn-navy">Confirm change</button></div>
+</div>
+</section>
+</sc-if>
+
+<!-- 6 MATCH CATEGORIES -->
+<sc-if value="{{tMatch}}" hint-placeholder-val="{{ false }}">
+<section class="card pad" style="padding: 24px; display: flex; flex-direction: column; gap: 18px; position: relative">
+<div class="ann">Match categories + fixture template</div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap"><h2 style="margin: 0; font-size: 20px; font-weight: 600">Match categories</h2><button type="button" class="btn btn-navy">Add category</button></div>
+<div class="scroll">
+<table class="tbl" style="min-width: 620px">
+<thead><tr><th>Code</th><th>Name</th><th>Type</th><th>Players per side</th><th>Player eligibility</th><th>Active</th></tr></thead>
+<tbody>
+<tr><td class="mono">[MS]</td><td>[Men's singles]</td><td>Singles</td><td class="mono">1</td><td class="muted">[Rule TBC]</td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Active"></td></tr>
+<tr><td class="mono">[WS]</td><td>[Women's singles]</td><td>Singles</td><td class="mono">1</td><td class="muted">[Rule TBC]</td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Active"></td></tr>
+<tr><td class="mono">[MD]</td><td>[Men's doubles]</td><td>Doubles</td><td class="mono">2</td><td class="muted">[Rule TBC]</td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Active"></td></tr>
+<tr><td class="mono">[XD]</td><td>[Mixed doubles]</td><td>Doubles</td><td class="mono">2</td><td class="muted">[Rule TBC]</td><td><input type="checkbox" class="sw" role="switch" aria-label="Active"></td></tr>
+</tbody>
+</table>
+</div>
+<span class="ann-note help">Rows are the SRS's candidate categories, not confirmed <span class="tbc">[CATEGORIES TBC]</span>.</span>
+<div style="border-top: 1px solid rgba(245,247,250,.09); padding-top: 16px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span class="lbl">Fixture template — matches in every tie, in order</span><span class="help">Drag to reorder</span></div>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px">
+<li style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid rgba(245,247,250,.09); border-radius: 6px; background: #191F27"><span class="handle">⋮⋮</span><span class="mono muted">1</span><select class="inp" style="max-width: 240px"><option>[Category]</option></select></li>
+<li style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid rgba(245,247,250,.09); border-radius: 6px; background: #191F27"><span class="handle">⋮⋮</span><span class="mono muted">2</span><select class="inp" style="max-width: 240px"><option>[Category]</option></select></li>
+<li style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid rgba(245,247,250,.09); border-radius: 6px; background: #191F27"><span class="handle">⋮⋮</span><span class="mono muted">3</span><select class="inp" style="max-width: 240px"><option>[Category]</option></select></li>
+</ol>
+<div style="display: flex; gap: 10px; align-items: center"><button type="button" class="btn btn-out">Add match</button><span class="help">Matches per tie <span class="tbc">[TBC]</span> · a player may play at most <span class="tbc">[N TBC]</span> matches per tie</span></div>
+</div>
+</section>
+</sc-if>
+
+<!-- 7 SCORING -->
+<sc-if value="{{tScore}}" hint-placeholder-val="{{ false }}">
+<section class="card pad" style="padding: 24px; display: flex; flex-direction: column; gap: 18px; position: relative">
+<div class="ann">Scoring rules + result approval</div>
+<h2 style="margin: 0; font-size: 20px; font-weight: 600">Scoring rules</h2>
+<div class="g4">
+<div class="field"><label for="s-pts">Points to win a game</label><input id="s-pts" class="inp" placeholder="e.g. 21"></div>
+<div class="field"><label for="s-games">Games in a match</label><select id="s-games" class="inp"><option>Best of [3]</option><option>Best of 1</option><option>Best of 5</option></select></div>
+<div class="field"><label for="s-by">Win by (deuce)</label><input id="s-by" class="inp" placeholder="e.g. 2"></div>
+<div class="field"><label for="s-cap">Point cap</label><input id="s-cap" class="inp" placeholder="e.g. 30"></div>
+</div>
+<div style="padding: 12px 14px; border-radius: 6px; background: #222A34; font-size: 14px">Preview: A game is won at <strong>[—]</strong> points by <strong>[—]</strong>, capped at <strong>[—]</strong>. A match is best of <strong>[—]</strong>. <span class="tbc">[RULES TBC]</span></div>
+<div class="togrow"><span><strong style="font-size: 14px">Allow walkovers</strong></span><input type="checkbox" class="sw" role="switch" aria-label="Walkovers"></div>
+<div class="togrow"><span><strong style="font-size: 14px">Allow retirements</strong> <span class="help">· records the score at retirement</span></span><input type="checkbox" class="sw" role="switch" aria-label="Retirements"></div>
+<fieldset style="border: 1px solid rgba(245,247,250,.09); border-radius: 6px; padding: 16px; margin: 0; display: flex; flex-direction: column; gap: 10px">
+<legend class="lbl" style="padding: 0 6px">Result approval <span class="tbc">[TBC]</span></legend>
+<label style="display: flex; gap: 10px; align-items: flex-start; font-size: 14px"><input type="radio" name="appr" checked><span><strong>One step</strong> — the scorer's submission is final</span></label>
+<label style="display: flex; gap: 10px; align-items: flex-start; font-size: 14px"><input type="radio" name="appr"><span><strong>Two step</strong> — scorer submits, an official or admin confirms. Shows as Provisional until confirmed.</span></label>
+</fieldset>
+<span class="help">Rule changes apply to matches not yet started. Live and finished matches keep the rules they began with.</span>
+</section>
+</sc-if>
+
+<!-- 8 STANDINGS -->
+<sc-if value="{{tStand}}" hint-placeholder-val="{{ false }}">
+<section class="card pad" style="padding: 24px; display: flex; flex-direction: column; gap: 18px; position: relative">
+<div class="ann">Standings points and tie-break order</div>
+<h2 style="margin: 0; font-size: 20px; font-weight: 600">Standings</h2>
+<div class="g4">
+<div class="field"><label for="p-w">Points for a tie win</label><input id="p-w" class="inp" placeholder="[TBC]"></div>
+<div class="field"><label for="p-d">Points for a draw</label><input id="p-d" class="inp" placeholder="[TBC]"><span class="help">Only if ties can draw</span></div>
+<div class="field"><label for="p-l">Points for a loss</label><input id="p-l" class="inp" placeholder="[TBC]"></div>
+<div class="field"><label for="p-q">Teams that qualify</label><input id="p-q" class="inp" placeholder="Top [N]"><span class="help">Draws the qualification line</span></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span class="lbl">Tie-break order — first rule decides</span><span class="help">Drag to reorder · <span class="tbc">[ORDER TBC]</span></span></div>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px">
+<sc-for list="{{tiebreaks}}" as="t" hint-placeholder-count="6">
+<li style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid rgba(245,247,250,.09); border-radius: 6px; background: #191F27; font-size: 14px"><span class="handle">⋮⋮</span><span class="mono muted">{{t.n}}</span><span style="flex: 1">{{t.label}}</span><input type="checkbox" class="sw" role="switch" checked aria-label="Use {{t.label}}"></li>
+</sc-for>
+</ol>
+</div>
+<div class="togrow"><span><strong style="font-size: 14px">Show provisional results in public standings</strong> <span class="help">· marked with a Provisional chip and banner</span></span><input type="checkbox" class="sw" role="switch" checked aria-label="Show provisional"></div>
+<div><button type="button" class="btn btn-out">Recalculate standings</button></div>
+</section>
+</sc-if>
+
+<!-- Save bar -->
+<div class="card" style="padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; position: sticky; bottom: 0">
+<span class="help"><span class="chip c-pend">Unsaved changes</span> Last saved [YYYY-MM-DD HH:MM] by [User]</span>
+<div style="display: flex; gap: 8px"><button type="button" class="btn btn-out">Discard</button><button type="button" class="btn btn-navy">Save changes</button></div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"tab":{"editor":"enum","options":["General","Branding","Registration","Skill categories","Auction","Match categories","Scoring rules","Standings"],"default":"General","section":"Wireframe state"},"showNotes":{"editor":"boolean","default":false,"section":"Wireframe state"},"$preview":{"width":1440,"height":1400}}'>
+class Component extends DCLogic {
+componentDidUpdate(prev) {
+if (prev.tab !== this.props.tab && this.state && this.state.tab) this.setState({ tab: null });
+}
+renderVals() {
+const names = ['General', 'Branding', 'Registration', 'Skill categories', 'Auction', 'Match categories', 'Scoring rules', 'Standings'];
+const cur = (this.state && this.state.tab) || this.props.tab || 'General';
+const go = (t) => () => this.setState({ tab: t });
+const tabs = names.map((n) => ({ label: n, active: n === cur, inactive: n !== cur, go: go(n), flag: n === 'Auction' ? 'Locked' : '' }));
+const nav = ['Overview', 'Registrations', 'Directory', 'Auction', 'Competition', 'Results', 'Content', 'System'].map((l) => ({ label: l, open: l === 'System', color: l === 'System' ? '#F5F7FA' : '#A5ADB8' }));
+return {
+annClass: (this.props.showNotes ?? false) ? '' : 'hide-ann',
+tabs: tabs, nav: nav, tabLabel: cur,
+tGeneral: cur === 'General', tBranding: cur === 'Branding', tReg: cur === 'Registration', tCat: cur === 'Skill categories',
+tAuc: cur === 'Auction', tMatch: cur === 'Match categories', tScore: cur === 'Scoring rules', tStand: cur === 'Standings',
+fields: [
+{ name: 'Full name', note: '', pub: 'Yes' },
+{ name: 'Date of birth', note: '', pub: 'No (age only, if enabled)' },
+{ name: 'Gender', note: '', pub: 'Optional' },
+{ name: 'Email / Contact number / Address', note: '· private', pub: 'Never' },
+{ name: 'Home area', note: '· Jaffna eligibility', pub: 'Optional' },
+{ name: 'Player photograph', note: '· always required', pub: 'Yes' },
+{ name: 'Skill category', note: '', pub: 'Yes' },
+{ name: 'Playing experience', note: '', pub: 'Optional' },
+{ name: 'Emergency contact', note: '· private', pub: 'Never' }
+],
+tiebreaks: ['Points', 'Tie (fixture) wins', 'Match difference', 'Game difference', 'Points difference', 'Head-to-head'].map((l, i) => ({ n: i + 1, label: l }))
+};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NGBCL 1.0 — Auctioneer console wireframe</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/8f7dbd951cd94d5d6ac221330072dab7">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700;1,800&amp;family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#F5F7FA}
+.ac{background:#101318;color:#F5F7FA;font-family:'DM Sans',"Noto Sans Tamil","Noto Sans Sinhala",system-ui,sans-serif;font-size:14px;line-height:1.45;min-height:100%;min-width:1280px;position:relative}
+.ac *{box-sizing:border-box}
+.disp{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;letter-spacing:-.01em;margin:0}
+.num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-variant-numeric:tabular-nums lining-nums}
+.mono{font-family:'DM Sans', sans-serif;font-weight:500}
+.eyebrow{font-size:11px;line-height:1.2;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:#A5ADB8}
+.muted{color:#A5ADB8}
+.panel{background:#191F27;border:1px solid rgba(245,247,250,.12);border-radius:8px}
+.raised{background:#222A34;border:1px solid rgba(245,247,250,.12);border-radius:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;line-height:1;letter-spacing:.08em;text-transform:uppercase;font-weight:600;padding:5px 8px;border-radius:2px;white-space:nowrap}
+.c-live{background:#D8FF42;color:#101318}
+.c-sold{background:#C9A45C;color:#101318}
+.c-neutral{background:rgba(245,247,250,.1);color:#F5F7FA}
+.c-err{background:rgba(255,90,98,.18);color:#FF7178}
+.c-pend{background:rgba(240,180,85,.15);color:#F0B455}
+.dot{width:7px;height:7px;border-radius:50%;background:#FF5A62;display:inline-block}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border-radius:6px;font:600 14px 'DM Sans',sans-serif;text-decoration:none;white-space:nowrap;cursor:pointer;border:0;color:#F5F7FA;background:transparent}
+.btn-out{border:1px solid rgba(245,247,250,.35)}
+.btn-volt{background:#D8FF42;color:#101318}
+.btn-gold{background:#C9A45C;color:#101318}
+.btn[disabled]{opacity:.35;cursor:not-allowed}
+.btn:focus-visible,.inp:focus-visible{outline:2px solid #D8FF42;outline-offset:2px}
+.xl{min-height:68px;font-size:18px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.inp{width:100%;min-height:44px;padding:8px 12px;border:1px solid rgba(245,247,250,.3);border-radius:6px;background:#101318;font:500 15px 'DM Sans',sans-serif;color:#F5F7FA}
+.cols{display:grid;grid-template-columns:320px minmax(0,1fr) 360px;gap:16px;padding:16px;align-items:stretch}
+.kbd{font-family:'DM Sans', sans-serif;font-size:11px;border:1px solid rgba(245,247,250,.35);border-radius:3px;padding:1px 5px}
+.slot{width:14px;height:14px;border-radius:2px;border:1px solid rgba(245,247,250,.35)}
+.slot.f{background:#C9A45C;border-color:#C9A45C}
+</style>
+</helmet>
+<div class="ac {{annClass}}">
+
+<!-- HEADER / SESSION CONTROLS -->
+<header style="display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-bottom: 1px solid rgba(245,247,250,.12); background: #191F27; position: relative">
+<div class="ann">Header · session controls, connection, display preview</div>
+<img src="/_blob/cdcfcb2d54393ecb009b0801816ef575" alt="NGBCL — Next Gen Badminton Champions League" style="height: 36px; width: auto; max-width: 100%; display: block; object-fit: contain">
+<span class="chip c-live"><span class="dot"></span>Live auction</span>
+<span class="mono muted">Lot [n] / [total]</span>
+<div style="display: flex; gap: 8px; margin-left: 16px">
+<button type="button" class="btn btn-out" disabled>Start</button>
+<sc-if value="{{notPaused}}" hint-placeholder-val="{{ true }}"><button type="button" class="btn btn-out" onClick="{{togglePause}}">Pause</button></sc-if>
+<sc-if value="{{isPaused}}" hint-placeholder-val="{{ false }}"><button type="button" class="btn btn-volt" onClick="{{togglePause}}">Resume</button></sc-if>
+<button type="button" class="btn btn-out">Undo last bid</button>
+<button type="button" class="btn btn-out">Next player</button>
+</div>
+<div style="margin-left: auto; display: flex; align-items: center; gap: 14px">
+<span class="chip c-neutral" style="padding: 7px 10px"><span class="dot" style="background: #D8FF42"></span>Connected</span>
+<div style="display: flex; align-items: center; gap: 8px"><span class="eyebrow">Display</span><div class="ph" style="width: 96px; height: 54px; font-size: 8px">{{displayThumb}}</div></div>
+<a href="#" style="font-weight: 600; font-size: 13px">Exit console</a>
+</div>
+</header>
+
+<!-- STATE BANNERS -->
+<sc-if value="{{isPaused}}" hint-placeholder-val="{{ false }}">
+<div role="status" style="display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: #F0B455; color: #101318; font-weight: 600">
+<span>Auction paused · public display shows “Short break”. Bidding is disabled.</span>
+<button type="button" class="btn" style="margin-left: auto; background: #191F27; color: #F5F7FA" onClick="{{togglePause}}">Resume auction</button>
+</div>
+</sc-if>
+<sc-if value="{{isRestored}}" hint-placeholder-val="{{ false }}">
+<div role="status" style="display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: rgba(130,174,255,.16); color: #101318; position: relative">
+<div class="ann" style="background: #191F27; color: #F5F7FA">Restored-session state (after reload or disconnect)</div>
+<strong>Restored session — last action [HH:MM:SS]</strong>
+<span>Current lot and [n] bids reloaded from the server. Check the ladder before continuing.</span>
+<button type="button" class="btn" style="margin-left: auto; background: #191F27; color: #F5F7FA">Continue</button>
+</div>
+</sc-if>
+
+<div class="cols" style="opacity: {{bodyOpacity}}">
+
+<!-- LEFT: LOT QUEUE -->
+<section class="panel" style="display: flex; flex-direction: column; overflow: hidden; position: relative" aria-label="Lot queue">
+<div class="ann">Lot queue · 320 px</div>
+<div style="padding: 14px; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid rgba(245,247,250,.12)">
+<div style="display: flex; border: 1px solid rgba(245,247,250,.25); border-radius: 6px; overflow: hidden">
+<button type="button" class="btn" style="flex: 1; min-height: 36px; background: #D8FF42; color: #101318; border-radius: 0">Queue [—]</button>
+<button type="button" class="btn" style="flex: 1; min-height: 36px; border-radius: 0">Re-auction [—]</button>
+</div>
+<input class="inp" type="search" placeholder="Search player" aria-label="Search queue">
+<select class="inp" aria-label="Category"><option>All categories</option></select>
+</div>
+<div style="display: flex; flex-direction: column; flex: 1">
+<sc-for list="{{queue}}" as="q" hint-placeholder-count="8">
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid rgba(245,247,250,.06); background: {{q.bg}}; box-shadow: {{q.edge}}">
+<span class="muted mono" style="letter-spacing: -2px">⋮⋮</span>
+<span class="mono muted" style="width: 30px">#{{q.n}}</span>
+<div class="ph ph-person" style="width: 32px; height: 40px; font-size: 7px; padding: 0">4:5</div>
+<div style="display: flex; flex-direction: column; flex: 1; min-width: 0"><span>[First] <strong>[SURNAME]</strong></span><span class="muted" style="font-size: 12px">[Category] · base [—]</span></div>
+<span class="chip {{q.chipClass}}">{{q.state}}</span>
+</div>
+</sc-for>
+</div>
+<p class="muted" style="margin: 0; padding: 12px 14px; font-size: 12px">Only approved, eligible players appear. Drag to reorder.</p>
+</section>
+
+<!-- CENTRE: CURRENT LOT -->
+<section style="display: flex; flex-direction: column; gap: 16px; min-width: 0" aria-label="Current lot">
+
+<div class="panel" style="padding: 20px; display: grid; grid-template-columns: 220px minmax(0,1fr); gap: 24px; position: relative">
+<div class="ann">Current lot · player card + highest bid</div>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div class="ph ph-person" style="aspect-ratio: 4 / 5; width: 100%; background-color: #222A34">Player photo 4:5</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 14px; min-width: 0">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span class="eyebrow">Lot [n]</span>
+<span style="font-size: 26px">[First] <strong class="disp" style="font-size: 30px">[SURNAME]</strong></span>
+<div style="display: flex; gap: 8px; align-items: center"><span class="chip c-neutral">[Category]</span><span class="muted">Base price <span class="mono">LKR [—]</span></span></div>
+</div>
+<!-- Lot status bar -->
+<div style="display: flex; gap: 0; border: 1px solid rgba(245,247,250,.2); border-radius: 6px; overflow: hidden; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; transform: skewX(-10deg)">
+<span style="flex: 1; text-align: center; padding: 8px 4px; color: #A5ADB8">Ready</span>
+<span style="flex: 1; text-align: center; padding: 8px 4px; background: #D8FF42; color: #101318">Open</span>
+<span style="flex: 1; text-align: center; padding: 8px 4px; color: #A5ADB8; border-left: 1px solid rgba(245,247,250,.2)">Going once</span>
+<span style="flex: 1; text-align: center; padding: 8px 4px; color: #A5ADB8; border-left: 1px solid rgba(245,247,250,.2)">Going twice</span>
+<span style="flex: 1; text-align: center; padding: 8px 4px; color: #A5ADB8; border-left: 1px solid rgba(245,247,250,.2)">Closed</span>
+</div>
+<div style="display: flex; align-items: center; gap: 20px; padding: 16px; border-radius: 8px; background: #101318; border: 1px solid rgba(216,255,66,.4)">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span class="eyebrow">Highest bid</span>
+<span class="num" style="font-size: 72px; line-height: .9; color: #D8FF42">LKR [—]</span>
+</div>
+<div style="margin-left: auto; display: flex; flex-direction: column; align-items: center; gap: 6px">
+<div class="ph ph-crest" style="width: 64px; height: 64px; border-color: #D8FF42">Crest</div>
+<strong style="font-size: 13px">[Leading team]</strong>
+</div>
+</div>
+<div style="display: flex; gap: 8px"><button type="button" class="btn btn-out">Going once</button><button type="button" class="btn btn-out">Going twice</button></div>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 16px">
+<!-- Bid entry -->
+<div class="panel" style="padding: 18px; display: flex; flex-direction: column; gap: 12px; position: relative">
+<div class="ann">Bid entry · tap a team on the right, then amount</div>
+<div style="display: flex; justify-content: space-between; align-items: center"><span class="eyebrow">Bid for</span><span class="muted" style="font-size: 12px"><span class="kbd">1</span>–<span class="kbd">9</span> team · <span class="kbd">Enter</span> place</span></div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 6px; border: 2px solid #D8FF42"><div class="ph ph-crest" style="width: 36px; height: 36px; padding: 0; font-size: 7px">Crest</div><strong>{{selTeam}}</strong><span class="muted" style="margin-left: auto; font-size: 12px">Max bid LKR [—]</span></div>
+<label for="amt" class="eyebrow">Amount · next valid minimum pre-filled</label>
+<input id="amt" class="inp num" style="font-size: 28px; min-height: 56px" value="LKR [current + increment]">
+<div style="display: flex; gap: 8px"><button type="button" class="btn btn-out" style="flex: 1">+1 inc</button><button type="button" class="btn btn-out" style="flex: 1">+2 inc</button><button type="button" class="btn btn-out" style="flex: 1">+5 inc</button></div>
+<button type="button" class="btn btn-volt xl" onClick="{{placeBid}}">Place bid</button>
+<sc-if value="{{fbSending}}" hint-placeholder-val="{{ false }}"><div role="status" style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 6px; background: rgba(245,247,250,.06); opacity: .7"><span class="chip c-neutral">Sending…</span>Waiting for the server</div></sc-if>
+<sc-if value="{{fbOk}}" hint-placeholder-val="{{ true }}"><div role="status" style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 6px; background: rgba(216,255,66,.12); border: 1px solid #D8FF42"><span class="chip c-live">Accepted</span>{{selTeam}} leads at LKR [—]</div></sc-if>
+<sc-if value="{{fbErr}}" hint-placeholder-val="{{ false }}"><div role="alert" style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 6px; background: rgba(255,90,98,.12); border: 1px solid #FF5A62"><span class="chip c-err">Rejected</span>Exceeds remaining budget</div></sc-if>
+</div>
+
+<!-- Bid ladder -->
+<div class="panel" style="padding: 18px; display: flex; flex-direction: column; gap: 8px; position: relative">
+<div class="ann">Bid ladder · newest on top, server states</div>
+<span class="eyebrow">Bids this lot</span>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 6px; background: rgba(245,247,250,.04); opacity: .6"><span class="mono muted">#[n+1]</span><span>[Team C]</span><span class="num" style="margin-left: auto; font-size: 18px">LKR [—]</span><span class="chip c-neutral">Sending</span></div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 6px; background: rgba(216,255,66,.1); border-left: 3px solid #D8FF42"><span class="mono muted">#[n]</span><strong>[Team A]</strong><span class="num" style="margin-left: auto; font-size: 18px; color: #D8FF42">LKR [—]</span><span class="chip c-live">Leading</span></div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 6px; background: rgba(255,90,98,.08)"><span class="mono muted">—</span><span>[Team F]</span><span class="num" style="margin-left: auto; font-size: 18px; text-decoration: line-through; opacity: .6">LKR [—]</span><span class="chip c-err">Over budget</span></div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 6px; background: rgba(255,90,98,.08)"><span class="mono muted">—</span><span>[Team B]</span><span class="num" style="margin-left: auto; font-size: 18px; text-decoration: line-through; opacity: .6">LKR [—]</span><span class="chip c-err">Below min increment</span></div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px"><span class="mono muted">#[n-1]</span><span>[Team B]</span><span class="num muted" style="margin-left: auto; font-size: 18px">LKR [—]</span><span class="chip c-neutral">Outbid</span></div>
+<span class="muted" style="font-size: 12px">Rejected bids show the server's reason; they never change the lead.</span>
+</div>
+</div>
+
+<!-- Close lot -->
+<div class="panel" style="padding: 16px; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; position: relative">
+<div class="ann">Close lot · SOLD enabled only with a valid leading bid</div>
+<button type="button" class="btn btn-gold xl" onClick="{{openSold}}">Sold</button>
+<button type="button" class="btn btn-out xl">Unsold</button>
+<button type="button" class="btn btn-out xl">Withdrawn</button>
+</div>
+</section>
+
+<!-- RIGHT: TEAM RAIL -->
+<section class="panel" style="display: flex; flex-direction: column; overflow: hidden; position: relative" aria-label="Teams">
+<div class="ann">Team rail · 360 px · tap to select bidder</div>
+<div style="padding: 14px; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(245,247,250,.12)"><span class="eyebrow">Teams</span><span class="muted" style="font-size: 12px">Purse <span class="tbc">[BUDGET TBC]</span> · squad <span class="tbc">[MAX TBC]</span></span></div>
+<sc-for list="{{teams}}" as="t" hint-placeholder-count="6">
+<button type="button" onClick="{{t.pick}}" disabled="{{t.blocked}}" style="display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border: 0; border-bottom: 1px solid rgba(245,247,250,.08); background: {{t.bg}}; color: #F5F7FA; text-align: left; cursor: pointer; font: inherit; opacity: {{t.opacity}}; box-shadow: {{t.ring}}">
+<span style="display: flex; align-items: center; gap: 10px; width: 100%">
+<span class="kbd">{{t.key}}</span>
+<span class="ph ph-crest" style="width: 32px; height: 32px; padding: 0; font-size: 7px; border-color: {{t.band}}; border-style: solid; border-width: 2px">C</span>
+<strong style="flex: 1">{{t.name}}</strong>
+<span class="mono" style="font-size: 12px">{{t.maxbid}}</span>
+</span>
+<span style="display: flex; align-items: center; gap: 10px; width: 100%">
+<span style="flex: 1; height: 8px; border-radius: 2px; background: rgba(245,247,250,.12); position: relative; overflow: hidden"><span style="position: absolute; left: 0; top: 0; bottom: 0; width: {{t.spent}}; background: #C9A45C"></span></span>
+<span class="muted" style="font-size: 12px">LKR [—] left</span>
+</span>
+<span style="display: flex; align-items: center; gap: 4px; width: 100%">
+<sc-for list="{{t.slots}}" as="s" hint-placeholder-count="8"><span class="slot {{s.c}}"></span></sc-for>
+<span class="muted" style="font-size: 12px; margin-left: 6px">[—]/[—]</span>
+<sc-if value="{{t.blocked}}" hint-placeholder-val="{{ false }}"><span class="chip c-err" style="margin-left: auto">{{t.reason}}</span></sc-if>
+</span>
+</button>
+</sc-for>
+<p class="muted" style="margin: 0; padding: 12px 14px; font-size: 12px">Greyed teams can't legally bid; the reason is shown. Squad slots = configured max.</p>
+</section>
+</div>
+
+<!-- SOLD CONFIRM SHEET -->
+<sc-if value="{{soldOpen}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; background: rgba(12,14,18,.75); display: flex; align-items: center; justify-content: center; z-index: 20">
+<div role="dialog" aria-modal="true" aria-labelledby="soldT" style="width: 560px; background: #191F27; border: 1px solid #C9A45C; border-radius: 8px; padding: 28px; display: flex; flex-direction: column; gap: 18px; box-shadow: 0 16px 40px rgba(0,0,0,.45); position: relative">
+<div class="ann">SOLD confirm sheet · consequences before commit</div>
+<span class="chip c-sold" style="align-self: flex-start">Confirm sale</span>
+<h2 id="soldT" style="margin: 0; font-size: 24px; font-weight: 600; line-height: 1.3">Sell [First] <strong>[SURNAME]</strong> to [Leading team] for <span class="num" style="font-size: 30px; color: #D6B877">Rs. [—]</span>?</h2>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
+<div class="raised" style="padding: 14px"><span class="eyebrow">Remaining budget becomes</span><div class="num" style="font-size: 28px">Rs. [—]</div></div>
+<div class="raised" style="padding: 14px"><span class="eyebrow">Squad after sale</span><div class="num" style="font-size: 28px">[—] / [—]</div></div>
+</div>
+<span class="muted" style="font-size: 13px">Sale, budget deduction and roster update happen together. Reversing it needs an audited allocation correction.</span>
+<div style="display: flex; gap: 12px; justify-content: flex-end"><button type="button" class="btn btn-out" onClick="{{closeSold}}">Cancel</button><button type="button" class="btn btn-gold" style="min-height: 52px; padding: 0 28px; font-size: 16px" onClick="{{closeSold}}">Confirm sale</button></div>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["Lot open","Bid rejected","SOLD confirm","Paused","Restored session"],"default":"Lot open","section":"Wireframe state"},"showNotes":{"editor":"boolean","default":false,"section":"Wireframe state"},"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+componentWillUnmount() { if (this._t) clearTimeout(this._t); }
+renderVals() {
+const mode = this.props.mode ?? 'Lot open';
+const st = this.state || {};
+const paused = st.paused != null ? st.paused : mode === 'Paused';
+const soldOpen = st.sold != null ? st.sold : mode === 'SOLD confirm';
+const fb = st.fb || (mode === 'Bid rejected' ? 'err' : 'ok');
+const sel = st.sel != null ? st.sel : (mode === 'Bid rejected' ? 5 : 0);
+const names = ['[Team A]', '[Team B]', '[Team C]', '[Team D]', '[Team E]', '[Team F]'];
+const bands = ['#F05A28', '#1BA6B5', '#2F6FED', '#A23B72', '#8B5CF6', '#E0457B'];
+const fills = [3, 4, 2, 8, 5, 6];
+const teams = names.map((nm, i) => {
+const blocked = i === 3;
+const on = i === sel;
+return {
+key: i + 1, name: nm, band: bands[i],
+blocked: blocked, reason: 'Squad full',
+maxbid: blocked ? '—' : (i === 5 ? 'Max [low]' : 'Max [—]'),
+spent: String(20 + i * 12) + '%',
+bg: on ? 'rgba(216,255,66,.1)' : 'transparent',
+ring: on ? 'inset 3px 0 0 #D8FF42' : 'none',
+opacity: blocked ? '.45' : '1',
+slots: Array.from({ length: 8 }, (_, k) => ({ c: k < fills[i] ? 'f' : '' })),
+pick: () => this.setState({ sel: i, fb: 'ok' })
+};
+});
+const queue = Array.from({ length: 8 }, (_, i) => ({
+n: '[' + (i + 1) + ']',
+state: i === 0 ? 'Sold' : i === 1 ? 'On block' : 'Next',
+chipClass: i === 0 ? 'c-sold' : i === 1 ? 'c-live' : 'c-neutral',
+bg: i === 1 ? 'rgba(216,255,66,.08)' : 'transparent',
+edge: i === 1 ? 'inset 3px 0 0 #D8FF42' : 'none'
+}));
+return {
+annClass: (this.props.showNotes ?? false) ? '' : 'hide-ann',
+isPaused: paused, notPaused: !paused,
+isRestored: mode === 'Restored session',
+bodyOpacity: paused ? '.45' : '1',
+displayThumb: paused ? 'Short break' : 'Lot open',
+soldOpen: soldOpen,
+openSold: () => this.setState({ sold: true }),
+closeSold: () => this.setState({ sold: false }),
+togglePause: () => this.setState({ paused: !paused }),
+teams: teams, queue: queue,
+selTeam: names[sel],
+fbSending: fb === 'sending', fbOk: fb === 'ok', fbErr: fb === 'err',
+placeBid: () => {
+this.setState({ fb: 'sending' });
+if (this._t) clearTimeout(this._t);
+this._t = setTimeout(() => this.setState({ fb: sel === 5 ? 'err' : 'ok' }), 900);
+}
+};
+}
+}
+</script>
+</body>
+</html>

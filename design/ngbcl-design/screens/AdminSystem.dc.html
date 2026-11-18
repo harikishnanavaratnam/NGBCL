@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NGBCL 1.0 Admin — System and content screens wireframe</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/8f7dbd951cd94d5d6ac221330072dab7">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700;1,800&amp;family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#F5F7FA}a:hover{color:#D8FF42}
+.ad{container-type:inline-size;background:#101318;color:#F5F7FA;font-family:'DM Sans',"Noto Sans Tamil","Noto Sans Sinhala",system-ui,sans-serif;font-size:15px;line-height:1.5;min-height:100%}
+.ad *{box-sizing:border-box}
+.shell{display:flex;flex-wrap:wrap;min-height:100%}
+.side{flex:0 0 240px;background:#191F27;border-right:1px solid rgba(245,247,250,.08);color:#F5F7FA;display:flex;flex-direction:column}
+.side a{color:#A5ADB8;text-decoration:none}
+.main{flex:999 1 560px;min-width:0;display:flex;flex-direction:column}
+.burger{display:none}
+.split{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:20px;align-items:start}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:14px 16px;border-bottom:1px solid rgba(245,247,250,.09)}
+
+@container (max-width:1100px){
+.side{display:none}.burger{display:inline-flex}
+.split{grid-template-columns:minmax(0,1fr)}
+}
+@container (max-width:700px){
+.g2,.g3{grid-template-columns:minmax(0,1fr)}
+.pad{padding:16px !important}
+}
+</style>
+</helmet>
+<div class="ad {{annClass}}">
+<div class="shell">
+
+<aside class="side" aria-label="Admin navigation">
+<div style="display: flex; align-items: center; gap: 10px; padding: 20px">
+<img src="/_blob/7478f30cedfda4689671cc7de8e57a93" alt="" aria-hidden="true" style="width: 40px; height: 40px; object-fit: contain">
+<div style="display: flex; flex-direction: column"><strong style="font-size: 14px">NGBCL Admin</strong><span style="font-size: 12px; color: #A5ADB8">Tournament management</span></div>
+</div>
+<nav style="display: flex; flex-direction: column; padding: 0 12px 24px; gap: 2px">
+<sc-for list="{{nav}}" as="g" hint-placeholder-count="8">
+<div style="display: flex; flex-direction: column">
+<a href="#" style="display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 10px; border-radius: 6px; font-weight: 500; font-size: 14px; color: {{g.color}}"><span style="width: 18px; height: 18px; border: 1.5px solid currentColor; border-radius: 4px; opacity: .7"></span>{{g.label}}</a>
+<sc-if value="{{g.open}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; padding: 0 0 6px 38px">
+<sc-for list="{{g.subs}}" as="s" hint-placeholder-count="4">
+<sc-if value="{{s.on}}" hint-placeholder-val="{{ false }}"><a href="#" aria-current="page" style="font-size: 13px; padding: 3px 8px; margin-left: -8px; color: #F5F7FA; font-weight: 600; border-radius: 4px; background: rgba(216,255,66,.12); box-shadow: inset 3px 0 0 #D8FF42">{{s.label}}</a></sc-if>
+<sc-if value="{{s.off}}" hint-placeholder-val="{{ true }}"><a href="#" style="font-size: 13px; padding: 3px 0">{{s.label}}</a></sc-if>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</nav>
+</aside>
+
+<div class="main">
+<header class="pad" style="display: flex; align-items: center; gap: 16px; min-height: 64px; padding: 0 28px; background: #191F27; border-bottom: 1px solid rgba(245,247,250,.09); flex-wrap: wrap">
+<button type="button" class="burger btn btn-out" aria-label="Open navigation" style="width: 44px; padding: 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+<label style="display: flex; align-items: center; gap: 8px"><span class="eyebrow">Edition</span><select class="inp" style="width: auto; min-height: 36px; font-weight: 600"><option>NGBCL 1.0</option></select></label>
+<span class="muted" style="font-size: 13px">{{crumb}}</span>
+<div style="margin-left: auto; display: flex; align-items: center; gap: 8px"><div class="ph ph-person" style="width: 32px; height: 32px; border-radius: 50%; padding: 0; font-size: 8px">AV</div><span style="font-size: 13px; font-weight: 600">[User name]</span></div>
+</header>
+
+<div class="pad" style="padding: 28px; display: flex; flex-direction: column; gap: 20px">
+
+<!-- ================= USERS AND ROLES ================= -->
+<sc-if value="{{sUsers}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 28px; font-weight: 600">Users and roles</h1><span class="muted" style="font-size: 14px">Only Super Administrators can manage users. Permissions are enforced on the server.</span></div>
+<button type="button" class="btn btn-navy">Invite user</button>
+</div>
+<div class="split">
+<div style="display: flex; flex-direction: column; gap: 20px; min-width: 0">
+<section class="card" style="position: relative">
+<div class="ann">User list</div>
+<div class="filters">
+<input class="inp" type="search" placeholder="Search name or email" aria-label="Search users" style="max-width: 280px">
+<select class="inp" aria-label="Role" style="max-width: 200px"><option>All roles</option></select>
+<select class="inp" aria-label="Status" style="max-width: 160px"><option>All statuses</option></select>
+</div>
+<div class="scroll">
+<table class="tbl" style="min-width: 680px">
+<thead><tr><th>User</th><th>Role</th><th>Scope</th><th>Status</th><th>Last sign-in</th><th></th></tr></thead>
+<tbody>
+<tr><td><div style="display: flex; gap: 10px; align-items: center"><div class="ph ph-person" style="width: 32px; height: 32px; border-radius: 50%; padding: 0; font-size: 8px">U</div><div style="display: flex; flex-direction: column"><strong>[Name]</strong><span class="muted">[email]</span></div></div></td><td><span class="chip c-navy">Super Admin</span></td><td class="muted">All editions</td><td><span class="chip c-ok">Active</span></td><td class="mono muted">[YYYY-MM-DD HH:MM]</td><td><a href="#" style="font-weight: 600">Edit</a></td></tr>
+<tr><td><div style="display: flex; gap: 10px; align-items: center"><div class="ph ph-person" style="width: 32px; height: 32px; border-radius: 50%; padding: 0; font-size: 8px">U</div><div style="display: flex; flex-direction: column"><strong>[Name]</strong><span class="muted">[email]</span></div></div></td><td><span class="chip c-neutral">Registration Manager</span></td><td class="muted">NGBCL 1.0</td><td><span class="chip c-ok">Active</span></td><td class="mono muted">[YYYY-MM-DD HH:MM]</td><td><a href="#" style="font-weight: 600">Edit</a></td></tr>
+<tr><td><div style="display: flex; gap: 10px; align-items: center"><div class="ph ph-person" style="width: 32px; height: 32px; border-radius: 50%; padding: 0; font-size: 8px">U</div><div style="display: flex; flex-direction: column"><strong>[Name]</strong><span class="muted">[email]</span></div></div></td><td><span class="chip c-neutral">Auctioneer</span></td><td class="muted">NGBCL 1.0 auction</td><td><span class="chip c-pend">Invited</span></td><td class="mono muted">—</td><td><a href="#" style="font-weight: 600">Resend</a></td></tr>
+<tr><td><div style="display: flex; gap: 10px; align-items: center"><div class="ph ph-person" style="width: 32px; height: 32px; border-radius: 50%; padding: 0; font-size: 8px">U</div><div style="display: flex; flex-direction: column"><strong>[Name]</strong><span class="muted">[email]</span></div></div></td><td><span class="chip c-neutral">Match Scorer</span></td><td class="muted">Assigned matches only</td><td><span class="chip c-ok">Active</span></td><td class="mono muted">[YYYY-MM-DD HH:MM]</td><td><a href="#" style="font-weight: 600">Edit</a></td></tr>
+<tr><td><div style="display: flex; gap: 10px; align-items: center"><div class="ph ph-person" style="width: 32px; height: 32px; border-radius: 50%; padding: 0; font-size: 8px">U</div><div style="display: flex; flex-direction: column"><strong class="muted">[Name]</strong><span class="muted">[email]</span></div></div></td><td><span class="chip c-neutral">Team Manager</span></td><td class="muted">[Team] · read-only</td><td><span class="chip c-neutral">Disabled</span></td><td class="mono muted">—</td><td><a href="#" style="font-weight: 600">Edit</a></td></tr>
+</tbody>
+</table>
+</div>
+<div style="padding: 12px 16px; display: flex; justify-content: space-between; font-size: 13px" class="muted"><span>Showing [1–25] of [—]</span><span>25 / 50 / 100 per page</span></div>
+</section>
+
+<section class="card" style="position: relative">
+<div class="ann">Role permissions · read-only reference</div>
+<div style="padding: 16px 16px 8px"><h2 style="margin: 0; font-size: 18px; font-weight: 600">What each role can do</h2></div>
+<div class="scroll">
+<table class="tbl" style="min-width: 760px">
+<thead><tr><th>Area</th><th>Super Admin</th><th>Tournament Admin</th><th>Registration Mgr</th><th>Auctioneer</th><th>Scorer</th><th>Team Mgr*</th></tr></thead>
+<tbody>
+<tr><td><strong>Registrations</strong></td><td>Full</td><td>Full</td><td>Full</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td></tr>
+<tr><td><strong>Directory</strong></td><td>Full</td><td>Full</td><td>Full</td><td>View</td><td class="muted">—</td><td>Own team</td></tr>
+<tr><td><strong>Auction setup</strong></td><td>Full</td><td>Full</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td></tr>
+<tr><td><strong>Auction console</strong></td><td>Full</td><td>Full</td><td class="muted">—</td><td>Run lots</td><td class="muted">—</td><td>Own budget</td></tr>
+<tr><td><strong>Competition</strong></td><td>Full</td><td>Full</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td><td>View</td></tr>
+<tr><td><strong>Scoring</strong></td><td>Full</td><td>Confirm / correct</td><td class="muted">—</td><td class="muted">—</td><td>Assigned matches</td><td class="muted">—</td></tr>
+<tr><td><strong>Content</strong></td><td>Full</td><td>Full</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td></tr>
+<tr><td><strong>Users and roles</strong></td><td>Full</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td></tr>
+<tr><td><strong>Audit log, reports</strong></td><td>Full</td><td>View, export</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td></tr>
+</tbody>
+</table>
+</div>
+<p class="help" style="margin: 0; padding: 12px 16px">*Team Manager is behind a feature flag <span class="tbc">[ENABLE? TBC]</span>. Matrix is a proposal from the SRS role table — confirm before build.</p>
+</section>
+</div>
+
+<aside class="card drawer" style="padding: 22px; display: flex; flex-direction: column; gap: 16px; position: relative">
+<div class="ann">Invite user drawer (480 px)</div>
+<div style="display: flex; justify-content: space-between; align-items: center"><h2 style="margin: 0; font-size: 18px; font-weight: 600">Invite user</h2><button type="button" class="btn btn-out" aria-label="Close" style="width: 40px; padding: 0">×</button></div>
+<div class="field"><label for="u-name">Full name</label><input id="u-name" class="inp"></div>
+<div class="field"><label for="u-email">Email</label><input id="u-email" class="inp" type="email"><span class="help">They get a sign-in link. No shared passwords.</span></div>
+<fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+<legend class="lbl" style="padding: 0; margin-bottom: 8px">Role</legend>
+<label style="display: flex; gap: 10px; padding: 10px 12px; border: 1px solid rgba(245,247,250,.18); border-radius: 6px; font-size: 13px"><input type="radio" name="role"><span><strong>Tournament Admin</strong><br><span class="muted">Setup, teams, auction, fixtures, results, reports</span></span></label>
+<label style="display: flex; gap: 10px; padding: 10px 12px; border: 2px solid #D8FF42; border-radius: 6px; font-size: 13px"><input type="radio" name="role" checked><span><strong>Registration Manager</strong><br><span class="muted">Review, approve, reject; resolve duplicates</span></span></label>
+<label style="display: flex; gap: 10px; padding: 10px 12px; border: 1px solid rgba(245,247,250,.18); border-radius: 6px; font-size: 13px"><input type="radio" name="role"><span><strong>Auctioneer</strong><br><span class="muted">Auction console only</span></span></label>
+<label style="display: flex; gap: 10px; padding: 10px 12px; border: 1px solid rgba(245,247,250,.18); border-radius: 6px; font-size: 13px"><input type="radio" name="role"><span><strong>Match Scorer / Official</strong><br><span class="muted">Score assigned matches</span></span></label>
+<label style="display: flex; gap: 10px; padding: 10px 12px; border: 1px dashed rgba(245,247,250,.18); border-radius: 6px; font-size: 13px; opacity: .6"><input type="radio" name="role" disabled><span><strong>Team Manager</strong> · feature off<br><span class="muted">Linked to one team, read-only</span></span></label>
+</fieldset>
+<div class="field"><label for="u-scope">Edition</label><select id="u-scope" class="inp"><option>NGBCL 1.0</option></select></div>
+<div style="display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid rgba(245,247,250,.09); padding-top: 14px"><button type="button" class="btn btn-out">Cancel</button><button type="button" class="btn btn-navy">Send invite</button></div>
+</aside>
+</div>
+</sc-if>
+
+<!-- ================= AUDIT LOG ================= -->
+<sc-if value="{{sAudit}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 28px; font-weight: 600">Audit log</h1><span class="muted" style="font-size: 14px">Read-only. Entries can't be edited or deleted.</span></div>
+<button type="button" class="btn btn-out">Export CSV</button>
+</div>
+<section class="card" style="position: relative">
+<div class="ann">Filters + log table · expandable rows show field diff</div>
+<div class="filters">
+<input class="inp" type="search" placeholder="Search reference (PLY-…, TEM-…, lot #)" aria-label="Search audit" style="max-width: 300px">
+<select class="inp" aria-label="Actor" style="max-width: 180px"><option>All users</option></select>
+<select class="inp" aria-label="Area" style="max-width: 180px"><option>All areas</option><option>Registrations</option><option>Auction</option><option>Results</option><option>Settings</option><option>Users</option></select>
+<select class="inp" aria-label="Date range" style="max-width: 180px"><option>Last 7 days</option></select>
+<span class="chip c-neutral" style="padding: 8px 10px">Sensitive only</span>
+</div>
+<div class="scroll">
+<table class="tbl" style="min-width: 820px">
+<thead><tr><th>Time</th><th>User</th><th>Area</th><th>Action</th><th>Record</th><th>Change</th></tr></thead>
+<tbody>
+<tr><td class="mono muted">[YYYY-MM-DD HH:MM:SS]</td><td>[User]</td><td><span class="chip c-neutral">Auction</span></td><td><strong>Sold lot</strong></td><td class="mono">Lot #[—] · PLY-[…]</td><td>to [Team] · LKR [—]</td></tr>
+<tr style="background: #101318"><td class="mono muted">[YYYY-MM-DD HH:MM:SS]</td><td>[User]</td><td><span class="chip c-neutral">Settings</span></td><td><strong>Changed locked setting</strong></td><td class="mono">auction_settings</td><td>Min increment <span class="mono muted">[old]</span> → <span class="mono">[new]</span></td></tr>
+<tr style="background: #101318"><td colspan="6" style="padding: 0 12px 14px 12px">
+<div style="border: 1px solid rgba(245,247,250,.09); border-radius: 6px; background: #191F27; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; font-size: 13px">
+<span class="eyebrow">Expanded entry</span>
+<span><strong>Reason:</strong> [Reason entered in the audited change dialog]</span>
+<span class="mono" style="font-size: 12px">min_bid_increment: [old] → [new]</span>
+<span class="muted">Session [id] · IP [hidden for non-Super Admin]</span>
+</div>
+</td></tr>
+<tr><td class="mono muted">[YYYY-MM-DD HH:MM:SS]</td><td>[User]</td><td><span class="chip c-neutral">Results</span></td><td><strong>Corrected score</strong></td><td class="mono">Match [—]</td><td>G2 <span class="mono muted">[—]</span> → <span class="mono">[—]</span></td></tr>
+<tr><td class="mono muted">[YYYY-MM-DD HH:MM:SS]</td><td>[User]</td><td><span class="chip c-neutral">Registrations</span></td><td><strong>Rejected</strong></td><td class="mono">TEM-[…]</td><td>Reason: [—]</td></tr>
+<tr><td class="mono muted">[YYYY-MM-DD HH:MM:SS]</td><td>[User]</td><td><span class="chip c-neutral">Registrations</span></td><td><strong>Approved</strong></td><td class="mono">PLY-[…]</td><td>Photo verified</td></tr>
+<tr><td class="mono muted">[YYYY-MM-DD HH:MM:SS]</td><td>[User]</td><td><span class="chip c-neutral">Users</span></td><td><strong>Changed role</strong></td><td class="mono">[user]</td><td>Scorer → Tournament Admin</td></tr>
+</tbody>
+</table>
+</div>
+<div style="padding: 12px 16px; display: flex; justify-content: space-between; font-size: 13px" class="muted"><span>Showing [1–50] of [—]</span><span>Previous · Next</span></div>
+</section>
+</sc-if>
+
+<!-- ================= REPORTS ================= -->
+<sc-if value="{{sReports}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 28px; font-weight: 600">Reports</h1><span class="muted" style="font-size: 14px">Exports use confirmed data unless you include provisional results.</span></div>
+<div class="g2" style="position: relative">
+<div class="ann">Report cards · filters + format per report</div>
+<sc-for list="{{reports}}" as="r" hint-placeholder-count="5">
+<section class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px"><h2 style="margin: 0; font-size: 17px; font-weight: 600">{{r.title}}</h2><span class="mono muted" style="font-size: 11px">{{r.ref}}</span></div>
+<span class="muted" style="font-size: 14px">{{r.desc}}</span>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><select class="inp" aria-label="Filter" style="max-width: 200px"><option>{{r.filter}}</option></select><select class="inp" aria-label="Format" style="max-width: 120px"><option>CSV</option><option>PDF</option><option>XLSX</option></select></div>
+<div><button type="button" class="btn btn-navy">Generate</button></div>
+</section>
+</sc-for>
+</div>
+<section class="card" style="position: relative">
+<div class="ann">Recent exports</div>
+<div class="scroll">
+<table class="tbl" style="min-width: 560px">
+<thead><tr><th>Report</th><th>Requested by</th><th>Time</th><th>Status</th><th></th></tr></thead>
+<tbody>
+<tr><td>[Report name]</td><td>[User]</td><td class="mono muted">[YYYY-MM-DD HH:MM]</td><td><span class="chip c-ok">Ready</span></td><td><a href="#" style="font-weight: 600">Download</a></td></tr>
+<tr><td>[Report name]</td><td>[User]</td><td class="mono muted">[YYYY-MM-DD HH:MM]</td><td><span class="chip c-pend">Generating</span></td><td class="muted">—</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+</sc-if>
+
+<!-- ================= ANNOUNCEMENTS ================= -->
+<sc-if value="{{sNews}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 28px; font-weight: 600">Announcements</h1><span class="muted" style="font-size: 14px">Published items appear on the homepage and the News page.</span></div>
+<button type="button" class="btn btn-navy">New announcement</button>
+</div>
+<div class="split">
+<section class="card" style="position: relative; min-width: 0">
+<div class="ann">List · status, pin, schedule</div>
+<div class="filters"><input class="inp" type="search" placeholder="Search titles" aria-label="Search announcements" style="max-width: 280px"><select class="inp" aria-label="Status" style="max-width: 180px"><option>All statuses</option><option>Published</option><option>Scheduled</option><option>Draft</option><option>Archived</option></select></div>
+<div class="scroll">
+<table class="tbl" style="min-width: 600px">
+<thead><tr><th>Title</th><th>Status</th><th>Pinned</th><th>Publish time</th><th>Author</th></tr></thead>
+<tbody>
+<tr style="background: #101318"><td><strong>[Announcement title]</strong></td><td><span class="chip c-ok">Published</span></td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Pinned"></td><td class="mono muted">[YYYY-MM-DD HH:MM]</td><td>[User]</td></tr>
+<tr><td><strong>[Announcement title]</strong></td><td><span class="chip c-prov">Scheduled</span></td><td><input type="checkbox" class="sw" role="switch" aria-label="Pinned"></td><td class="mono muted">[YYYY-MM-DD HH:MM]</td><td>[User]</td></tr>
+<tr><td><strong>[Announcement title]</strong></td><td><span class="chip c-neutral">Draft</span></td><td><input type="checkbox" class="sw" role="switch" aria-label="Pinned"></td><td class="muted">—</td><td>[User]</td></tr>
+<tr><td class="muted">[Announcement title]</td><td><span class="chip c-neutral">Archived</span></td><td><input type="checkbox" class="sw" role="switch" aria-label="Pinned"></td><td class="mono muted">[YYYY-MM-DD HH:MM]</td><td>[User]</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<aside class="card drawer" style="padding: 22px; display: flex; flex-direction: column; gap: 14px; position: relative">
+<div class="ann">Editor drawer</div>
+<h2 style="margin: 0; font-size: 18px; font-weight: 600">Edit announcement</h2>
+<div class="field"><label for="n-title">Title</label><input id="n-title" class="inp"></div>
+<div class="field"><label for="n-body">Body</label>
+<div style="border: 1px solid rgba(245,247,250,.18); border-radius: 6px; overflow: hidden">
+<div style="display: flex; gap: 4px; padding: 6px; border-bottom: 1px solid rgba(245,247,250,.09); background: #101318"><span class="chip c-neutral">B</span><span class="chip c-neutral">I</span><span class="chip c-neutral">Link</span><span class="chip c-neutral">List</span></div>
+<textarea id="n-body" class="inp" rows="6" style="border: 0; border-radius: 0"></textarea>
+</div></div>
+<div class="field"><span class="lbl">Cover image <span class="help">optional</span></span><div class="ph" style="height: 90px">16:9 image</div></div>
+<div style="display: flex; justify-content: space-between; align-items: center"><span class="lbl">Pin to top of homepage</span><input type="checkbox" class="sw" role="switch" aria-label="Pin"></div>
+<div class="field"><label for="n-when">Publish</label><select id="n-when" class="inp"><option>Now</option><option>Schedule for…</option></select></div>
+<div style="display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid rgba(245,247,250,.09); padding-top: 14px; flex-wrap: wrap"><button type="button" class="btn btn-out">Preview</button><button type="button" class="btn btn-out">Save draft</button><button type="button" class="btn btn-navy">Publish</button></div>
+</aside>
+</div>
+</sc-if>
+
+<!-- ================= SPONSORS ================= -->
+<sc-if value="{{sSponsors}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 28px; font-weight: 600">Sponsors</h1><span class="muted" style="font-size: 14px">Drives the title lockup, homepage sponsor wall and auction display ticker.</span></div>
+<button type="button" class="btn btn-navy">Add sponsor</button>
+</div>
+<div class="split">
+<section class="card" style="position: relative; min-width: 0">
+<div class="ann">Sponsor list · grouped by tier, drag within tier</div>
+<div class="scroll">
+<table class="tbl" style="min-width: 620px">
+<thead><tr><th style="width: 28px"></th><th>Logo</th><th>Sponsor</th><th>Tier</th><th>Link</th><th>Active</th></tr></thead>
+<tbody>
+<tr><td class="handle">⋮⋮</td><td><div class="ph" style="width: 72px; height: 36px; padding: 0; font-size: 8px">Logo</div></td><td><strong>[Sponsor name]</strong></td><td><span class="chip" style="background: rgba(201,164,92,.16); color: #C9A45C; border-left: 3px solid #C9A45C">Title</span></td><td class="muted">[URL]</td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Active"></td></tr>
+<tr><td class="handle">⋮⋮</td><td><div class="ph" style="width: 72px; height: 36px; padding: 0; font-size: 8px">Logo</div></td><td><strong>[Sponsor name]</strong></td><td><span class="chip c-neutral" style="border-left: 3px solid rgba(245,247,250,.18)">Platinum</span></td><td class="muted">[URL]</td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Active"></td></tr>
+<tr><td class="handle">⋮⋮</td><td><div class="ph" style="width: 72px; height: 36px; padding: 0; font-size: 8px">Logo</div></td><td><strong>[Sponsor name]</strong></td><td><span class="chip c-neutral" style="border-left: 3px solid #D6B877">Gold</span></td><td class="muted">[URL]</td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Active"></td></tr>
+<tr><td class="handle">⋮⋮</td><td><div class="ph" style="width: 72px; height: 36px; padding: 0; font-size: 8px">Logo</div></td><td><strong>[Sponsor name]</strong></td><td><span class="chip c-neutral" style="border-left: 3px solid #A5ADB8">Silver</span></td><td class="muted">[URL]</td><td><input type="checkbox" class="sw" role="switch" aria-label="Active"></td></tr>
+<tr><td class="handle">⋮⋮</td><td><div class="ph" style="width: 72px; height: 36px; padding: 0; font-size: 8px">Logo</div></td><td><strong>[Sponsor name]</strong></td><td><span class="chip c-neutral" style="border-left: 3px solid #B8733A">Bronze</span></td><td class="muted">[URL]</td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Active"></td></tr>
+<tr><td class="handle">⋮⋮</td><td><div class="ph" style="width: 72px; height: 36px; padding: 0; font-size: 8px">Logo</div></td><td><strong>[Sponsor name]</strong></td><td><span class="chip c-neutral">Media partner</span></td><td class="muted">[URL]</td><td><input type="checkbox" class="sw" role="switch" checked aria-label="Active"></td></tr>
+</tbody>
+</table>
+</div>
+<p class="help" style="margin: 0; padding: 12px 16px">Empty list → public site shows “Become a sponsor” with the proposal PDF link (set below the table).</p>
+<div style="padding: 0 16px 16px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap"><span class="lbl">Sponsorship proposal PDF</span><div class="ph" style="height: 36px; flex: 1; min-width: 200px">proposal.pdf</div><button type="button" class="btn btn-out">Replace</button></div>
+</section>
+<aside class="card drawer" style="padding: 22px; display: flex; flex-direction: column; gap: 14px; position: relative">
+<div class="ann">Add / edit sponsor drawer</div>
+<h2 style="margin: 0; font-size: 18px; font-weight: 600">Add sponsor</h2>
+<div class="field"><label for="sp-name">Sponsor name</label><input id="sp-name" class="inp"></div>
+<div class="field"><label for="sp-tier">Tier</label><select id="sp-tier" class="inp"><option>Title — already assigned (one only)</option><option selected>Platinum</option><option>Gold</option><option>Silver</option><option>Bronze</option><option>Official Media Partner</option></select><span class="help">Only one Title sponsor at a time</span></div>
+<div class="field"><span class="lbl">Logo</span><div class="ph" style="height: 90px">Upload · SVG or transparent PNG</div><span class="help">Preview on dark and light shown after upload</span></div>
+<div class="field"><label for="sp-url">Website link <span class="help">optional</span></label><input id="sp-url" class="inp" type="url" placeholder="https://"></div>
+<div class="field"><label for="sp-award">Named award <span class="help">optional</span></label><input id="sp-award" class="inp" placeholder="e.g. Player of the Match presented by [Brand]"></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><span class="lbl">Show on</span><label style="display: flex; gap: 8px; font-size: 14px"><input type="checkbox" checked> Homepage sponsor wall</label><label style="display: flex; gap: 8px; font-size: 14px"><input type="checkbox" checked> Auction display ticker</label></div>
+<div style="display: flex; justify-content: space-between; align-items: center"><span class="lbl">Active</span><input type="checkbox" class="sw" role="switch" checked aria-label="Active"></div>
+<div style="display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid rgba(245,247,250,.09); padding-top: 14px"><button type="button" class="btn btn-out">Cancel</button><button type="button" class="btn btn-navy">Save sponsor</button></div>
+</aside>
+</div>
+</sc-if>
+
+<!-- ================= COMMITTEE ================= -->
+<sc-if value="{{sCommittee}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 28px; font-weight: 600">Organising committee</h1><span class="muted" style="font-size: 14px">Feeds the public Committee page. No personal contact details are stored here.</span></div>
+<div style="display: flex; gap: 8px"><a href="Committee.dc.html" class="btn btn-out">View public page</a><button type="button" class="btn btn-navy">Add member</button></div>
+</div>
+<div class="split">
+<div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+<section class="card" style="position: relative">
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid rgba(245,247,250,.09); gap: 8px; flex-wrap: wrap">
+<div style="display: flex; align-items: center; gap: 10px"><span class="handle">⋮⋮</span><strong>{{g.name}}</strong><span class="chip c-neutral">{{g.style}}</span></div>
+<div style="display: flex; gap: 12px; font-size: 13px"><a href="#" style="font-weight: 600">Rename</a><a href="#" style="font-weight: 600">Add member</a></div>
+</div>
+<div style="display: flex; flex-direction: column">
+<sc-for list="{{g.members}}" as="m" hint-placeholder-count="3">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid rgba(245,247,250,.06); font-size: 14px">
+<span class="handle">⋮⋮</span>
+<div class="ph" style="width: 36px; height: 36px; border-radius: 50%; padding: 0; font-size: 12px">{{m.ph}}</div>
+<div style="display: flex; flex-direction: column; flex: 1; min-width: 0"><strong>[Full name]</strong><span class="muted" style="font-size: 13px">[Role]</span></div>
+<label style="display: flex; align-items: center; gap: 8px; font-size: 12px" class="muted">On site <input type="checkbox" class="sw" role="switch" checked aria-label="Show on site"></label>
+<a href="#" style="font-size: 13px; font-weight: 600">Edit</a>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-for>
+<button type="button" class="btn btn-out" style="align-self: flex-start">Add group</button>
+</div>
+<aside class="card drawer" style="padding: 22px; display: flex; flex-direction: column; gap: 14px; position: relative">
+<div class="ann">Add / edit member drawer</div>
+<h2 style="margin: 0; font-size: 18px; font-weight: 600">Add committee member</h2>
+<div class="field"><label for="cm-name">Full name</label><input id="cm-name" class="inp"></div>
+<div class="field"><label for="cm-role">Role or title</label><input id="cm-role" class="inp" placeholder="As it should appear publicly"></div>
+<div class="field"><label for="cm-group">Group</label><select id="cm-group" class="inp"><option>[Group]</option></select></div>
+<div class="field"><span class="lbl">Photo <span class="help">optional · 4:5</span></span><div class="ph ph-person" style="height: 110px; width: 88px">Photo</div><span class="help">Without a photo, initials are shown</span></div>
+<div class="field"><label for="cm-bio">One-line bio <span class="help">optional · leadership cards only</span></label><input id="cm-bio" class="inp"></div>
+<div style="display: flex; justify-content: space-between; align-items: center"><span class="lbl">Show on public page</span><input type="checkbox" class="sw" role="switch" checked aria-label="Show publicly"></div>
+<div style="display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid rgba(245,247,250,.09); padding-top: 14px"><button type="button" class="btn btn-out">Cancel</button><button type="button" class="btn btn-navy">Save member</button></div>
+</aside>
+</div>
+</sc-if>
+
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"screen":{"editor":"enum","options":["Users and roles","Audit log","Reports","Announcements","Sponsors","Committee"],"default":"Users and roles","section":"Wireframe state"},"showNotes":{"editor":"boolean","default":false,"section":"Wireframe state"},"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+renderVals() {
+const scr = this.props.screen ?? 'Users and roles';
+const content = ['Announcements', 'Sponsors', 'Committee'].indexOf(scr) >= 0;
+const groupOpen = content ? 'Content' : 'System';
+const subsFor = {
+Content: ['Announcements', 'Sponsors', 'Committee', 'Branding'],
+System: ['Users and roles', 'Audit log', 'Reports', 'Settings']
+};
+const nav = ['Overview', 'Registrations', 'Directory', 'Auction', 'Competition', 'Results', 'Content', 'System'].map((l) => ({
+label: l,
+open: l === groupOpen,
+color: l === groupOpen ? '#F5F7FA' : '#A5ADB8',
+subs: (subsFor[l] || []).map((s) => ({ label: s, on: s === scr, off: s !== scr }))
+}));
+return {
+annClass: (this.props.showNotes ?? false) ? '' : 'hide-ann',
+nav: nav,
+crumb: groupOpen + ' / ' + scr,
+sUsers: scr === 'Users and roles', sAudit: scr === 'Audit log', sReports: scr === 'Reports',
+sNews: scr === 'Announcements', sSponsors: scr === 'Sponsors', sCommittee: scr === 'Committee',
+reports: [
+{ title: 'Registration summary', ref: 'REP-001', desc: 'Players and teams by status, category and home area, with review times.', filter: 'Players and teams' },
+{ title: 'Auction expenditure and budgets', ref: 'REP-002', desc: 'Spent and remaining budget per team, every sale with price and time.', filter: 'All teams' },
+{ title: 'Team rosters and allocations', ref: 'REP-003', desc: 'Each team’s squad with purchase prices and any audited corrections.', filter: 'All teams' },
+{ title: 'Fixtures, matches and standings', ref: 'REP-004', desc: 'Ties, match results, game scores and the standings table.', filter: 'Confirmed only' },
+{ title: 'Audit export', ref: 'REP-005', desc: 'Full audit trail for a date range, for record keeping.', filter: 'Last 30 days' }
+],
+groups: [
+{ name: '[Leadership]', style: 'Large cards', members: [{ ph: 'Photo' }, { ph: 'Photo' }, { ph: 'Photo' }] },
+{ name: '[Group A]', style: 'Compact cards', members: [{ ph: 'AB' }, { ph: 'Photo' }, { ph: 'CD' }] },
+{ name: '[Group B]', style: 'Compact cards', members: [{ ph: 'Photo' }, { ph: 'EF' }] }
+]
+};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NGBCL 1.0 — Homepage wireframe</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/8f7dbd951cd94d5d6ac221330072dab7">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700;1,800&amp;family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#F5F7FA}a:hover{color:#D8FF42}
+.wf{container-type:inline-size;background:#101318;color:#F5F7FA;font-family:'DM Sans',"Noto Sans Tamil","Noto Sans Sinhala",system-ui,sans-serif;font-size:15px;line-height:1.5;min-height:100%}
+.wf *{box-sizing:border-box}
+.wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+.sec{padding:72px 0;border-top:1px solid rgba(245,247,250,.12);position:relative}
+.h2{font-size:clamp(26px,3.4cqi,40px);line-height:1.05}
+.sechead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:32px}
+.g-teams{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px}
+.g-players{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.g-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.g-info{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:rgba(245,247,250,.12);border:1px solid rgba(245,247,250,.12);border-radius:8px;overflow:hidden}
+.g-split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:32px}
+.g-live{display:grid;grid-template-columns:minmax(0,8fr) minmax(0,4fr);gap:20px}
+.podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:end}
+.p1{order:2}.p2{order:1}.p3{order:3}
+.navlinks{display:flex;gap:22px;align-items:center}
+.navlinks a{text-decoration:none;font-size:14px;font-weight:500;color:#A5ADB8}
+.navlinks a:hover{color:#F5F7FA}
+.burger{display:none}
+.fb-txt{display:inline}
+.mlive{display:none}
+.hero-title{font-size:clamp(34px,6.4cqi,92px);line-height:.92}
+.countdown{display:flex;gap:10px}
+.cd{width:72px;padding:10px 0;text-align:center;border:1px solid rgba(245,247,250,.2);border-radius:6px;background:rgba(12,14,18,.5)}
+.foot{display:grid;grid-template-columns:minmax(0,4fr) repeat(3,minmax(0,2fr)) minmax(0,3fr);gap:32px}
+@container (max-width:1100px){
+.navlinks{display:none}.burger{display:inline-flex}
+.g-teams{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g-players{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g-split,.g-live{grid-template-columns:minmax(0,1fr)}
+.foot{grid-template-columns:repeat(3,minmax(0,1fr))}
+.foot .f-brand,.foot .f-contact{grid-column:1/-1}
+}
+@container (max-width:700px){
+.wrap{padding:0 16px}
+.sec{padding:52px 0}
+.g-teams{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.g-players{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.g-3{grid-template-columns:minmax(0,1fr)}
+.g-info{grid-template-columns:minmax(0,1fr)}
+.podium{grid-template-columns:minmax(0,1fr)}
+.p1{order:1}.p2{order:2}.p3{order:3}
+.hide-s{display:none}
+.fb-txt{display:none}
+.navreg{display:none}
+.hero-ctas .btn{width:100%}
+.cd{width:auto;flex:1}
+.foot{grid-template-columns:repeat(2,minmax(0,1fr))}
+.mlive{display:flex}
+}
+.hero-poster{background:#101318 url(/_blob/64b2eeb9f50cabb2608078d66174f909) 72% 30%/cover no-repeat}.court-bg{background:linear-gradient(180deg,#191F27 0%,rgba(25,31,39,.82) 30%,rgba(25,31,39,.9) 70%,#191F27 100%),url(/_blob/327e5af290f3807629181c898ddab48c) center 40%/cover no-repeat}.trophy-3d{filter:drop-shadow(0 22px 28px rgba(0,0,0,.65)) drop-shadow(0 0 48px rgba(201,164,92,.22))}@media (prefers-reduced-motion:reduce){.hero-video{display:none}}@container (max-width:700px){.trophy-3d.prize-trophy{margin-top:-24px !important;height:140px !important}}</style>
+</helmet>
+<div class="wf {{annClass}}">
+
+<!-- 01 NAVIGATION -->
+<header style="position: sticky; top: 0; z-index: 20; background: rgba(12,14,18,.92); border-bottom: 1px solid rgba(245,247,250,.12)">
+<div class="ann">01 · Navigation — sticky</div>
+<sc-if value="{{liveNow}}" hint-placeholder-val="{{ true }}">
+<div style="background: #D8FF42; color: #101318">
+<div class="wrap" style="display: flex; align-items: center; gap: 12px; min-height: 36px; font-size: 13px; font-weight: 600">
+<span class="dot"></span>
+<span style="white-space: nowrap">LIVE NOW</span>
+<span style="font-weight: 500; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">[Team A] vs [Team B] · Court [—]</span>
+<a href="#live" style="margin-left: auto; color: #101318; font-weight: 600; white-space: nowrap">Watch live</a>
+</div>
+</div>
+</sc-if>
+<nav class="wrap" style="display: flex; align-items: center; gap: 20px; min-height: 72px" aria-label="Main">
+<a href="#top" style="display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0">
+<img src="/_blob/cdcfcb2d54393ecb009b0801816ef575" alt="NGBCL — Next Gen Badminton Champions League" style="height: 40px; width: auto; max-width: 100%; display: block; object-fit: contain">
+<span class="chip" style="border: 1px solid #C9A45C; color: #D6B877; padding: 4px 6px">1.0</span>
+</a>
+<div class="navlinks" style="margin-left: auto">
+<a href="#top">Home</a>
+<a href="#teams">Teams</a>
+<a href="#players">Players</a>
+<a href="#auction">Auction</a>
+<a href="#fixtures">Fixtures</a>
+<a href="#live">Live</a>
+<a href="#standings">Standings</a>
+<a href="#news">News</a>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; margin-left: auto">
+<sc-if value="{{liveNow}}" hint-placeholder-val="{{ true }}">
+<a href="#live" class="chip c-live" style="text-decoration: none"><span class="dot"></span>Live</a>
+</sc-if>
+<a href="#" class="link" style="font-size: 13px"><span class="fb-txt">Follow on </span>Facebook</a>
+<a href="PlayerReg.dc.html" class="btn btn-volt btn-sm navreg">Register</a>
+<button type="button" class="burger" aria-label="Open menu" style="width: 44px; height: 44px; align-items: center; justify-content: center; background: transparent; border: 1px solid rgba(245,247,250,.3); border-radius: 6px; color: #F5F7FA; cursor: pointer">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+</button>
+</div>
+</nav>
+</header>
+
+<!-- 02 HERO -->
+<section id="top" class="hero-poster" style="position: relative; overflow: hidden; min-height: 720px">
+<div class="ann">02 · Championship hero — phase: {{phaseLabel}}</div>
+<video class="hero-video" ref="{{heroVideo}}" autoplay="" muted="" loop="" playsinline="" preload="auto" poster="/_blob/64b2eeb9f50cabb2608078d66174f909" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 72% 30%"><source src="/_blob/aa5373aeaee2f521ccca5cf47cb96073" type="video/webm"><source src="/_blob/8024e41ff91b9954f720ff6e7280575f" type="video/mp4"></video>
+<div style="position: absolute; inset: 0; background: linear-gradient(90deg, rgba(16,19,24,.95) 0%, rgba(16,19,24,.78) 36%, rgba(16,19,24,.2) 68%, rgba(16,19,24,.05) 100%), linear-gradient(0deg, #101318 0%, rgba(16,19,24,0) 32%)"></div>
+<div class="wrap" style="position: relative; padding-top: 96px; padding-bottom: 96px; display: flex; flex-direction: column; gap: 24px; align-items: flex-start">
+<div class="eyebrow" style="color: #D6B877">Mighty Sharks Battalion presents</div>
+<img src="/_blob/172a29fda5ad21f7b2ec6aba4f21746b" alt="NGBCL — Next Gen Badminton Champions League" style="height: 150px; width: auto; max-width: 100%; display: block; object-fit: contain">
+<h1 class="disp hero-title" style="max-width: 980px">Next Gen Badminton Champions League <span style="color: #D6B877">1.0</span></h1>
+<p style="margin: 0; font-size: clamp(20px, 2.4cqi, 30px); font-family: 'Barlow Condensed', sans-serif; font-style: italic; color: #F5F7FA">Rise. Rally. Rule the Court.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; font-size: 15px">
+<span><span class="eyebrow">Dates </span><span class="tbc">[DATES TBC]</span></span>
+<span><span class="eyebrow">Venue </span><span class="tbc">[VENUE TBC]</span>, Jaffna</span>
+<span class="chip c-neutral">Inaugural edition</span>
+</div>
+
+<sc-if value="{{isReg}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 640px; margin-top: 8px">
+<div class="hero-ctas" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
+<a href="PlayerReg.dc.html" class="btn btn-volt">Register as a player</a>
+<a href="TeamReg.dc.html" class="btn btn-out">Enter a team</a>
+<span class="chip" style="border: 1px solid #D6B877; color: #D6B877">Jaffna players only</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div class="eyebrow">Registration closes in · <span class="tbc">[CLOSING DATE TBC]</span></div>
+<div class="countdown">
+<div class="cd"><div class="num" style="font-size: 32px; line-height: 1">--</div><div class="eyebrow">Days</div></div>
+<div class="cd"><div class="num" style="font-size: 32px; line-height: 1">--</div><div class="eyebrow">Hrs</div></div>
+<div class="cd"><div class="num" style="font-size: 32px; line-height: 1">--</div><div class="eyebrow">Min</div></div>
+<div class="cd"><div class="num" style="font-size: 32px; line-height: 1">--</div><div class="eyebrow">Sec</div></div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isAuc}}" hint-placeholder-val="{{ false }}">
+<div class="hero-ctas" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 8px">
+<a href="#auction" class="btn btn-volt"><span class="dot"></span>Watch the auction live</a>
+<a href="#auction" class="btn btn-out">How the auction works</a>
+<span class="muted" style="font-size: 14px">Auction day · <span class="tbc">[AUCTION DATE TBC]</span></span>
+</div>
+</sc-if>
+
+<sc-if value="{{isLive}}" hint-placeholder-val="{{ false }}">
+<div style="width: 100%; max-width: 760px; margin-top: 8px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 10px"><span class="chip c-live"><span class="dot"></span>Live now</span><span class="muted" style="font-size: 14px">Ties in progress</span></div>
+<div class="card" style="display: flex; align-items: center; gap: 16px; padding: 14px 16px; flex-wrap: wrap">
+<span>[Team A]</span><span class="num" style="font-size: 28px">– : –</span><span>[Team B]</span>
+<span class="muted" style="font-size: 13px">Court [—]</span>
+<a href="#live" class="btn btn-volt btn-sm" style="margin-left: auto">Watch live</a>
+</div>
+<div class="card" style="display: flex; align-items: center; gap: 16px; padding: 14px 16px; flex-wrap: wrap">
+<span>[Team C]</span><span class="num" style="font-size: 28px">– : –</span><span>[Team D]</span>
+<span class="muted" style="font-size: 13px">Court [—]</span>
+<a href="#live" class="btn btn-out btn-sm" style="margin-left: auto">Watch live</a>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isDone}}" hint-placeholder-val="{{ false }}">
+<div class="card" style="display: flex; align-items: center; gap: 20px; padding: 20px; margin-top: 8px; border-color: #C9A45C; flex-wrap: wrap">
+<img class="trophy-3d" src="/_blob/d2df927fd831471a90d655e303ab7a2b" alt="" aria-hidden="true" style="height: 110px; width: auto"><div class="ph ph-crest ph-crest" style="width: 96px; height: 96px">Champion crest</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span class="eyebrow" style="color: #D6B877">NGBCL 1.0 Champions</span>
+<span class="disp" style="font-size: 32px">[Champion team]</span>
+<a href="#standings" class="link">Final standings</a>
+</div>
+</div>
+</sc-if>
+</div>
+</section>
+
+<!-- 02b TITLE SPONSOR LOCKUP -->
+<div style="background: #222A34; border-top: 1px solid rgba(201,164,92,.6); border-bottom: 1px solid rgba(201,164,92,.6); position: relative">
+<div class="ann">02b · Title-sponsor lockup</div>
+<div class="wrap" style="display: flex; align-items: center; justify-content: center; gap: 16px; min-height: 72px; flex-wrap: wrap; padding-top: 12px; padding-bottom: 12px">
+<span class="eyebrow">NGBCL 1.0 presented by</span>
+<div class="ph" style="width: 160px; height: 44px; border-color: #C9A45C">[Title sponsor logo]</div>
+<span class="muted" style="font-size: 13px">Before signing: “Title sponsorship available” → Become a sponsor</span>
+</div>
+</div>
+
+<!-- 03 INTRODUCTION -->
+<section class="sec" id="about">
+<div class="ann">03 · Tournament introduction</div>
+<div class="wrap g-split" style="align-items: start">
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div class="eyebrow">About the league</div>
+<h2 class="disp h2">Jaffna's team badminton league, <span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 400; text-transform: none; color: #D6B877">built on the rally</span></h2>
+</div>
+<div style="display: flex; flex-direction: column; gap: 24px">
+<p style="margin: 0; font-size: 18px; line-height: 1.55">NGBCL 1.0 is the inaugural edition of the Next Gen Badminton Champions League, presented by Mighty Sharks Battalion. Team owners build their squads through a live player auction, then meet in team fixtures made up of individual singles and doubles matches.</p>
+<p class="ann-note muted" style="margin: 0; font-size: 13px">Draft copy from the sponsorship proposal — <span class="tbc">[CONFIRM FINAL INTRO COPY]</span></p>
+<a href="Committee.dc.html" class="link" style="align-self: flex-start">Meet the organising committee</a>
+<div class="g-3" style="gap: 12px">
+<div class="card" style="padding: 18px; display: flex; flex-direction: column; gap: 8px">
+<span class="num" style="font-size: 28px; color: #D6B877">01</span>
+<strong>Register</strong>
+<span class="muted" style="font-size: 14px">Players and teams apply online. No account needed.</span>
+</div>
+<div class="card" style="padding: 18px; display: flex; flex-direction: column; gap: 8px">
+<span class="num" style="font-size: 28px; color: #D6B877">02</span>
+<strong>Auction</strong>
+<span class="muted" style="font-size: 14px">Owners bid for approved players with an equal purse.</span>
+</div>
+<div class="card" style="padding: 18px; display: flex; flex-direction: column; gap: 8px">
+<span class="num" style="font-size: 28px; color: #D6B877">03</span>
+<strong>Compete</strong>
+<span class="muted" style="font-size: 14px">Team fixtures, live scores and a confirmed standings table.</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 04 HIGHLIGHTS & KEY INFO -->
+<section class="sec court-bg" id="highlights">
+<div class="ann">04 · Highlights &amp; key information</div>
+<div class="wrap" style="display: flex; flex-direction: column; gap: 48px">
+<div class="sechead" style="margin-bottom: 0">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div class="eyebrow">Prize pool</div>
+<h2 class="disp h2">Play for <span class="num" style="font-style: normal; color: #D6B877">Rs. 600,000</span></h2>
+</div>
+</div>
+<div class="podium">
+<div class="card p2" style="padding: 24px; display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center; min-height: 200px; justify-content: flex-end; border-top: 3px solid #D9DEE7">
+<span class="eyebrow">Runners-up</span>
+<span class="num" style="font-size: 44px; line-height: 1">Rs. 200,000</span>
+</div>
+<div class="card p1" style="padding: 28px; display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center; min-height: 260px; justify-content: flex-end; border: 1px solid #C9A45C; border-top: 3px solid #C9A45C">
+<img class="trophy-3d prize-trophy" src="/_blob/d2df927fd831471a90d655e303ab7a2b" alt="NGBCL champions trophy" style="height: 200px; width: auto; margin-top: -120px">
+<span class="eyebrow" style="color: #D6B877">Champions</span>
+<span class="num" style="font-size: 56px; line-height: 1; color: #D6B877">Rs. 300,000</span>
+</div>
+<div class="card p3" style="padding: 24px; display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center; min-height: 170px; justify-content: flex-end; border-top: 3px solid #B8733A">
+<span class="eyebrow">Third place</span>
+<span class="num" style="font-size: 40px; line-height: 1">Rs. 100,000</span>
+</div>
+</div>
+<div class="g-info">
+<div style="background: #101318; padding: 22px; display: flex; flex-direction: column; gap: 6px"><span class="eyebrow">Dates</span><span class="tbc" style="align-self: flex-start">[TOURNAMENT DATES TBC]</span></div>
+<div style="background: #101318; padding: 22px; display: flex; flex-direction: column; gap: 6px"><span class="eyebrow">Venue</span><span class="tbc" style="align-self: flex-start">[VENUE TBC]</span></div>
+<div style="background: #101318; padding: 22px; display: flex; flex-direction: column; gap: 6px"><span class="eyebrow">Registration window</span><span class="tbc" style="align-self: flex-start">[OPENS — CLOSES TBC]</span></div>
+<div style="background: #101318; padding: 22px; display: flex; flex-direction: column; gap: 6px"><span class="eyebrow">Teams</span><span class="tbc" style="align-self: flex-start">[NUMBER OF TEAMS TBC]</span></div>
+<div style="background: #101318; padding: 22px; display: flex; flex-direction: column; gap: 6px"><span class="eyebrow">Format</span><span class="tbc" style="align-self: flex-start">[FORMAT TBC]</span></div>
+<div style="background: #101318; padding: 22px; display: flex; flex-direction: column; gap: 6px"><span class="eyebrow">Eligibility</span><strong style="font-size: 18px">Jaffna players only</strong></div>
+</div>
+<div class="card" style="padding: 22px; display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: center">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span class="eyebrow">Own a team</span>
+<span>Team entry <strong class="num" style="font-size: 22px; color: #D6B877">Rs. 150,000</strong> per team</span>
+</div>
+<span class="muted" style="font-size: 14px; flex: 1 1 280px">Owners get an auction purse and build a squad. Information only — the organisers contact owners about the fee after review.</span>
+<a href="TeamReg.dc.html" class="btn btn-out btn-sm">Enter a team</a>
+</div>
+</div>
+</section>
+
+<!-- 05 FEATURED TEAMS -->
+<section class="sec" id="teams">
+<div class="ann">05 · Featured teams — approved teams only</div>
+<div class="wrap">
+<div class="sechead">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div class="eyebrow">The franchises</div>
+<h2 class="disp h2">Teams</h2>
+</div>
+<a href="#" class="link">All teams</a>
+</div>
+<div class="g-teams">
+<sc-for list="{{teams}}" as="t" hint-placeholder-count="6">
+<a href="#" class="card" style="text-decoration: none; padding: 16px; display: flex; flex-direction: column; gap: 12px; align-items: center; text-align: center; border-top: 4px solid rgba(245,247,250,.3)">
+<div class="ph ph-crest" style="width: 100%; aspect-ratio: 1 / 1">Crest tile</div>
+<strong style="font-size: 14px">[Team name]</strong>
+<span class="mono muted" style="font-size: 12px">[ABC]</span>
+</a>
+</sc-for>
+</div>
+<p class="ann-note muted" style="margin: 20px 0 0; font-size: 13px">Grid flexes for <span class="tbc">[4–10 TEAMS — COUNT TBC]</span>. Empty state before approval: “Teams are announced after review.”</p>
+</div>
+</section>
+
+<!-- 06 FEATURED PLAYERS -->
+<section class="sec" id="players" style="background: #191F27">
+<div class="ann">06 · Featured approved players — public fields only</div>
+<div class="wrap">
+<div class="sechead">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div class="eyebrow">Approved players</div>
+<h2 class="disp h2">Players</h2>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
+<span class="chip c-neutral" style="padding: 8px 10px">Team ▾</span>
+<span class="chip c-neutral" style="padding: 8px 10px">Category ▾</span>
+<span class="chip c-neutral" style="padding: 8px 10px">Gender ▾</span>
+<a href="#" class="link" style="margin-left: 8px">All players</a>
+</div>
+</div>
+<div class="g-players">
+<sc-for list="{{players}}" as="p" hint-placeholder-count="5">
+<a href="#" class="card" style="text-decoration: none; overflow: hidden; display: flex; flex-direction: column; border-top: 4px solid rgba(245,247,250,.3)">
+<div class="ph ph-person" style="aspect-ratio: 4 / 5; border-radius: 0; border-width: 0 0 1px 0">Photo 4:5</div>
+<div style="padding: 14px; display: flex; flex-direction: column; gap: 8px">
+<div style="font-size: 15px">[First] <strong style="text-transform: uppercase">[Surname]</strong></div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap"><span class="chip c-neutral">[Category]</span></div>
+<div style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px; border-top: 1px solid rgba(245,247,250,.1); padding-top: 8px">
+<span class="muted">[Team / Not yet auctioned]</span>
+<span class="num" style="font-size: 16px; color: #D6B877; white-space: nowrap">Rs. [—]</span>
+</div>
+</div>
+</a>
+</sc-for>
+</div>
+</div>
+</section>
+
+<!-- 07 AUCTION -->
+<section class="sec" id="auction">
+<div class="ann">07 · Auction information &amp; latest results</div>
+<div class="wrap">
+<div class="sechead">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div class="eyebrow">Player auction</div>
+<h2 class="disp h2">The auction</h2>
+</div>
+<a href="#" class="link">All auction results</a>
+</div>
+<div class="g-split">
+<div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<span class="chip c-neutral">[Status: Upcoming / Live / Closed]</span>
+<span class="muted" style="font-size: 14px"><span class="tbc">[AUCTION DATE TBC]</span></span>
+</div>
+<p style="margin: 0">Every team starts with the same purse. Owners bid for approved players until each squad is full.</p>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: rgba(245,247,250,.12); border-radius: 6px; overflow: hidden">
+<div style="background: #222A34; padding: 14px; display: flex; flex-direction: column; gap: 4px"><span class="eyebrow">Team purse</span><span class="tbc" style="align-self: flex-start">[BUDGET TBC]</span></div>
+<div style="background: #222A34; padding: 14px; display: flex; flex-direction: column; gap: 4px"><span class="eyebrow">Max squad</span><span class="tbc" style="align-self: flex-start">[SQUAD SIZE TBC]</span></div>
+<div style="background: #222A34; padding: 14px; display: flex; flex-direction: column; gap: 4px"><span class="eyebrow">Base price</span><span class="tbc" style="align-self: flex-start">[BASE PRICE TBC]</span></div>
+<div style="background: #222A34; padding: 14px; display: flex; flex-direction: column; gap: 4px"><span class="eyebrow">Min increment</span><span class="tbc" style="align-self: flex-start">[INCREMENT TBC]</span></div>
+</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<a href="#" class="btn btn-volt btn-sm"><span class="dot"></span>Watch live display</a>
+<span class="muted" style="font-size: 13px; align-self: center">Active only while the auction runs</span>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 20px">
+<div class="card" style="padding: 8px 8px 4px">
+<div style="padding: 12px 10px 4px; display: flex; justify-content: space-between"><strong>Latest results</strong><span class="eyebrow">Newest first</span></div>
+<div class="scroll">
+<table class="tbl">
+<thead><tr><th>Lot</th><th>Player</th><th class="hide-s">Team</th><th class="r">Price</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td class="mono muted">#[—]</td><td>[Player name]</td><td class="hide-s">[Team]</td><td class="r num" style="font-size: 16px">Rs. [—]</td><td><span class="chip c-sold">Sold</span></td></tr>
+<tr><td class="mono muted">#[—]</td><td>[Player name]</td><td class="hide-s">[Team]</td><td class="r num" style="font-size: 16px">Rs. [—]</td><td><span class="chip c-sold">Sold</span></td></tr>
+<tr><td class="mono muted">#[—]</td><td>[Player name]</td><td class="hide-s">—</td><td class="r muted">—</td><td><span class="chip c-neutral">Unsold</span></td></tr>
+<tr><td class="mono muted">#[—]</td><td>[Player name]</td><td class="hide-s">[Team]</td><td class="r num" style="font-size: 16px">Rs. [—]</td><td><span class="chip c-sold">Sold</span></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between"><strong>Team spend</strong><span class="eyebrow">If published</span></div>
+<sc-for list="{{spend}}" as="s" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; justify-content: space-between; font-size: 13px"><span>[Team]</span><span class="muted">Spent [—] of [—] · Squad [—/—]</span></div>
+<div class="bar" style="position: relative; overflow: hidden"><div style="position: absolute; inset: 0 {{s.rest}} 0 0; background: #C9A45C; opacity: .5"></div></div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 08 UPCOMING FIXTURES -->
+<section class="sec" id="fixtures" style="background: #191F27">
+<div class="ann">08 · Upcoming fixtures — team ties</div>
+<div class="wrap">
+<div class="sechead">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div class="eyebrow">Schedule</div>
+<h2 class="disp h2">Upcoming fixtures</h2>
+</div>
+<div style="display: flex; gap: 16px; align-items: center">
+<div role="tablist" style="display: flex; border: 1px solid rgba(245,247,250,.2); border-radius: 6px; overflow: hidden">
+<button type="button" role="tab" aria-selected="true" style="min-height: 40px; padding: 0 16px; background: #D8FF42; color: #101318; border: 0; font: 600 14px 'DM Sans', sans-serif">Upcoming</button>
+<button type="button" role="tab" aria-selected="false" style="min-height: 40px; padding: 0 16px; background: transparent; color: #F5F7FA; border: 0; font: 600 14px 'DM Sans', sans-serif">Results</button>
+</div>
+<a href="#" class="link">Full schedule</a>
+</div>
+</div>
+<div class="g-3">
+<sc-for list="{{fixtures}}" as="f" hint-placeholder-count="3">
+<a href="#" class="card" style="text-decoration: none; padding: 20px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+<span class="eyebrow">Round [—] · Court [—]</span>
+<span class="chip c-neutral">Scheduled</span>
+</div>
+<div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; text-align: center">
+<div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div class="ph ph-crest" style="width: 56px; height: 56px; padding: 2px; font-size: 9px">Crest</div><span style="font-size: 14px">[Team A]</span></div>
+<span class="disp" style="font-size: 18px; color: #A5ADB8">vs</span>
+<div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div class="ph ph-crest" style="width: 56px; height: 56px; padding: 2px; font-size: 9px">Crest</div><span style="font-size: 14px">[Team B]</span></div>
+</div>
+<hr class="court">
+<div style="display: flex; justify-content: space-between; font-size: 13px; gap: 8px; flex-wrap: wrap">
+<span class="tbc">[DATE · TIME TBC]</span>
+<span class="muted">[N] matches · [categories TBC]</span>
+</div>
+</a>
+</sc-for>
+</div>
+<p class="ann-note muted" style="margin: 20px 0 0; font-size: 13px">A fixture (tie) holds several individual matches; each match holds games. Tie cards expand to matches on the Fixtures page.</p>
+</div>
+</section>
+
+<!-- 09 LIVE MATCH -->
+<section class="sec" id="live">
+<div class="ann">09 · Live match — shown when a match is published live</div>
+<div class="wrap">
+<div class="sechead">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div class="eyebrow">Courtside</div>
+<h2 class="disp h2">Live match</h2>
+</div>
+<span class="chip c-neutral" style="padding: 7px 10px"><span class="dot" style="background: #D8FF42"></span>Connection: Live</span>
+</div>
+
+<sc-if value="{{liveNow}}" hint-placeholder-val="{{ true }}">
+<div class="g-live">
+<div class="card" style="overflow: hidden; border-color: #D8FF42">
+<div style="padding: 24px; display: flex; flex-direction: column; gap: 20px; border-bottom: 1px solid rgba(245,247,250,.12)">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap">
+<span class="chip c-live"><span class="dot"></span>Live</span>
+<span class="eyebrow">Round [—] · Court [—]</span>
+</div>
+<div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; text-align: center">
+<div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div class="ph ph-crest" style="width: 72px; height: 72px">Crest</div><strong>[Team A]</strong></div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px"><span class="num" style="font-size: 64px; line-height: 1">– : –</span><span class="eyebrow">Tie score · matches won</span></div>
+<div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div class="ph ph-crest" style="width: 72px; height: 72px">Crest</div><strong>[Team B]</strong></div>
+</div>
+</div>
+<div class="scroll">
+<table class="tbl" style="min-width: 520px">
+<thead><tr><th>Match</th><th>Side A</th><th>Side B</th><th>Games</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td class="muted">[Category]</td><td>[Player]</td><td>[Player]</td><td class="num" style="font-size: 16px">[—–—] [—–—]</td><td><span class="chip c-neutral">Done</span></td></tr>
+<tr style="background: rgba(216,255,66,.06)"><td class="muted">[Category]</td><td>[Player] / [Player]</td><td>[Player] / [Player]</td><td class="num" style="font-size: 16px">[—–—] <strong style="color: #D8FF42">[— : —]</strong></td><td><span class="chip c-live"><span class="dot"></span>Live</span></td></tr>
+<tr><td class="muted">[Category]</td><td>[Player]</td><td>[Player]</td><td class="muted">—</td><td><span class="chip c-neutral">Next</span></td></tr>
+</tbody>
+</table>
+</div>
+<div style="padding: 16px 24px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center">
+<span class="muted" style="font-size: 13px">Match count and categories per tie are configurable <span class="tbc">[TBC]</span></span>
+<a href="#" class="btn btn-volt btn-sm">Open match centre</a>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<div class="eyebrow">Also live</div>
+<div class="card" style="padding: 16px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between"><span class="eyebrow">Court [—]</span><span class="chip c-live"><span class="dot"></span>Live</span></div>
+<div style="display: flex; justify-content: space-between"><span>[Team C]</span><span class="num" style="font-size: 18px">–</span></div>
+<div style="display: flex; justify-content: space-between"><span>[Team D]</span><span class="num" style="font-size: 18px">–</span></div>
+</div>
+<div class="ph" style="min-height: 120px">Empty slot when only one tie is live</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{notLive}}" hint-placeholder-val="{{ false }}">
+<div class="card" style="padding: 48px 24px; display: flex; flex-direction: column; gap: 14px; align-items: center; text-align: center">
+<img src="/_blob/327e5af290f3807629181c898ddab48c" alt="" aria-hidden="true" style="width: 360px; max-width: 100%; height: 170px; object-fit: cover; border-radius: 8px; opacity: .85">
+<strong style="font-size: 18px">No matches live right now</strong>
+<span class="muted">Next up: <span class="tbc">[NEXT FIXTURE TBC]</span></span>
+<a href="#fixtures" class="link">See the schedule</a>
+</div>
+</sc-if>
+</div>
+</section>
+
+<!-- 10 STANDINGS -->
+<section class="sec" id="standings" style="background: #191F27">
+<div class="ann">10 · Standings preview — top 4</div>
+<div class="wrap">
+<div class="sechead">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div class="eyebrow">League table</div>
+<h2 class="disp h2">Standings</h2>
+</div>
+<a href="#" class="link">Full standings &amp; stats</a>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 6px; background: rgba(130,174,255,.08); border: 1px solid rgba(130,174,255,.6); margin-bottom: 16px; flex-wrap: wrap">
+<span class="chip c-prov">Provisional</span>
+<span style="font-size: 14px">Includes <span class="tbc">[N]</span> provisional results. Only confirmed results are official.</span>
+</div>
+<div class="card scroll" style="padding: 4px 8px">
+<table class="tbl" style="min-width: 340px">
+<thead><tr><th>Pos</th><th>Team</th><th class="r">P</th><th class="r">W</th><th class="r">L</th><th class="r hide-s">Match W–L</th><th class="r hide-s">Game W–L</th><th class="r">Pts</th><th class="hide-s">Form</th></tr></thead>
+<tbody>
+<tr>
+<td class="num" style="font-size: 18px">1</td>
+<td><div style="display: flex; align-items: center; gap: 10px"><div class="ph ph-crest" style="width: 32px; height: 32px; padding: 0; font-size: 8px">C</div><span>[Team]</span></div></td>
+<td class="r muted">—</td><td class="r muted">—</td><td class="r muted">—</td>
+<td class="r muted hide-s">— – —</td><td class="r muted hide-s">— – —</td>
+<td class="r num" style="font-size: 18px">—</td>
+<td class="hide-s"><div style="display: flex; gap: 4px"><span class="ph" style="width: 20px; height: 20px; padding: 0; font-size: 9px">–</span><span class="ph" style="width: 20px; height: 20px; padding: 0; font-size: 9px">–</span><span class="ph" style="width: 20px; height: 20px; padding: 0; font-size: 9px">–</span></div></td>
+</tr>
+<tr>
+<td class="num" style="font-size: 18px">2</td>
+<td><div style="display: flex; align-items: center; gap: 10px"><div class="ph ph-crest" style="width: 32px; height: 32px; padding: 0; font-size: 8px">C</div><span>[Team]</span></div></td>
+<td class="r muted">—</td><td class="r muted">—</td><td class="r muted">—</td>
+<td class="r muted hide-s">— – —</td><td class="r muted hide-s">— – —</td>
+<td class="r num" style="font-size: 18px">—</td>
+<td class="hide-s"><div style="display: flex; gap: 4px"><span class="ph" style="width: 20px; height: 20px; padding: 0; font-size: 9px">–</span><span class="ph" style="width: 20px; height: 20px; padding: 0; font-size: 9px">–</span><span class="ph" style="width: 20px; height: 20px; padding: 0; font-size: 9px">–</span></div></td>
+</tr>
+<tr>
+<td class="num" style="font-size: 18px">3</td>
+<td><div style="display: flex; align-items: center; gap: 10px"><div class="ph ph-crest" style="width: 32px; height: 32px; padding: 0; font-size: 8px">C</div><span>[Team]</span></div></td>
+<td class="r muted">—</td><td class="r muted">—</td><td class="r muted">—</td>
+<td class="r muted hide-s">— – —</td><td class="r muted hide-s">— – —</td>
+<td class="r num" style="font-size: 18px">—</td>
+<td class="hide-s"><div style="display: flex; gap: 4px"><span class="ph" style="width: 20px; height: 20px; padding: 0; font-size: 9px">–</span><span class="ph" style="width: 20px; height: 20px; padding: 0; font-size: 9px">–</span><span class="ph" style="width: 20px; height: 20px; padding: 0; font-size: 9px">–</span></div></td>
+</tr>
+<tr>
+<td class="num" style="font-size: 18px">4</td>
+<td><div style="display: flex; align-items: center; gap: 10px"><div class="ph ph-crest" style="width: 32px; height: 32px; padding: 0; font-size: 8px">C</div><span>[Team]</span></div></td>
+<td class="r muted">—</td><td class="r muted">—</td><td class="r muted">—</td>
+<td class="r muted hide-s">— – —</td><td class="r muted hide-s">— – —</td>
+<td class="r num" style="font-size: 18px">—</td>
+<td class="hide-s"><div style="display: flex; gap: 4px"><span class="ph" style="width: 20px; height: 20px; padding: 0; font-size: 9px">–</span><span class="ph" style="width: 20px; height: 20px; padding: 0; font-size: 9px">–</span><span class="ph" style="width: 20px; height: 20px; padding: 0; font-size: 9px">–</span></div></td>
+</tr>
+</tbody>
+</table>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 10px 12px"><hr class="court" style="flex: 1"><span class="eyebrow">Qualification line · top <span class="tbc">[N TBC]</span></span></div>
+</div>
+<p class="ann-note muted" style="margin: 16px 0 0; font-size: 13px">Points, tie-break rules and format (table vs bracket) are <span class="tbc">[TBC]</span>. Knockout format swaps this preview for a bracket snapshot.</p>
+</div>
+</section>
+
+<!-- 11 SPONSORS -->
+<section class="sec" id="sponsors">
+<div class="ann">11 · Sponsor wall — grouped by tier</div>
+<div class="wrap" style="display: flex; flex-direction: column; gap: 28px">
+<div class="sechead" style="margin-bottom: 0">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div class="eyebrow">Partners</div>
+<h2 class="disp h2">Our sponsors</h2>
+</div>
+<a href="#" class="link">Become a sponsor (proposal PDF)</a>
+</div>
+<div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 12px; align-items: center; text-align: center; border: 1px solid #C9A45C; position: relative">
+<span class="eyebrow" style="color: #D6B877">Title sponsor</span>
+<div class="ph" style="width: 260px; height: 88px; border-color: #C9A45C">[Title sponsor logo]</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px; border-top: 2px solid #D9DEE7; padding-top: 14px">
+<span class="eyebrow">Platinum</span>
+<div class="g-3" style="gap: 12px"><div class="ph" style="height: 72px">[Sponsor logo]</div><div class="ph" style="height: 72px">[Sponsor logo]</div><div class="ph" style="height: 72px">[Sponsor logo]</div></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px; border-top: 2px solid #D6B877; padding-top: 14px">
+<span class="eyebrow">Gold</span>
+<div class="g-teams" style="gap: 12px"><div class="ph" style="height: 56px">[Logo]</div><div class="ph" style="height: 56px">[Logo]</div><div class="ph" style="height: 56px">[Logo]</div><div class="ph" style="height: 56px">[Logo]</div></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 10px; border-top: 2px solid #A5ADB8; padding-top: 14px"><span class="eyebrow">Silver</span><div style="display: flex; gap: 10px"><div class="ph" style="height: 44px; flex: 1">[Logo]</div><div class="ph" style="height: 44px; flex: 1">[Logo]</div></div></div>
+<div style="display: flex; flex-direction: column; gap: 10px; border-top: 2px solid #B8733A; padding-top: 14px"><span class="eyebrow">Bronze</span><div style="display: flex; gap: 10px"><div class="ph" style="height: 44px; flex: 1">[Logo]</div><div class="ph" style="height: 44px; flex: 1">[Logo]</div></div></div>
+<div style="display: flex; flex-direction: column; gap: 10px; border-top: 2px solid rgba(245,247,250,.4); padding-top: 14px"><span class="eyebrow">Official media partner</span><div class="ph" style="height: 44px">[Logo]</div></div>
+</div>
+<p class="ann-note muted" style="margin: 0; font-size: 13px">Tiers with no signed sponsor are hidden. Until any sponsor signs, this section shows one “Become a sponsor” card instead.</p>
+</div>
+</section>
+
+<!-- 12 ANNOUNCEMENTS -->
+<section class="sec" id="news" style="background: #191F27">
+<div class="ann">12 · Announcements</div>
+<div class="wrap">
+<div class="sechead">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div class="eyebrow">From the organisers</div>
+<h2 class="disp h2">Announcements</h2>
+</div>
+<a href="#" class="link">All news</a>
+</div>
+<div class="g-3">
+<sc-for list="{{news}}" as="n" hint-placeholder-count="3">
+<article class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+<sc-if value="{{n.pinned}}" hint-placeholder-val="{{ false }}"><span class="chip" style="border: 1px solid #D6B877; color: #D6B877">Pinned</span></sc-if>
+<span class="mono muted" style="font-size: 12px">[DATE]</span>
+</div>
+<h3 style="margin: 0; font-size: 18px; font-weight: 600">[Announcement title]</h3>
+<div class="bar" style="width: 100%"></div>
+<div class="bar" style="width: 80%"></div>
+<div class="bar" style="width: 55%"></div>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px">
+<a href="#" class="link">Read more</a>
+<a href="#" class="muted" style="font-size: 13px">Share</a>
+</div>
+</article>
+</sc-for>
+</div>
+</div>
+</section>
+
+<!-- 12 FOOTER -->
+<footer style="background: #191F27; border-top: 1px solid rgba(245,247,250,.12); position: relative; padding: 64px 0 32px">
+<div class="ann">13 · Footer — navigation &amp; contact</div>
+<div class="wrap" style="display: flex; flex-direction: column; gap: 40px">
+<div class="foot">
+<div class="f-brand" style="display: flex; flex-direction: column; gap: 14px">
+<img src="/_blob/cdcfcb2d54393ecb009b0801816ef575" alt="NGBCL — Next Gen Badminton Champions League" style="height: 56px; width: auto; max-width: 100%; display: block; object-fit: contain">
+<span style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-size: 20px">Rise. Rally. Rule the Court.</span>
+<span class="muted" style="font-size: 14px">Next Gen Badminton Champions League 1.0</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+<span class="eyebrow">League</span>
+<a href="#about" style="text-decoration: none">About</a>
+<a href="Committee.dc.html" style="text-decoration: none">Organising committee</a>
+<a href="#teams" style="text-decoration: none">Teams</a>
+<a href="#players" style="text-decoration: none">Players</a>
+<a href="#auction" style="text-decoration: none">Auction</a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+<span class="eyebrow">Competition</span>
+<a href="#fixtures" style="text-decoration: none">Fixtures</a>
+<a href="#live" style="text-decoration: none">Live scores</a>
+<a href="#standings" style="text-decoration: none">Standings</a>
+<a href="#news" style="text-decoration: none">News</a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+<span class="eyebrow">Take part</span>
+<a href="PlayerReg.dc.html" style="text-decoration: none">Register as a player</a>
+<a href="TeamReg.dc.html" style="text-decoration: none">Enter a team</a>
+<a href="#" style="text-decoration: none">Privacy notice</a>
+</div>
+<div class="f-contact" style="display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+<span class="eyebrow">Organiser &amp; contact</span>
+<div style="display: flex; gap: 12px; align-items: center"><div class="ph" style="width: 48px; height: 48px; padding: 2px; font-size: 8px">Sharks logo</div><strong>Mighty Sharks Battalion</strong></div>
+<span class="muted">Jaffna, Sri Lanka</span>
+<span><span class="tbc">[CONTACT EMAIL TBC]</span></span>
+<span><span class="tbc">[CONTACT PHONE TBC]</span></span>
+<a href="#" class="link" style="align-self: flex-start">Facebook page</a>
+<span class="muted" style="font-size: 13px">Also organisers of the NGCL cricket tournament.</span>
+</div>
+</div>
+<hr class="court">
+<div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 13px" class="muted">
+<span>© <span class="tbc">[YEAR]</span> Mighty Sharks Battalion. All rights reserved.</span>
+<span>NGBCL 1.0 · Inaugural edition</span>
+</div>
+</div>
+</footer>
+
+<!-- Mobile sticky live strip -->
+<sc-if value="{{liveNow}}" hint-placeholder-val="{{ true }}">
+<a href="#live" class="mlive" style="position: sticky; bottom: 0; z-index: 20; align-items: center; gap: 10px; padding: 14px 16px; min-height: 52px; background: #D8FF42; color: #101318; text-decoration: none; font-weight: 600; font-size: 14px">
+<span class="dot"></span>LIVE · [Team A] vs [Team B]<span style="margin-left: auto">Watch</span>
+</a>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"phase":{"editor":"enum","options":["Registration open","Auction day","Tournament running","Completed"],"default":"Registration open","section":"Wireframe state"},"liveNow":{"editor":"boolean","default":true,"section":"Wireframe state"},"showNotes":{"editor":"boolean","default":false,"section":"Wireframe state"},"$preview":{"width":1440,"height":7000}}'>
+class Component extends DCLogic {
+heroVideo = (el) => { if (el) { try { el.muted = true; el.defaultMuted = true; var p = el.play(); if (p && p.catch) p.catch(function () {}); } catch (e) {} } };
+renderVals() {
+const phase = this.props.phase ?? 'Registration open';
+const liveNow = this.props.liveNow ?? true;
+const showNotes = this.props.showNotes ?? false;
+const n = (k) => Array.from({ length: k }, (_, i) => ({ i }));
+return {
+heroVideo: this.heroVideo,
+phaseLabel: phase,
+isReg: phase === 'Registration open',
+isAuc: phase === 'Auction day',
+isLive: phase === 'Tournament running',
+isDone: phase === 'Completed',
+liveNow: liveNow,
+notLive: !liveNow,
+annClass: showNotes ? '' : 'hide-ann',
+teams: n(6),
+players: n(5),
+fixtures: n(3),
+spend: [{ rest: '40%' }, { rest: '55%' }, { rest: '70%' }],
+standings: [{ pos: 1 }, { pos: 2 }, { pos: 3 }, { pos: 4 }],
+news: [{ pinned: true }, { pinned: false }, { pinned: false }]
+};
+}
+}
+</script>
+</body>
+</html>

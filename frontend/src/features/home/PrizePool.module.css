@@ -1,0 +1,9 @@
+.sec { padding: 72px 0; border-top: 1px solid rgba(245, 247, 250, .12); background: var(--bg-2); }
+.podium { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: end; margin-top: 32px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-top: 2px solid; border-radius: var(--r-m); padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; position: relative; }
+.champ { padding-top: 140px; border: 1px solid var(--gold); background: linear-gradient(180deg, var(--gold-tint), var(--surface)); }
+.trophy { position: absolute; top: -48px; width: 140px; height: auto; }
+@media (max-width: 700px) {
+  .podium { grid-template-columns: 1fr; gap: 16px; margin-top: 80px; }
+  .champ { order: -1; }
+}

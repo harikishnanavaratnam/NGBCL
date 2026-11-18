@@ -1,0 +1,38 @@
+# Local development services. Start with:  docker compose up -d
+# Then run the API (backend/) and the web app (frontend/) natively — see README.md.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ngbcl-db
+    environment:
+      POSTGRES_DB: ngbcl
+      POSTGRES_USER: ngbcl
+      POSTGRES_PASSWORD: ngbcl
+    ports:
+      - "5432:5432"
+    volumes:
+      - ngbcl-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ngbcl -d ngbcl"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # S3-compatible stand-in for Cloudflare R2 (used from Milestone 1: photo / logo uploads).
+  storage:
+    image: minio/minio:latest
+    container_name: ngbcl-storage
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ngbcl
+      MINIO_ROOT_PASSWORD: ngbcl-dev-secret
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ngbcl-storage:/data
+    profiles: ["storage"]
+
+volumes:
+  ngbcl-db:
+  ngbcl-storage:

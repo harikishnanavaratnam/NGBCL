@@ -1,0 +1,10 @@
+ngbcl:
+  security:
+    jwt-secret: test-secret-test-secret-test-secret-0123456789
+    cookie-secure: false
+    allowed-origins: http://localhost:3000
+    ip-hash-salt: test
+  bootstrap:
+    admin-email: admin@test.local
+    admin-password: Test-Admin-Password-1
+    admin-name: Test Admin

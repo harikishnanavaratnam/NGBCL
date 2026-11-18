@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NGBCL 1.0 — Public auction display wireframe</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/8f7dbd951cd94d5d6ac221330072dab7">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700;1,800&amp;family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.dp{width:1920px;height:1080px;overflow:hidden;position:relative;background:#101318;color:#F5F7FA;font-family:'DM Sans',"Noto Sans Tamil","Noto Sans Sinhala",system-ui,sans-serif;cursor:none}
+.dp *{box-sizing:border-box}
+.disp{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;letter-spacing:-.01em;margin:0}
+.num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-variant-numeric:tabular-nums lining-nums}
+.mono{font-family:'DM Sans', sans-serif;font-weight:500}
+.eyebrow{font-size:20px;line-height:1.2;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:#A5ADB8}
+.muted{color:#A5ADB8}
+.chip{display:inline-flex;align-items:center;gap:10px;font-size:18px;line-height:1;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:10px 16px;border-radius:3px;white-space:nowrap}
+.c-live{background:#D8FF42;color:#101318}
+.dot{width:14px;height:14px;border-radius:50%;background:#FF5A62;display:inline-block}
+@keyframes roll{0%{transform:translateY(40%);opacity:0}100%{transform:translateY(0);opacity:1}}
+@keyframes flash{0%{box-shadow:0 0 0 0 rgba(216,255,66,.9)}100%{box-shadow:0 0 0 40px rgba(216,255,66,0)}}
+@keyframes burst{0%{transform:scale(.4);opacity:0}30%{opacity:1}100%{transform:scale(1.15);opacity:0}}
+.roll{animation:roll 320ms cubic-bezier(.16,1,.3,1) both}
+.flash{animation:flash 900ms ease-out infinite}
+.burst{animation:burst 4s ease-out infinite}
+@media (prefers-reduced-motion:reduce){.roll,.flash,.burst{animation:none}}
+.court-scene{background:radial-gradient(ellipse at 50% 38%,rgba(16,19,24,.35),rgba(16,19,24,.92) 70%),url(/_blob/327e5af290f3807629181c898ddab48c) center 60%/cover no-repeat}</style>
+</helmet>
+<div class="dp {{annClass}}" role="img" aria-label="Public auction display, scene: {{scene}}">
+
+<!-- TOP BAR (all live scenes) -->
+<sc-if value="{{showTop}}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; height: 110px; display: flex; align-items: center; gap: 28px; padding: 0 56px; background: linear-gradient(#191F27, rgba(16,19,24,0)); z-index: 5">
+<img src="/_blob/cdcfcb2d54393ecb009b0801816ef575" alt="NGBCL — Next Gen Badminton Champions League" style="height: 64px; width: auto; max-width: 100%; display: block; object-fit: contain">
+<span class="chip c-live"><span class="dot"></span>Live auction</span>
+<span class="mono" style="font-size: 26px">Lot [n] / [total]</span>
+<span class="muted" style="margin-left: auto; font-size: 20px">presented by</span>
+<div class="ph" style="width: 200px; height: 56px; border-color: #C9A45C">[Title sponsor]</div>
+</div>
+</sc-if>
+
+<!-- ============ INTRO / WAITING ============ -->
+<sc-if value="{{sIntro}}" hint-placeholder-val="{{ false }}">
+<div class="court-scene" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px; text-align: center">
+<div class="ann" style="top: 24px; left: 24px">Scene 1 · Intro / waiting</div><img src="/_blob/7478f30cedfda4689671cc7de8e57a93" alt="" aria-hidden="true" style="position: absolute; right: 120px; top: 140px; height: 300px; transform: rotate(8deg); filter: drop-shadow(0 30px 40px rgba(0,0,0,.6))"><img src="/_blob/7478f30cedfda4689671cc7de8e57a93" alt="" aria-hidden="true" style="position: absolute; left: 140px; bottom: 120px; height: 160px; transform: rotate(-150deg); opacity: .6; filter: blur(1.5px)">
+<div class="eyebrow" style="color: #D6B877">Mighty Sharks Battalion presents</div>
+<img src="/_blob/172a29fda5ad21f7b2ec6aba4f21746b" alt="NGBCL — Next Gen Badminton Champions League" style="height: 287px; width: auto; max-width: 100%; display: block; object-fit: contain">
+<h1 class="disp" style="font-size: 96px; line-height: .95">Player auction</h1>
+<div style="font-size: 40px">Auction starts at <span class="tbc">[START TIME TBC]</span></div>
+<div style="display: flex; gap: 28px; margin-top: 30px">
+<sc-for list="{{crests}}" as="c" hint-placeholder-count="6"><div style="display: flex; flex-direction: column; align-items: center; gap: 10px"><div class="ph ph-crest" style="width: 140px; height: 140px; border-style: solid; border-color: {{c.band}}">Crest</div><span style="font-size: 20px">[Team]</span></div></sc-for>
+</div>
+<div class="muted" style="font-size: 20px">Team crest parade · slides in one by one</div>
+</div>
+</sc-if>
+
+<!-- ============ LOT OPEN / NEW BID ============ -->
+<sc-if value="{{sLot}}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; inset: 110px 0 150px 0; display: grid; grid-template-columns: 45% 55%">
+<!-- left 45% -->
+<div style="position: relative; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 0 40px 56px; gap: 18px">
+<div class="ann" style="top: 0; left: 56px">Left 45% · portrait on net-mesh, feather-fan frame</div>
+<div style="position: absolute; left: 56px; top: 40px; width: 560px; height: 520px; border-radius: 50% 50% 0 0; border: 2px dashed rgba(201,164,92,.45)" aria-hidden="true"></div>
+<div class="ph ph-person" style="position: absolute; left: 136px; top: 70px; width: 400px; height: 500px; background-color: #191F27">Player photo 4:5 · cut-out</div>
+<div style="position: relative; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 40px">[First]</span>
+<h2 class="disp" style="font-size: 76px; line-height: .95">[SURNAME]</h2>
+<div style="display: flex; gap: 20px; align-items: center"><span class="chip" style="background: rgba(245,247,250,.1)">[Category]</span><span class="muted" style="font-size: 26px">Base price <span class="num" style="font-size: 34px; color: #F5F7FA">Rs. [—]</span></span></div>
+</div>
+</div>
+<!-- right 55% -->
+<div style="position: relative; display: flex; flex-direction: column; padding: 40px 56px 40px 40px; gap: 26px">
+<div class="ann" style="top: 0; left: 40px">Right 55% · current bid, leading team, last 5 bids</div>
+<span class="eyebrow">Current bid</span>
+<div style="display: flex; align-items: center; gap: 40px">
+<div style="overflow: hidden"><div class="num {{rollClass}}" style="font-size: 200px; line-height: .85; color: #D8FF42">{{bidText}}</div></div>
+</div>
+<div style="display: flex; align-items: center; gap: 28px">
+<div class="ph {{flashClass}} ph-crest" style="width: 200px; height: 200px; border-style: solid; border-color: #D8FF42; border-width: 3px">Crest XL</div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span class="eyebrow">Leading</span><span class="disp" style="font-size: 52px">[Team A]</span></div>
+</div>
+<sc-if value="{{isBid}}" hint-placeholder-val="{{ false }}">
+<div class="ann" style="top: 300px; left: 40px; background: #D8FF42">Scene 3 · New bid — 320 ms counter roll + volt flash on crest</div>
+</sc-if>
+<div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto; max-width: 760px">
+<span class="eyebrow">Last bids</span>
+<sc-for list="{{ladder}}" as="b" hint-placeholder-count="5">
+<div style="display: flex; align-items: center; gap: 18px; padding: 10px 18px; border-radius: 6px; background: {{b.bg}}; opacity: {{b.op}}; font-size: 26px">
+<div class="ph ph-crest" style="width: 40px; height: 40px; padding: 0; font-size: 9px">C</div>
+<span style="flex: 1">{{b.team}}</span>
+<span class="num" style="font-size: 34px">Rs. [—]</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+
+<!-- ============ SOLD REVEAL ============ -->
+<sc-if value="{{sSold}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 110px 0 150px 0; display: flex; align-items: center; justify-content: center; background: radial-gradient(ellipse at center, rgba(240,90,40,.55), rgba(12,14,18,.95) 70%)">
+<div class="ann" style="top: 10px; left: 56px">Scene 4 · SOLD reveal — team-colour wash, ~4 s feather-fan burst</div>
+<div class="burst" style="position: absolute; width: 1100px; height: 1100px; border-radius: 50%; background: repeating-conic-gradient(from 0deg, rgba(201,164,92,.5) 0deg 2deg, transparent 2deg 15deg)" aria-hidden="true"></div>
+<div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center">
+<h2 class="disp" style="font-size: 220px; line-height: .85; color: #D6B877">Sold</h2>
+<div style="display: flex; align-items: center; gap: 40px">
+<div class="ph ph-person" style="width: 180px; height: 225px; background-color: #191F27">Player</div>
+<div style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start; text-align: left">
+<span style="font-size: 38px">[First] <strong class="disp" style="font-size: 52px">[SURNAME]</strong></span>
+<span style="font-size: 32px">to <strong>[Team A]</strong></span>
+<span class="num" style="font-size: 110px; line-height: 1; color: #D6B877">Rs. [—]</span>
+</div>
+<div class="ph ph-crest" style="width: 220px; height: 220px; border-style: solid; border-color: #F05A28; border-width: 4px">Crest XL</div>
+</div>
+<span class="muted" style="font-size: 22px">Squad [—] / [—] · Rs. [—] left</span>
+</div>
+</div>
+</sc-if>
+
+<!-- ============ UNSOLD ============ -->
+<sc-if value="{{sUnsold}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 110px 0 150px 0; display: flex; align-items: center; justify-content: center">
+<div class="ann" style="top: 10px; left: 56px">Scene 5 · Unsold — quiet grey card, ~2 s</div>
+<div style="display: flex; align-items: center; gap: 48px; padding: 48px 64px; border-radius: 8px; background: #222A34; border: 1px solid rgba(245,247,250,.12); opacity: .85">
+<div class="ph ph-person" style="width: 200px; height: 250px; filter: grayscale(1)">Player</div>
+<div style="display: flex; flex-direction: column; gap: 14px">
+<span class="disp" style="font-size: 96px; color: #A5ADB8">Unsold</span>
+<span style="font-size: 36px">[First] <strong>[SURNAME]</strong></span>
+<span class="muted" style="font-size: 24px">May return in the re-auction round <span class="tbc">[IF ENABLED]</span></span>
+</div>
+</div>
+</div>
+</sc-if>
+
+<!-- ============ PAUSED ============ -->
+<sc-if value="{{sPaused}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 110px 0 150px 0; display: grid; grid-template-columns: 40% 60%; align-items: center; padding: 0 56px; gap: 56px">
+<div class="ann" style="top: 10px; left: 56px">Scene 6 · Paused — “Short break” + spend standings</div>
+<div style="display: flex; flex-direction: column; gap: 20px">
+<span class="chip" style="background: #F0B455; color: #101318; align-self: flex-start">Paused</span>
+<h2 class="disp" style="font-size: 120px; line-height: .9">Short break</h2>
+<span class="muted" style="font-size: 30px">Bidding resumes shortly.</span>
+</div>
+<div style="border-radius: 8px; background: #191F27; border: 1px solid rgba(245,247,250,.12); overflow: hidden">
+<div style="display: grid; grid-template-columns: 1fr 220px 220px 160px; gap: 0; padding: 18px 28px; font-size: 18px; letter-spacing: .1em; text-transform: uppercase; color: #A5ADB8; font-weight: 600; border-bottom: 1px solid rgba(245,247,250,.12)"><span>Team</span><span style="text-align: right">Spent</span><span style="text-align: right">Left</span><span style="text-align: right">Squad</span></div>
+<sc-for list="{{crests}}" as="c" hint-placeholder-count="6">
+<div style="display: grid; grid-template-columns: 1fr 220px 220px 160px; align-items: center; padding: 14px 28px; border-bottom: 1px solid rgba(245,247,250,.06); font-size: 28px; border-left: 6px solid {{c.band}}">
+<span style="display: flex; gap: 16px; align-items: center"><span class="ph ph-crest" style="width: 44px; height: 44px; padding: 0; font-size: 9px">C</span>[Team]</span>
+<span class="num" style="text-align: right; color: #D6B877">[—]</span><span class="num" style="text-align: right">[—]</span><span class="num" style="text-align: right">[—]/[—]</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<!-- ============ END SUMMARY ============ -->
+<sc-if value="{{sEnd}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 110px 0 150px 0; display: grid; grid-template-columns: 42% 58%; gap: 48px; padding: 30px 56px">
+<div class="ann" style="top: 0; left: 56px">Scene 7 · End of auction — top 5 buys, team spend and squads</div>
+<div style="display: flex; flex-direction: column; gap: 18px">
+<h2 class="disp" style="font-size: 76px; line-height: .95">Auction complete</h2>
+<span class="eyebrow" style="color: #D6B877">Top 5 buys</span>
+<sc-for list="{{top5}}" as="t" hint-placeholder-count="5">
+<div style="display: flex; align-items: center; gap: 20px; padding: 14px 20px; border-radius: 8px; background: #191F27; border: 1px solid {{t.border}}">
+<span class="num" style="font-size: 44px; width: 44px; color: #D6B877">{{t.n}}</span>
+<div class="ph ph-person" style="width: 56px; height: 70px; padding: 0; font-size: 9px">4:5</div>
+<div style="display: flex; flex-direction: column; flex: 1"><span style="font-size: 26px">[First] <strong>[SURNAME]</strong></span><span class="muted" style="font-size: 20px">to [Team]</span></div>
+<span class="num" style="font-size: 44px; color: #D6B877">Rs. [—]</span>
+</div>
+</sc-for>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-content: start">
+<sc-for list="{{crests}}" as="c" hint-placeholder-count="6">
+<div style="padding: 20px; border-radius: 8px; background: #191F27; border-top: 6px solid {{c.band}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 14px"><div class="ph ph-crest" style="width: 64px; height: 64px; padding: 0; font-size: 10px">Crest</div><strong style="font-size: 26px">[Team]</strong></div>
+<div style="display: flex; justify-content: space-between; font-size: 22px"><span class="muted">Spent</span><span class="num" style="font-size: 30px; color: #D6B877">Rs. [—]</span></div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap"><sc-for list="{{slots}}" as="s" hint-placeholder-count="8"><span style="width: 34px; height: 42px; border-radius: 4px; background: rgba(245,247,250,.1); border: 1px dashed rgba(245,247,250,.3)"></span></sc-for></div>
+<span class="muted" style="font-size: 18px">Squad [—] / [—]</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<!-- BOTTOM TICKER (live scenes) -->
+<sc-if value="{{showTicker}}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; left: 0; right: 0; bottom: 0; height: 150px; background: #191F27; border-top: 2px solid rgba(201,164,92,.6); display: flex; flex-direction: column">
+<div class="ann" style="top: -18px; left: 56px">Bottom ticker · every team's remaining budget and squad, live; sponsor strip</div>
+<div style="flex: 1; display: flex; align-items: center; gap: 0; padding: 0 30px">
+<sc-for list="{{crests}}" as="c" hint-placeholder-count="6">
+<div style="flex: 1; display: flex; align-items: center; gap: 14px; padding: 0 18px; border-left: 6px solid {{c.band}}; height: 70px">
+<div class="ph ph-crest" style="width: 52px; height: 52px; padding: 0; font-size: 9px">C</div>
+<div style="display: flex; flex-direction: column"><strong style="font-size: 20px">[Team]</strong><span style="font-size: 18px"><span class="num" style="font-size: 24px">Rs. [—]</span> <span class="muted">· [—]/[—]</span></span></div>
+</div>
+</sc-for>
+</div>
+<div style="height: 40px; display: flex; align-items: center; gap: 40px; padding: 0 56px; background: #101318; font-size: 14px" class="muted">
+<span class="mono">SPONSORS</span><span class="ph" style="width: 120px; height: 26px; font-size: 10px">Logo</span><span class="ph" style="width: 120px; height: 26px; font-size: 10px">Logo</span><span class="ph" style="width: 120px; height: 26px; font-size: 10px">Logo</span><span class="ph" style="width: 120px; height: 26px; font-size: 10px">Logo</span>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"scene":{"editor":"enum","options":["Intro","Lot open","New bid","SOLD","Unsold","Paused","Ended"],"default":"Lot open","section":"Wireframe state"},"showNotes":{"editor":"boolean","default":false,"section":"Wireframe state"},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+renderVals() {
+const s = this.props.scene ?? 'Lot open';
+const bands = ['#F05A28', '#1BA6B5', '#2F6FED', '#A23B72', '#8B5CF6', '#E0457B'];
+const live = s !== 'Intro';
+const ladderTeams = ['[Team A]', '[Team C]', '[Team A]', '[Team B]', '[Team D]'];
+return {
+annClass: (this.props.showNotes ?? false) ? '' : 'hide-ann',
+scene: s,
+showTop: live, showTicker: live && s !== 'Ended',
+sIntro: s === 'Intro', sLot: s === 'Lot open' || s === 'New bid', isBid: s === 'New bid',
+sSold: s === 'SOLD', sUnsold: s === 'Unsold', sPaused: s === 'Paused', sEnd: s === 'Ended',
+rollClass: s === 'New bid' ? 'roll' : '',
+flashClass: s === 'New bid' ? 'flash' : '',
+bidText: 'Rs. [—]',
+crests: bands.map((b) => ({ band: b })),
+slots: Array.from({ length: 8 }, (_, i) => ({ i })),
+ladder: ladderTeams.map((t, i) => ({ team: t, bg: i === 0 ? 'rgba(216,255,66,.14)' : 'transparent', op: String(1 - i * 0.15) })),
+top5: [1, 2, 3, 4, 5].map((n) => ({ n: n, border: n === 1 ? '#C9A45C' : 'rgba(245,247,250,.12)' }))
+};
+}
+}
+</script>
+</body>
+</html>
