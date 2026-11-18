@@ -1,4 +1,8 @@
-# Local development (docker compose up -d db). Never use these values elsewhere.
+# Local development (docker compose up -d). Never use these values elsewhere.
+# Optional: put your R2 dev-bucket keys in backend/local-secrets.yml (git-ignored) to enable uploads.
+spring:
+  config:
+    import: optional:file:./local-secrets.yml
 ngbcl:
   security:
     jwt-secret: local-dev-only-secret-change-me-0123456789abcdef

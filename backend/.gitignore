@@ -2,3 +2,6 @@ target/
 .idea/
 *.iml
 .vscode/
+
+# Local R2 keys
+local-secrets.yml

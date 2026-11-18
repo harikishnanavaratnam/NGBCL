@@ -64,6 +64,18 @@ ngbcl:
     cookie-domain: ${NGBCL_COOKIE_DOMAIN:}
     allowed-origins: ${NGBCL_ALLOWED_ORIGINS:http://localhost:3000}
     ip-hash-salt: ${NGBCL_IP_HASH_SALT:change-me}
+  storage:
+    # Cloudflare R2: https://<account-id>.r2.cloudflarestorage.com  ·  local MinIO: http://localhost:9000
+    endpoint: ${NGBCL_STORAGE_ENDPOINT:}
+    region: ${NGBCL_STORAGE_REGION:auto}
+    access-key: ${NGBCL_STORAGE_ACCESS_KEY:}
+    secret-key: ${NGBCL_STORAGE_SECRET_KEY:}
+    private-bucket: ${NGBCL_STORAGE_PRIVATE_BUCKET:ngbcl-private}
+    public-bucket: ${NGBCL_STORAGE_PUBLIC_BUCKET:ngbcl-public}
+    # URL that serves the public bucket (R2 custom domain / r2.dev URL; MinIO: http://localhost:9000/ngbcl-public)
+    public-base-url: ${NGBCL_STORAGE_PUBLIC_BASE_URL:}
+    path-style: ${NGBCL_STORAGE_PATH_STYLE:false}
+    presign-ttl: 10m
   bootstrap:
     # Creates the first Super Administrator on an empty database, then is ignored.
     admin-email: ${NGBCL_BOOTSTRAP_ADMIN_EMAIL:}

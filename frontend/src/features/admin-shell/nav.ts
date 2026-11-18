@@ -31,7 +31,7 @@ export const ADMIN_NAV: NavGroup[] = [
     items: [
       { label: 'Players', href: '/admin/directory/players' },
       { label: 'Teams', href: '/admin/directory/teams' },
-      { label: 'Skill categories', href: '/admin/directory/categories', anyOf: ['CATEGORY_MANAGE'] },
+      { label: 'Skill categories', href: '/admin/system/settings/categories', anyOf: ['CATEGORY_MANAGE'] },
     ],
   },
   {
@@ -78,19 +78,19 @@ export const ADMIN_NAV: NavGroup[] = [
       { label: 'Announcements', href: '/admin/content/announcements', anyOf: ['CONTENT_MANAGE'] },
       { label: 'Sponsors', href: '/admin/content/sponsors', anyOf: ['CONTENT_MANAGE'] },
       { label: 'Committee', href: '/admin/content/committee', anyOf: ['CONTENT_MANAGE'] },
-      { label: 'Branding', href: '/admin/content/branding', anyOf: ['SETTINGS_MANAGE'] },
+      { label: 'Branding', href: '/admin/system/settings/branding', anyOf: ['SETTINGS_MANAGE'] },
     ],
   },
   {
     key: 'system',
     label: 'System',
     href: '/admin/system/settings',
-    anyOf: ['USER_MANAGE', 'AUDIT_VIEW', 'REPORT_VIEW', 'SETTINGS_MANAGE'],
+    anyOf: ['USER_MANAGE', 'AUDIT_VIEW', 'REPORT_VIEW', 'SETTINGS_MANAGE', 'TOURNAMENT_MANAGE'],
     items: [
       { label: 'Users and roles', href: '/admin/system/users', anyOf: ['USER_MANAGE'] },
       { label: 'Audit log', href: '/admin/system/audit', anyOf: ['AUDIT_VIEW'] },
       { label: 'Reports', href: '/admin/system/reports', anyOf: ['REPORT_VIEW'] },
-      { label: 'Settings', href: '/admin/system/settings', anyOf: ['SETTINGS_MANAGE'] },
+      { label: 'Settings', href: '/admin/system/settings', anyOf: ['TOURNAMENT_VIEW'] },
     ],
   },
 ];

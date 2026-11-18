@@ -28,3 +28,24 @@ describe('dates', () => {
     expect(formatAuditTime('2026-11-18T08:30:00Z')).toBe('2026-11-18 14:00:00');
   });
 });
+
+import { fromZonedInput, toZonedInput } from '../dates';
+
+describe('zoned datetime inputs (Asia/Colombo, UTC+5:30)', () => {
+  it('round-trips between the input value and UTC', () => {
+    expect(fromZonedInput('2026-12-01T09:00')).toBe('2026-12-01T03:30:00.000Z');
+    expect(toZonedInput('2026-12-01T03:30:00.000Z')).toBe('2026-12-01T09:00');
+    expect(fromZonedInput('')).toBeNull();
+    expect(toZonedInput(null)).toBe('');
+  });
+});
+
+import { formatDateRange } from '../range';
+
+describe('date ranges', () => {
+  it('collapses shared month and year', () => {
+    expect(formatDateRange('2026-12-12', '2026-12-14')).toBe('12–14 Dec 2026');
+    expect(formatDateRange('2026-11-30', '2026-12-02')).toBe('30 Nov – 2 Dec 2026');
+    expect(formatDateRange(null, null)).toBeNull();
+  });
+});

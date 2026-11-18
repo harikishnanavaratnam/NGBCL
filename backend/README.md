@@ -3,7 +3,7 @@
 Spring Boot 3.5.15 · Java 21 · PostgreSQL 16 · Flyway · Spring Security (JWT access token + rotating httpOnly refresh cookie, Argon2id) · STOMP WebSockets · springdoc OpenAPI.
 
 ```bash
-docker compose -f ../docker-compose.yml up -d db
+docker compose -f ../docker-compose.yml up -d        # PostgreSQL
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
@@ -17,10 +17,12 @@ docker compose -f ../docker-compose.yml up -d db
 | `shared` | UUIDv7 ids, base entities, problem+json errors, paging | M0 |
 | `security` | JWT issue/verify, permissions, CORS, cookies, login rate limit | M0 |
 | `identity` | Staff users, roles, auth endpoints, `/api/me`, user admin, bootstrap admin | M0 |
-| `tournament` | Current edition, public + admin views | M0 → M1 |
+| `tournament` | Current edition, settings (general, registration windows, public info, branding), phase, status lifecycle | M0 → M1 |
+| `files` | Presigned uploads to R2, real-byte checks (type, size, dimensions, ratio), human verification, re-encoded public copies, abandoned-upload cleanup | M1 |
+| `player.category` | Skill categories: create, edit, reorder, activate/deactivate, public list | M1 |
 | `audit` | Same-transaction audit log + query API | M0 |
 | `realtime` | STOMP config, auth interceptor, after-commit publisher | M0 |
-| `files`, `registration`, `player`, `team`, `auction`, `competition`, `scoring`, `standings`, `content`, `reporting`, `notification` | see `documentation/architecture-proposal.md` | M1–M7 |
+| `registration`, `player`, `team`, `auction`, `competition`, `scoring`, `standings`, `content`, `reporting`, `notification` | see `documentation/architecture-proposal.md` | M1–M7 |
 
 ## Environment
 
@@ -33,3 +35,31 @@ docker compose -f ../docker-compose.yml up -d db
 | `NGBCL_COOKIE_SECURE` | `true` in every HTTPS environment |
 | `NGBCL_IP_HASH_SALT` | Salt for hashing client IPs in audit/refresh records |
 | `NGBCL_BOOTSTRAP_ADMIN_EMAIL` / `_PASSWORD` / `_NAME` | Creates the first Super Admin on an empty DB |
+| `NGBCL_STORAGE_ENDPOINT` | S3 endpoint — R2: `https://<account-id>.r2.cloudflarestorage.com` (empty = uploads disabled) |
+| `NGBCL_STORAGE_ACCESS_KEY` / `_SECRET_KEY` | R2 API token (Object Read & Write, limited to the two buckets) |
+| `NGBCL_STORAGE_PRIVATE_BUCKET` / `_PUBLIC_BUCKET` | Default `ngbcl-private` / `ngbcl-public` |
+| `NGBCL_STORAGE_PUBLIC_BASE_URL` | URL serving the public bucket (custom domain or `https://pub-….r2.dev`) |
+| `NGBCL_STORAGE_PATH_STYLE` | `true` for MinIO, `false` for R2 |
+
+## Cloudflare R2 setup (M1)
+
+1. R2 → **Create bucket** `ngbcl-private` (no public access) and `ngbcl-public`.
+2. `ngbcl-public` → Settings → **Public access**: connect a custom domain (e.g. `cdn.ngbcl.lk`) or enable the r2.dev URL. Use it as `NGBCL_STORAGE_PUBLIC_BASE_URL`.
+3. `ngbcl-private` → Settings → **CORS policy** (browsers upload straight to it):
+   ```json
+   [{ "AllowedOrigins": ["https://ngbcl.lk", "http://localhost:3000"],
+      "AllowedMethods": ["PUT", "GET"], "AllowedHeaders": ["content-type"], "MaxAgeSeconds": 3600 }]
+   ```
+4. R2 → **Manage API tokens** → Object Read & Write, scoped to both buckets → copy the access key, secret and the account S3 endpoint.
+5. Frontend: `NEXT_PUBLIC_STORAGE_ORIGIN` = the S3 endpoint origin, `NEXT_PUBLIC_CDN_URL` = the public base URL (both feed the Content-Security-Policy).
+
+Upload flow: `POST /api/files/uploads` → browser `PUT`s to the presigned URL → `POST /api/files/{id}/complete`
+(server reads the object back and checks real type, size, dimensions and ratio) → verify → publish
+(re-encoded JPEG/PNG copy in the public bucket, EXIF/GPS stripped). Abandoned uploads are removed hourly.
+
+## Local uploads (optional)
+
+Everything except image uploads works without storage. To test uploads locally, create two **dev** buckets in
+R2 (`ngbcl-dev-private`, `ngbcl-dev-public`) following the steps above, then copy `local-secrets.example.yml`
+to `local-secrets.yml` (git-ignored) and fill it in. In `frontend/.env.local` set
+`NEXT_PUBLIC_STORAGE_ORIGIN=https://<ACCOUNT_ID>.r2.cloudflarestorage.com` and `NEXT_PUBLIC_CDN_URL=https://pub-<ID>.r2.dev`.

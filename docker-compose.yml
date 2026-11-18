@@ -1,4 +1,5 @@
-# Local development services. Start with:  docker compose up -d
+# Local development database. Start with:  docker compose up -d
+# File uploads use a Cloudflare R2 bucket (free tier) — see backend/README.md › Local uploads.
 # Then run the API (backend/) and the web app (frontend/) natively — see README.md.
 services:
   db:
@@ -18,21 +19,5 @@ services:
       timeout: 3s
       retries: 10
 
-  # S3-compatible stand-in for Cloudflare R2 (used from Milestone 1: photo / logo uploads).
-  storage:
-    image: minio/minio:latest
-    container_name: ngbcl-storage
-    command: server /data --console-address ":9001"
-    environment:
-      MINIO_ROOT_USER: ngbcl
-      MINIO_ROOT_PASSWORD: ngbcl-dev-secret
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-    volumes:
-      - ngbcl-storage:/data
-    profiles: ["storage"]
-
 volumes:
   ngbcl-db:
-  ngbcl-storage:

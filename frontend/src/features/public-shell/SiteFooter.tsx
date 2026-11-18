@@ -1,10 +1,19 @@
 import Link from 'next/link';
-import { Tbc } from '@/design-system/primitives/Text';
+import { OrTbc } from '@/design-system/primitives/Text';
 import { FACEBOOK_URL } from './site-nav';
 import styles from './SiteFooter.module.css';
 
 /** Footer — navigation, organiser & contact (export Main · 13). Contact details come from settings in M1. */
-export function SiteFooter() {
+export interface FooterInfo {
+  contactEmail?: string | null;
+  contactPhone?: string | null;
+  facebookUrl?: string | null;
+  organiserLogoUrl?: string | null;
+  organiser?: string | null;
+}
+
+export function SiteFooter({ info = {} }: { info?: FooterInfo }) {
+  const fb = info.facebookUrl ?? FACEBOOK_URL;
   return (
     <footer className={styles.footer}>
       <div className={`wrap ${styles.inner}`}>
@@ -42,17 +51,17 @@ export function SiteFooter() {
             <span className="eyebrow">Organiser &amp; contact</span>
             <div className={styles.org}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/brand/mighty-sharks.webp" alt="Mighty Sharks Battalion logo" width={48} height={48} />
-              <strong>Mighty Sharks Battalion</strong>
+              <img src={info.organiserLogoUrl ?? '/brand/mighty-sharks.webp'} alt={`${info.organiser ?? 'Mighty Sharks Battalion'} logo`} width={48} height={48} />
+              <strong>{info.organiser ?? 'Mighty Sharks Battalion'}</strong>
             </div>
             <span className="muted">Jaffna, Sri Lanka</span>
             <span>
-              <Tbc>[CONTACT EMAIL TBC]</Tbc>
+              {info.contactEmail ? <a href={`mailto:${info.contactEmail}`}>{info.contactEmail}</a> : <OrTbc value={null} label="CONTACT EMAIL" />}
             </span>
             <span>
-              <Tbc>[CONTACT PHONE TBC]</Tbc>
+              {info.contactPhone ? <a href={`tel:${info.contactPhone.replace(/\s/g, '')}`}>{info.contactPhone}</a> : <OrTbc value={null} label="CONTACT PHONE" />}
             </span>
-            <a href={FACEBOOK_URL} className="link" style={{ alignSelf: 'flex-start' }} target="_blank" rel="noopener noreferrer">
+            <a href={fb} className="link" style={{ alignSelf: 'flex-start' }} target="_blank" rel="noopener noreferrer">
               Facebook page
             </a>
             <span className="muted" style={{ fontSize: 13 }}>

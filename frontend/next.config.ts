@@ -3,11 +3,13 @@ import type { NextConfig } from 'next';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
 const wsUrl = apiUrl.replace(/^http/, 'ws');
 const cdnUrl = process.env.NEXT_PUBLIC_CDN_URL ?? '';
+/** Origin of the R2 / MinIO S3 endpoint: the browser PUTs uploads and loads private previews there. */
+const storageOrigin = process.env.NEXT_PUBLIC_STORAGE_ORIGIN ?? '';
 
 const csp = [
   "default-src 'self'",
-  `connect-src 'self' ${apiUrl} ${wsUrl}`,
-  `img-src 'self' data: blob: ${cdnUrl}`.trim(),
+  `connect-src 'self' ${apiUrl} ${wsUrl} ${storageOrigin}`.trim(),
+  `img-src 'self' data: blob: ${cdnUrl} ${storageOrigin}`.trim(),
   `media-src 'self' ${cdnUrl}`.trim(),
   "style-src 'self' 'unsafe-inline'",
   "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com" + (process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : ''),

@@ -7,13 +7,18 @@ import { Countdown } from './Countdown';
 import { HeroVideo } from './HeroVideo';
 import styles from './Hero.module.css';
 
-export type TournamentPhase = 'PRE_LAUNCH' | 'REGISTRATION' | 'AUCTION' | 'RUNNING' | 'COMPLETED';
+import type { TournamentPhase } from '@/lib/api/settings';
 
 export interface HeroData {
   phase: TournamentPhase;
   dates: string | null;
   venue: string | null;
+  city?: string | null;
   registrationClosesAt: string | null;
+  presenterLine?: string | null;
+  tagline?: string | null;
+  logoUrl?: string | null;
+  teamRegistrationOpen?: boolean;
 }
 
 /** Championship hero (export Main · 02) with phase-aware CTAs (brief §7.1). */
@@ -29,14 +34,14 @@ export function Hero({ data }: { data: HeroData }) {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className="eyebrow" style={{ color: 'var(--gold-2)' }}>
-          Mighty Sharks Battalion presents
+          {data.presenterLine ?? 'Mighty Sharks Battalion presents'}
         </div>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className={styles.logo} src="/brand/ngbcl-logo-on-dark.svg" alt="NGBCL — Next Gen Badminton Champions League" width={233} height={150} />
+        <img className={styles.logo} src={data.logoUrl ?? '/brand/ngbcl-logo-on-dark.svg'} alt="NGBCL — Next Gen Badminton Champions League" width={233} height={150} />
         <h1 id="hero-title" className={`disp ${styles.title}`}>
           Next Gen Badminton Champions League <span style={{ color: 'var(--gold-2)' }}>1.0</span>
         </h1>
-        <p className={styles.tagline}>Rise. Rally. Rule the Court.</p>
+        <p className={styles.tagline}>{data.tagline ?? 'Rise. Rally. Rule the Court.'}</p>
         <div className={styles.meta}>
           <span>
             <span className="eyebrow">Dates </span>
@@ -44,7 +49,7 @@ export function Hero({ data }: { data: HeroData }) {
           </span>
           <span>
             <span className="eyebrow">Venue </span>
-            <OrTbc value={data.venue} label="VENUE" />, Jaffna
+            <OrTbc value={data.venue} label="VENUE" />, {data.city ?? 'Jaffna'}
           </span>
           <span className="chip c-neutral">Inaugural edition</span>
         </div>
@@ -85,6 +90,20 @@ function PhaseCta({ data }: { data: HeroData }) {
       );
     case 'PRE_LAUNCH':
       return <p className="muted">Registrations open soon — follow us on Facebook for the announcement.</p>;
+    case 'REGISTRATION_CLOSED':
+      return (
+        <div className={styles.ctas}>
+          <span className="chip c-neutral">Player registration closed</span>
+          {data.teamRegistrationOpen && (
+            <Link href="/register/team" className="btn btn-volt">
+              Enter a team
+            </Link>
+          )}
+          <Link href="/players" className="btn btn-out">
+            Meet the players
+          </Link>
+        </div>
+      );
     default:
       return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20, width: '100%', maxWidth: 640, marginTop: 8 }}>

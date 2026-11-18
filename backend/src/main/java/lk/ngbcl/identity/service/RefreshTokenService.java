@@ -53,7 +53,12 @@ public class RefreshTokenService {
         return issueInFamily(userId, Ids.newId());
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
+    /**
+     * noRollbackFor: the reuse branch revokes the family and THEN throws; that revocation must
+     * commit. Without it this inner method marks the shared transaction rollback-only and the
+     * caller's commit fails with UnexpectedRollbackException (500).
+     */
+    @Transactional(propagation = Propagation.MANDATORY, noRollbackFor = ApiException.class)
     public Rotation rotate(String rawToken) {
         if (rawToken == null || rawToken.isBlank()) {
             throw invalid();
