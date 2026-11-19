@@ -35,6 +35,12 @@ minutes. For instant updates after an admin change, set the same random value as
   and answer with a fresh snapshot; realtime messages only trigger refetches.
 - `/display/auction` 1920×1080 projector view (scaled to any screen); `/auction` public live page and results.
 
+## Competition screens (M5)
+
+- `/admin/competition/format` rules, courts, seeding + snake group draw, generate · `/admin/competition/fixtures`
+  list / bracket / cross-table with the tie editor (schedule, knockout teams, line-ups, scorer) and publish dialog ·
+  `/admin/competition/schedule` drag-and-drop board · match categories in Settings · public `/fixtures`.
+
 ## Conventions
 
 - Every data view handles **loading → empty → error → content**; mutations end in a toast or inline field errors from the server.

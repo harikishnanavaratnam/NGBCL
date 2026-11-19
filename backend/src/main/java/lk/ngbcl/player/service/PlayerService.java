@@ -259,7 +259,7 @@ public class PlayerService {
 
     /** What the auction needs to show for a lot. Staff-only (contains no contact data, but not Public*). */
     public record LotPlayer(UUID entryId, UUID playerId, String slug, String fullName, String categoryName,
-            UUID categoryId, String photoUrl, TournamentPlayerStatus status, Long basePriceOverride) {
+            UUID categoryId, String photoUrl, TournamentPlayerStatus status, Long basePriceOverride, String gender) {
     }
 
     @Transactional(readOnly = true)
@@ -278,7 +278,8 @@ public class PlayerService {
             Player p = (Player) r[1];
             out.put(tp.getId(), new LotPlayer(tp.getId(), p.getId(), p.getSlug(), p.getFullName(),
                     cats.get(tp.getSkillCategoryId()), tp.getSkillCategoryId(),
-                    files.publicUrl(p.getProfilePhotoAssetId()).orElse(null), tp.getStatus(), tp.getBasePrice()));
+                    files.publicUrl(p.getProfilePhotoAssetId()).orElse(null), tp.getStatus(), tp.getBasePrice(),
+                    p.getGender()));
         }
         return out;
     }

@@ -41,6 +41,7 @@ import lk.ngbcl.auction.service.AuctionDtos.QueueItem;
 import lk.ngbcl.auction.service.AuctionDtos.RosterEntry;
 import lk.ngbcl.auction.service.AuctionDtos.TeamRail;
 import lk.ngbcl.auction.service.AuctionDtos.TeamRoster;
+import lk.ngbcl.competition.service.RosterSource;
 import lk.ngbcl.player.service.PlayerService;
 import lk.ngbcl.player.service.PlayerService.LotPlayer;
 import lk.ngbcl.player.service.PlayerTeamSource;
@@ -59,7 +60,7 @@ import org.springframework.transaction.annotation.Transactional;
  * facts the player and team pages show.
  */
 @Component
-public class AuctionReadModel implements PlayerTeamSource, SquadSource {
+public class AuctionReadModel implements PlayerTeamSource, SquadSource, RosterSource {
 
     private static final int LAST_BIDS = 6;
     private static final int TOP_BUYS = 5;
@@ -377,5 +378,16 @@ public class AuctionReadModel implements PlayerTeamSource, SquadSource {
                     return new SquadMember(p.slug(), p.fullName(), p.categoryName(), p.photoUrl(),
                             prices ? tp.getPurchasePrice() : null, tp.getLotNumber());
                 }).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RosterPlayer> roster(UUID teamId) {
+        List<TeamPlayer> active = teamPlayers.findByTeamIdAndActiveTrue(teamId);
+        Map<UUID, LotPlayer> people = players.lotPlayers(active.stream().map(TeamPlayer::getTournamentPlayerId).toList());
+        return active.stream().map(tp -> people.get(tp.getTournamentPlayerId())).filter(Objects::nonNull)
+                .map(p -> new RosterPlayer(p.entryId(), p.slug(), p.fullName(), p.gender(), p.categoryName(), p.photoUrl()))
+                .sorted(Comparator.comparing(RosterPlayer::fullName, String.CASE_INSENSITIVE_ORDER))
+                .toList();
     }
 }

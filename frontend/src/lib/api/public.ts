@@ -200,3 +200,52 @@ export async function staticSlugs(kind: 'teams' | 'players' | 'news'): Promise<{
   const slugs = list.map((x) => ({ slug: x.slug }));
   return slugs.length ? slugs : [{ slug: '_' }];
 }
+
+// ---- Fixtures (M5) — published copies only ----------------------------------------------------
+
+export interface PublicFixtureTeam {
+  slug: string;
+  name: string;
+  shortCode: string;
+  colorSlot: number | null;
+  logoUrl: string | null;
+}
+export interface PublicFixtureMatch {
+  order: number;
+  categoryCode: string;
+  categoryName: string;
+  sideA: { slug: string | null; fullName: string }[];
+  sideB: { slug: string | null; fullName: string }[];
+  scheduledAt: string | null;
+  status: string;
+}
+export interface PublicFixture {
+  number: number;
+  stageName: string;
+  stageType: 'GROUP' | 'LEAGUE' | 'KNOCKOUT';
+  groupName: string | null;
+  roundNumber: number;
+  roundName: string;
+  bracketPosition: number | null;
+  teamA: PublicFixtureTeam | null;
+  teamB: PublicFixtureTeam | null;
+  sourceA: string | null;
+  sourceB: string | null;
+  scheduledAt: string | null;
+  courtName: string | null;
+  status: string;
+  winnerToNumber: number | null;
+  matches: PublicFixtureMatch[];
+}
+export interface PublicFixtures {
+  format: 'GROUPS_KNOCKOUT' | 'ROUND_ROBIN' | 'ROUND_ROBIN_FINAL' | 'KNOCKOUT' | null;
+  groups: { name: string; teams: PublicFixtureTeam[] }[];
+  fixtures: PublicFixture[];
+}
+
+export async function getPublicFixtures(): Promise<PublicFixtures> {
+  'use cache';
+  cacheLife('minutes');
+  cacheTag('fixtures');
+  return (await getJson<PublicFixtures>('/fixtures')) ?? { format: null, groups: [], fixtures: [] };
+}

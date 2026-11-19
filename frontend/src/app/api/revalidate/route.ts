@@ -2,7 +2,7 @@ import { revalidateTag } from 'next/cache';
 import { timingSafeEqual } from 'node:crypto';
 
 /** Cache tags the API may refresh (see backend SiteRevalidator). */
-const TAGS = new Set(['tournament', 'teams', 'players', 'news', 'sponsors', 'committee']);
+const TAGS = new Set(['tournament', 'teams', 'players', 'news', 'sponsors', 'committee', 'fixtures']);
 
 function sameSecret(a: string, b: string) {
   const x = Buffer.from(a);
