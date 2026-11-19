@@ -41,7 +41,8 @@ export async function openRegistration(request: APIRequestContext) {
 
 export const uniq = () => Math.random().toString(36).slice(2, 8);
 
-const FACE = () => fs.readFileSync(path.join(__dirname, 'fixtures-face.jpg'));
+/** 4:5 portrait at the minimum size, so it passes the server's photo checks without cropping. */
+const FACE = () => fs.readFileSync(path.join(__dirname, 'fixtures-player.jpg'));
 
 /** Registers a player through the public API and approves it as staff (no UI) — for seeding. */
 export async function approvedPlayer(request: APIRequestContext, fullName: string) {
@@ -55,7 +56,8 @@ export async function approvedPlayer(request: APIRequestContext, fullName: strin
   const ticket = await (await request.post(`${API}/api/public/registration/uploads`, { headers: reg, data: { contentType: 'image/jpeg', size: photo.length } })).json();
   const put = await request.fetch(ticket.uploadUrl, { method: ticket.method ?? 'PUT', headers: ticket.headers ?? { 'Content-Type': 'image/jpeg' }, data: photo });
   if (!put.ok()) throw new Error(`Photo upload failed: ${put.status()}`);
-  await request.post(`${API}/api/public/registration/uploads/${ticket.assetId}/complete`, { headers: reg });
+  const done = await request.post(`${API}/api/public/registration/uploads/${ticket.assetId}/complete`, { headers: reg });
+  if (!done.ok()) throw new Error(`Photo check failed: ${done.status()} ${await done.text()}`);
   const res = await request.post(`${API}/api/public/registration/player`, {
     headers: reg,
     data: {
