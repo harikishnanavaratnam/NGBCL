@@ -27,8 +27,10 @@ test('run a lot from start to sale', async ({ page, request }) => {
   // Rules
   await page.goto('/admin/system/settings/auction');
   await expect(page.getByRole('heading', { name: 'Auction', exact: true })).toBeVisible();
+  // The save bar only appears for a real change: keep the money rules, change the squad size.
   await page.getByLabel('Minimum bid increment (LKR)').fill('5000');
   await page.getByLabel('Default base price (LKR)').fill('10000');
+  await page.getByLabel('Maximum squad size').fill('7');
   await page.getByRole('button', { name: 'Save changes' }).click();
   await expect(page.getByText('Auction settings saved')).toBeVisible();
 
