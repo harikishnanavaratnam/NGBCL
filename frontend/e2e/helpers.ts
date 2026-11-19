@@ -1,4 +1,6 @@
-import type { APIRequestContext } from '@playwright/test';
+import fs from 'node:fs';
+import path from 'node:path';
+import type { APIRequestContext, Page } from '@playwright/test';
 
 export const API = (process.env.E2E_API_URL ?? 'http://localhost:8080').replace(/\/$/, '');
 const ADMIN = {
@@ -38,3 +40,48 @@ export async function openRegistration(request: APIRequestContext) {
 }
 
 export const uniq = () => Math.random().toString(36).slice(2, 8);
+
+const FACE = () => fs.readFileSync(path.join(__dirname, 'fixtures-face.jpg'));
+
+/** Registers a player through the public API and approves it as staff (no UI) — for seeding. */
+export async function approvedPlayer(request: APIRequestContext, fullName: string) {
+  const token = await adminToken(request);
+  const auth = { Authorization: `Bearer ${token}` };
+  const id = uniq();
+  const email = `seed-${id}@example.com`;
+  const session = await (await request.post(`${API}/api/public/registration/sessions`, { data: { kind: 'PLAYER' } })).json();
+  const reg = { 'X-Registration-Token': session.token as string };
+  const photo = FACE();
+  const ticket = await (await request.post(`${API}/api/public/registration/uploads`, { headers: reg, data: { contentType: 'image/jpeg', size: photo.length } })).json();
+  const put = await request.fetch(ticket.uploadUrl, { method: ticket.method ?? 'PUT', headers: ticket.headers ?? { 'Content-Type': 'image/jpeg' }, data: photo });
+  if (!put.ok()) throw new Error(`Photo upload failed: ${put.status()}`);
+  await request.post(`${API}/api/public/registration/uploads/${ticket.assetId}/complete`, { headers: reg });
+  const res = await request.post(`${API}/api/public/registration/player`, {
+    headers: reg,
+    data: {
+      fullName,
+      email,
+      phone: `+9476${Math.floor(1_000_000 + Math.random() * 8_999_999)}`,
+      dateOfBirth: '1998-02-02',
+      gender: 'MALE',
+      homeArea: 'Kopay',
+      photoAssetId: ticket.assetId,
+      jaffnaDeclared: true,
+      consent: true,
+    },
+  });
+  if (!res.ok()) throw new Error(`Registration failed: ${res.status()} ${await res.text()}`);
+  const list = await (await request.get(`${API}/api/admin/registrations/players?status=PENDING&q=${encodeURIComponent(email)}`, { headers: auth })).json();
+  const regId = list.content[0].id as string;
+  await request.post(`${API}/api/admin/registrations/players/${regId}/photo/verify`, { headers: auth, data: { approve: true } });
+  const ok = await request.post(`${API}/api/admin/registrations/players/${regId}/approve`, { headers: auth, data: {} });
+  if (!ok.ok()) throw new Error(`Approve failed: ${ok.status()} ${await ok.text()}`);
+}
+
+export async function signInAsAdmin(page: Page) {
+  await page.goto('/login');
+  await page.getByLabel('Email').fill(ADMIN.email);
+  await page.getByLabel('Password').fill(ADMIN.password);
+  await page.getByRole('button', { name: /sign in/i }).click();
+  await page.waitForURL(/\/admin/);
+}

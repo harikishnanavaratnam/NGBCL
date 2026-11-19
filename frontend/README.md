@@ -27,6 +27,14 @@ Public pages read the API through tagged `'use cache'` fetchers (`src/lib/api/pu
 minutes. For instant updates after an admin change, set the same random value as `REVALIDATE_SECRET` here and
 `NGBCL_SITE_REVALIDATE_SECRET` on the API, with `NGBCL_SITE_REVALIDATE_URL=https://<site>/api/revalidate`.
 
+## Auction screens (M4)
+
+- `/admin/system/settings/auction` rules · `/admin/auction/setup` queue order and per-player base prices ·
+  `/admin/auction/results` squads, purses and corrections.
+- `/console/auction` auctioneer console: keys `1`–`9` pick a team, `Enter` places the bid. Commands go over REST
+  and answer with a fresh snapshot; realtime messages only trigger refetches.
+- `/display/auction` 1920×1080 projector view (scaled to any screen); `/auction` public live page and results.
+
 ## Conventions
 
 - Every data view handles **loading → empty → error → content**; mutations end in a toast or inline field errors from the server.

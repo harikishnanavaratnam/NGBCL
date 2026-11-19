@@ -40,10 +40,12 @@ public class TeamService {
     private final AuditService audit;
     private final Clock clock;
     private final SiteRevalidator site;
+    private final org.springframework.beans.factory.ObjectProvider<SquadSource> squads;
 
     public TeamService(TeamRepository teams, FileService files, UploadContext tournament, AuditService audit,
-            Clock clock, SiteRevalidator site) {
+            Clock clock, SiteRevalidator site, org.springframework.beans.factory.ObjectProvider<SquadSource> squads) {
         this.site = site;
+        this.squads = squads;
         this.teams = teams;
         this.files = files;
         this.tournament = tournament;
@@ -63,7 +65,30 @@ public class TeamService {
 
     /** Public team page. Squad, spend and standing arrive with the auction (M4) and competition (M5–M7). */
     public record PublicTeamDetail(String slug, String name, String shortCode, Short colorSlot, String description,
-            String logoUrl, List<Object> squad) {
+            String logoUrl, List<SquadSource.SquadMember> squad) {
+    }
+
+    /** Team as shown in the auction (console rail, public display). No contact details. */
+    public record TeamCard(UUID id, String slug, String name, String shortCode, Short colorSlot, String logoUrl) {
+    }
+
+    @Transactional(readOnly = true)
+    public List<TeamCard> activeTeams(UUID tournamentId) {
+        return teams.findByTournamentIdOrderByNameAsc(tournamentId).stream()
+                .filter(t -> t.getStatus() == TeamStatus.ACTIVE)
+                .map(this::card).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public Map<UUID, TeamCard> cards(UUID tournamentId) {
+        Map<UUID, TeamCard> out = new HashMap<>();
+        teams.findByTournamentIdOrderByNameAsc(tournamentId).forEach(t -> out.put(t.getId(), card(t)));
+        return out;
+    }
+
+    private TeamCard card(Team t) {
+        return new TeamCard(t.getId(), t.getSlug(), t.getName(), t.getShortCode(), t.getColorSlot(),
+                files.publicUrl(t.getLogoAssetId()).orElse(null));
     }
 
     @Transactional(readOnly = true)
@@ -73,7 +98,8 @@ public class TeamService {
                 .filter(x -> x.getSlug().equalsIgnoreCase(slug) && x.getStatus() == TeamStatus.ACTIVE)
                 .findFirst().orElseThrow(() -> ApiException.notFound("Team"));
         return new PublicTeamDetail(t.getSlug(), t.getName(), t.getShortCode(), t.getColorSlot(), t.getDescription(),
-                files.publicUrl(t.getLogoAssetId()).orElse(null), List.of());
+                files.publicUrl(t.getLogoAssetId()).orElse(null),
+                squads.getIfAvailable() == null ? List.of() : squads.getIfAvailable().squadOf(t.getId()));
     }
 
     public record TeamInput(String name, String shortCode, Short colorSlot, String description, UUID logoAssetId,
