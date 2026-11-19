@@ -13,4 +13,13 @@ public interface MatchRepository extends JpaRepository<Match, UUID> {
     List<Match> findByFixtureIdInOrderByMatchOrderAsc(Collection<UUID> fixtureIds);
 
     List<Match> findByFixtureIdOrderByMatchOrderAsc(UUID fixtureId);
+
+    /** Serialises every scoring command for one match. */
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @Query("select m from Match m where m.id = :id")
+    java.util.Optional<Match> lock(@Param("id") UUID id);
+
+    List<Match> findByScorerUserIdOrderByScheduledAtAsc(UUID scorerUserId);
+
+    List<Match> findByStatusIn(Collection<MatchStatus> statuses);
 }

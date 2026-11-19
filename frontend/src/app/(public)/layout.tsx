@@ -1,13 +1,13 @@
 import { SiteFooter } from '@/features/public-shell/SiteFooter';
-import { SiteHeader } from '@/features/public-shell/SiteHeader';
+import { LiveSiteHeader } from '@/features/public-shell/LiveSiteHeader';
 import { getPublicTournament } from '@/lib/api/public';
 
 export default async function PublicLayout({ children }: LayoutProps<'/'>) {
   const t = await getPublicTournament();
   return (
     <>
-      {/* Live summary comes from /api/public/live (M6); null hides the strip. */}
-      <SiteHeader live={null} facebookUrl={t?.facebookUrl} />
+      {/* Live strip comes from /api/public/live; hidden when nothing is on court. */}
+      <LiveSiteHeader facebookUrl={t?.facebookUrl} />
       <main id="main">{children}</main>
       <SiteFooter
         info={{

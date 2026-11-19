@@ -105,6 +105,17 @@ export interface MatchView {
   scorer: StaffRef | null;
   status: MatchStatus;
   lineupComplete: boolean;
+  /** Set once the match starts or when an organiser overrides the format; null = tournament default. */
+  pointsToWin: number | null;
+  winBy: number | null;
+  pointCap: number | null;
+  gamesToWin: number | null;
+  rulesCustom: boolean;
+  gamesA: number;
+  gamesB: number;
+  winnerSide: 'A' | 'B' | null;
+  outcome: 'NORMAL' | 'WALKOVER' | 'RETIRED' | null;
+  gameScores: string[];
 }
 
 export interface Fixture {
@@ -137,6 +148,9 @@ export interface Fixture {
   lineupsComplete: boolean;
   warnings: string[];
   version: number;
+  matchesWonA: number;
+  matchesWonB: number;
+  result: 'A' | 'B' | 'DRAW' | null;
 }
 
 export interface Stage {

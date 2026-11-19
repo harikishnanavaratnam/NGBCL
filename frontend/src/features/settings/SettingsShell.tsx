@@ -13,7 +13,7 @@ const TABS = [
   { href: '/admin/system/settings/categories', label: 'Skill categories' },
   { href: '/admin/system/settings/auction', label: 'Auction' },
   { href: '/admin/system/settings/match-categories', label: 'Match categories' },
-  { href: '/admin/system/settings/scoring', label: 'Scoring rules', flag: 'M6' },
+  { href: '/admin/system/settings/scoring', label: 'Scoring rules' },
   { href: '/admin/system/settings/standings', label: 'Standings', flag: 'M7' },
 ];
 

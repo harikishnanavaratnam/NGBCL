@@ -22,6 +22,8 @@ import lk.ngbcl.competition.domain.GroupTeam;
 import lk.ngbcl.competition.domain.GroupTeamRepository;
 import lk.ngbcl.competition.domain.Match;
 import lk.ngbcl.competition.domain.MatchCategory;
+import lk.ngbcl.competition.domain.MatchGame;
+import lk.ngbcl.competition.domain.MatchGameRepository;
 import lk.ngbcl.competition.domain.MatchCategoryRepository;
 import lk.ngbcl.competition.domain.MatchPlayer;
 import lk.ngbcl.competition.domain.MatchPlayerRepository;
@@ -73,6 +75,7 @@ public class CompetitionReadModel {
     private final TeamFixtureRepository fixtures;
     private final MatchRepository matches;
     private final MatchPlayerRepository lineups;
+    private final MatchGameRepository games;
     private final MatchCategoryRepository categories;
     private final CourtRepository courts;
     private final TeamService teams;
@@ -84,8 +87,8 @@ public class CompetitionReadModel {
 
     public CompetitionReadModel(CompetitionSettingsRepository settings, StageRepository stages,
             CompetitionGroupRepository groups, GroupTeamRepository groupTeams, TeamFixtureRepository fixtures,
-            MatchRepository matches, MatchPlayerRepository lineups, MatchCategoryRepository categories,
-            CourtRepository courts, TeamService teams, PlayerService players, ObjectProvider<RosterSource> rosters,
+            MatchRepository matches, MatchPlayerRepository lineups, MatchGameRepository games,
+            MatchCategoryRepository categories, CourtRepository courts, TeamService teams, PlayerService players, ObjectProvider<RosterSource> rosters,
             StaffDirectory staff, TournamentService tournament, ObjectMapper json) {
         this.settings = settings;
         this.stages = stages;
@@ -94,6 +97,7 @@ public class CompetitionReadModel {
         this.fixtures = fixtures;
         this.matches = matches;
         this.lineups = lineups;
+        this.games = games;
         this.categories = categories;
         this.courts = courts;
         this.teams = teams;
@@ -114,6 +118,7 @@ public class CompetitionReadModel {
         final List<TeamFixture> fixtureList;
         final Map<UUID, List<Match>> matchesByFixture;
         final Map<UUID, List<MatchPlayer>> lineupByMatch;
+        final Map<UUID, List<String>> scoresByMatch = new HashMap<>();
         final Map<UUID, MatchCategory> categoryById;
         final Map<UUID, Court> courtById;
         final Map<UUID, TeamCard> cards;
@@ -135,6 +140,12 @@ public class CompetitionReadModel {
             this.matchesByFixture = ms.stream().collect(Collectors.groupingBy(Match::getFixtureId));
             List<MatchPlayer> lps = ms.isEmpty() ? List.of() : lineups.findByMatchIdIn(ms.stream().map(Match::getId).toList());
             this.lineupByMatch = lps.stream().collect(Collectors.groupingBy(MatchPlayer::getMatchId));
+            if (!ms.isEmpty()) {
+                games.findByMatchIdIn(ms.stream().map(Match::getId).toList()).stream()
+                        .sorted(Comparator.comparingInt(MatchGame::getGameNumber))
+                        .forEach(g -> scoresByMatch.computeIfAbsent(g.getMatchId(), k -> new ArrayList<>())
+                                .add(g.getScoreA() + "-" + g.getScoreB()));
+            }
             this.categoryById = categories.findByTournamentIdOrderByDisplayOrderAscCodeAsc(t).stream()
                     .collect(Collectors.toMap(MatchCategory::getId, Function.identity()));
             this.courtById = courts.findByTournamentIdOrderByDisplayOrderAscNameAsc(t).stream()
@@ -232,7 +243,8 @@ public class CompetitionReadModel {
                 f.getRoundName(), f.getBracketPosition(), c.team(f.getTeamAId()), c.team(f.getTeamBId()), f.getSourceA(),
                 f.getSourceB(), f.getScheduledAt(), end, f.getCourtId(), court == null ? null : court.getName(),
                 f.getStatus(), f.isPublished(), f.isChangedSincePublish(), f.getWinnerToFixtureId(), f.getWinnerToSide(),
-                f.getLoserToFixtureId(), f.getLoserToSide(), mvs, complete, warnings, f.getVersion());
+                f.getLoserToFixtureId(), f.getLoserToSide(), mvs, complete, warnings, f.getVersion(), f.getMatchesWonA(),
+                f.getMatchesWonB(), f.getResult());
     }
 
     private MatchView matchView(Ctx c, Match m) {
@@ -245,7 +257,9 @@ public class CompetitionReadModel {
                 cat == null ? null : cat.getName(), m.getPlayersPerSide(), cat == null ? null : cat.getGenderRule(),
                 m.getScheduledAt(), a, b, m.getScorerUserId() == null ? null : c.staffById.getOrDefault(m.getScorerUserId(),
                         new StaffRef(m.getScorerUserId(), "Former scorer")),
-                m.getStatus(), complete);
+                m.getStatus(), complete, m.getPointsToWin(), m.getWinBy(), m.getPointCap(), m.getGamesToWin(),
+                m.isRulesCustom(), m.getGamesA(), m.getGamesB(), m.getWinnerSide(), m.getOutcome(),
+                c.scoresByMatch.getOrDefault(m.getId(), List.of()));
     }
 
     private List<PlayerRef> side(Ctx c, List<MatchPlayer> lp, String side) {
@@ -335,12 +349,15 @@ public class CompetitionReadModel {
             MatchCategory cat = c.categoryById.get(m.getCategoryId());
             List<MatchPlayer> lp = c.lineupByMatch.getOrDefault(m.getId(), List.of());
             return new PublicMatch(m.getMatchOrder(), cat == null ? null : cat.getCode(), cat == null ? null : cat.getName(),
-                    publicSide(c, lp, "A"), publicSide(c, lp, "B"), m.getScheduledAt(), m.getStatus());
+                    publicSide(c, lp, "A"), publicSide(c, lp, "B"), m.getScheduledAt(), m.getStatus(),
+                    c.scoresByMatch.getOrDefault(m.getId(), List.of()), m.getWinnerSide(), m.getOutcome(),
+                    m.getStatus() == lk.ngbcl.competition.domain.MatchStatus.SUBMITTED);
         }).toList();
         PublicFixture p = new PublicFixture(f.getFixtureNumber(), st == null ? null : st.getName(),
                 st == null ? null : st.getType(), c.groupName(f.getGroupId()), f.getRoundNumber(), f.getRoundName(),
                 f.getBracketPosition(), c.publicTeam(f.getTeamAId()), c.publicTeam(f.getTeamBId()), f.getSourceA(),
-                f.getSourceB(), f.getScheduledAt(), court == null ? null : court.getName(), f.getStatus(), winnerTo, pm);
+                f.getSourceB(), f.getScheduledAt(), court == null ? null : court.getName(), f.getStatus(), winnerTo, pm,
+                f.getMatchesWonA(), f.getMatchesWonB(), f.getResult());
         try {
             return json.writeValueAsString(p);
         } catch (JsonProcessingException e) {

@@ -41,6 +41,14 @@ minutes. For instant updates after an admin change, set the same random value as
   list / bracket / cross-table with the tie editor (schedule, knockout teams, line-ups, scorer) and publish dialog ·
   `/admin/competition/schedule` drag-and-drop board · match categories in Settings · public `/fixtures`.
 
+## Scoring screens (M6)
+
+- `/score` scorer app (tablet-first): assigned matches, then the live scorer — tap a side to score, undo, interval
+  timer, game-by-game entry, retired/walkover, submit. Taps are queued and sent in order; the screen shows the
+  projected score at once and the server's reply replaces it.
+- `/admin/results/confirmations` confirm / return / correct · scoring rules in Settings and under Competition ·
+  per-match format in the fixtures tie editor · public `/live` and scores on `/fixtures`.
+
 ## Conventions
 
 - Every data view handles **loading → empty → error → content**; mutations end in a toast or inline field errors from the server.

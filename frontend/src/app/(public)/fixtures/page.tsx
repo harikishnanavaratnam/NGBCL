@@ -33,13 +33,19 @@ export default async function FixturesPage() {
         eyebrow="Competition"
         title="Fixtures"
       >
-        <p style={{ margin: 0, maxWidth: 640 }}>Each tie is a team-versus-team fixture made up of individual singles and doubles matches. Open a tie to see who plays.</p>
+        <p style={{ margin: 0, maxWidth: 640 }}>
+          Each tie is a team-versus-team fixture made up of individual singles and doubles matches. Open a tie to see who plays.
+        </p>
       </PageBand>
 
       {data.fixtures.length === 0 ? (
         <section className={s.sec} style={{ borderTop: 0 }}>
           <div className="wrap">
-            <EmptyState title="Fixtures are on their way" description="The schedule is published after the player auction. Check back soon." action={{ label: 'Auction results', href: '/auction' }} />
+            <EmptyState
+              title="Fixtures are on their way"
+              description="The schedule is published after the player auction. Check back soon."
+              action={{ label: 'Auction results', href: '/auction' }}
+            />
           </div>
         </section>
       ) : (
@@ -53,7 +59,11 @@ export default async function FixturesPage() {
                     <div key={g.name} className="card" style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
                       <strong>{g.name}</strong>
                       {g.teams.map((t) => (
-                        <Link key={t.slug} href={`/teams/${t.slug}`} style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+                        <Link
+                          key={t.slug}
+                          href={`/teams/${t.slug}`}
+                          style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}
+                        >
                           <CrestTile logoUrl={t.logoUrl} name={t.name} colorSlot={t.colorSlot} size="s" />
                           {t.name}
                         </Link>
@@ -93,8 +103,19 @@ export default async function FixturesPage() {
                         .filter((f) => f.roundName === round)
                         .map((f) => (
                           <div key={f.number} className="card" style={{ overflow: 'hidden' }}>
-                            <BracketSide team={f.teamA} source={f.sourceA} />
-                            <BracketSide team={f.teamB} source={f.sourceB} top />
+                            <BracketSide
+                              team={f.teamA}
+                              source={f.sourceA}
+                              won={f.result === 'A'}
+                              score={f.status === 'SCHEDULED' ? null : f.matchesWonA}
+                            />
+                            <BracketSide
+                              team={f.teamB}
+                              source={f.sourceB}
+                              top
+                              won={f.result === 'B'}
+                              score={f.status === 'SCHEDULED' ? null : f.matchesWonB}
+                            />
                             <div className="mono muted" style={{ fontSize: 12, padding: '6px 10px', borderTop: '1px solid var(--line)' }}>
                               #{f.number} · {f.scheduledAt ? formatDateTime(f.scheduledAt) : 'Date TBC'}
                             </div>
@@ -114,7 +135,9 @@ export default async function FixturesPage() {
 
 function TeamSide({ team, source, right }: { team: PublicFixtureTeam | null; source: string | null; right?: boolean }) {
   if (!team) {
-    return <span style={{ fontStyle: 'italic', color: 'var(--text-2)', textAlign: right ? 'right' : 'left' }}>{source ?? 'To be decided'}</span>;
+    return (
+      <span style={{ fontStyle: 'italic', color: 'var(--text-2)', textAlign: right ? 'right' : 'left' }}>{source ?? 'To be decided'}</span>
+    );
   }
   return (
     <span style={{ display: 'flex', alignItems: 'center', gap: 10, justifyContent: right ? 'flex-end' : 'flex-start', minWidth: 0 }}>
@@ -129,12 +152,35 @@ function TieCard({ f }: { f: PublicFixture }) {
   const time = f.scheduledAt ? formatDateTime(f.scheduledAt).split(' · ')[1] : null;
   return (
     <details className="card" style={{ padding: 0, borderLeft: `4px solid ${teamColor(f.teamA?.colorSlot)}` }}>
-      <summary style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)', gap: 12, alignItems: 'center', padding: '14px 16px', cursor: 'pointer' }}>
+      <summary
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)',
+          gap: 12,
+          alignItems: 'center',
+          padding: '14px 16px',
+          cursor: 'pointer',
+        }}
+      >
         <TeamSide team={f.teamA} source={f.sourceA} />
         <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-          <span className="num" style={{ fontSize: 18 }}>
-            {time ?? 'TBC'}
-          </span>
+          {f.status === 'SCHEDULED' ? (
+            <span className="num" style={{ fontSize: 18 }}>
+              {time ?? 'TBC'}
+            </span>
+          ) : (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {f.status === 'LIVE' && (
+                <span className="chip c-live">
+                  <span className="dot" />
+                  Live
+                </span>
+              )}
+              <span className="num" style={{ fontSize: 22 }} aria-label={`${f.matchesWonA} matches to ${f.matchesWonB}`}>
+                {f.matchesWonA}–{f.matchesWonB}
+              </span>
+            </span>
+          )}
           <span className="mono muted" style={{ fontSize: 11 }}>
             {f.groupName ?? f.roundName}
             {f.courtName ? ` · ${f.courtName}` : ''}
@@ -144,15 +190,24 @@ function TieCard({ f }: { f: PublicFixture }) {
       </summary>
       <ol style={{ listStyle: 'none', margin: 0, padding: '0 16px 14px', display: 'flex', flexDirection: 'column', gap: 6 }}>
         {f.matches.map((m) => (
-          <li key={m.order} style={{ display: 'grid', gridTemplateColumns: '56px minmax(0, 1fr) auto minmax(0, 1fr)', gap: 10, alignItems: 'center', fontSize: 14, borderTop: '1px solid var(--line)', paddingTop: 6 }}>
+          <li
+            key={m.order}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '56px minmax(0, 1fr) auto minmax(0, 1fr)',
+              gap: 10,
+              alignItems: 'center',
+              fontSize: 14,
+              borderTop: '1px solid var(--line)',
+              paddingTop: 6,
+            }}
+          >
             <span className="chip c-neutral mono" title={m.categoryName}>
               {m.categoryCode}
             </span>
-            <Names players={m.sideA} />
-            <span className="muted mono" style={{ fontSize: 12 }}>
-              v
-            </span>
-            <Names players={m.sideB} right />
+            <Names players={m.sideA} won={m.winnerSide === 'A'} />
+            <MatchScore m={m} />
+            <Names players={m.sideB} right won={m.winnerSide === 'B'} />
           </li>
         ))}
       </ol>
@@ -160,10 +215,38 @@ function TieCard({ f }: { f: PublicFixture }) {
   );
 }
 
-function Names({ players, right }: { players: PublicFixtureMatch['sideA']; right?: boolean }) {
-  if (players.length === 0) return <span className="muted" style={{ textAlign: right ? 'right' : 'left' }}>To be announced</span>;
+function MatchScore({ m }: { m: PublicFixtureMatch }) {
+  if (m.status === 'SCHEDULED' || (m.games.length === 0 && !m.outcome)) {
+    return (
+      <span className="muted mono" style={{ fontSize: 12, textAlign: 'center' }}>
+        {m.status === 'LIVE' ? 'Live' : 'v'}
+      </span>
+    );
+  }
   return (
-    <span style={{ textAlign: right ? 'right' : 'left' }}>
+    <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+      <span className="num" style={{ fontSize: 14, whiteSpace: 'nowrap' }}>
+        {m.games.length ? m.games.join(', ') : '—'}
+      </span>
+      {(m.outcome === 'WALKOVER' || m.outcome === 'RETIRED' || m.provisional || m.status === 'LIVE') && (
+        <span className="mono muted" style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '.08em' }}>
+          {m.status === 'LIVE' ? 'In play' : m.outcome === 'WALKOVER' ? 'Walkover' : m.outcome === 'RETIRED' ? 'Retired' : ''}
+          {m.provisional ? `${m.outcome === 'WALKOVER' || m.outcome === 'RETIRED' ? ' · ' : ''}Provisional` : ''}
+        </span>
+      )}
+    </span>
+  );
+}
+
+function Names({ players, right, won }: { players: PublicFixtureMatch['sideA']; right?: boolean; won?: boolean }) {
+  if (players.length === 0)
+    return (
+      <span className="muted" style={{ textAlign: right ? 'right' : 'left' }}>
+        To be announced
+      </span>
+    );
+  return (
+    <span style={{ textAlign: right ? 'right' : 'left', fontWeight: won ? 700 : undefined }}>
       {players.map((p, i) => (
         <span key={i}>
           {i > 0 && ' / '}
@@ -174,10 +257,38 @@ function Names({ players, right }: { players: PublicFixtureMatch['sideA']; right
   );
 }
 
-function BracketSide({ team, source, top }: { team: PublicFixtureTeam | null; source: string | null; top?: boolean }) {
+function BracketSide({
+  team,
+  source,
+  top,
+  won,
+  score,
+}: {
+  team: PublicFixtureTeam | null;
+  source: string | null;
+  top?: boolean;
+  won?: boolean;
+  score?: number | null;
+}) {
   return (
-    <div style={{ padding: '8px 10px', borderTop: top ? '1px solid var(--line)' : undefined }}>
-      <TeamSide team={team} source={source} />
+    <div
+      style={{
+        padding: '8px 10px',
+        borderTop: top ? '1px solid var(--line)' : undefined,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 8,
+        boxShadow: won ? 'inset 3px 0 0 var(--lime)' : undefined,
+      }}
+    >
+      <span style={{ flex: 1, minWidth: 0 }}>
+        <TeamSide team={team} source={source} />
+      </span>
+      {score !== null && score !== undefined && (
+        <span className="num" style={{ fontSize: 18, opacity: won ? 1 : 0.6 }}>
+          {score}
+        </span>
+      )}
     </div>
   );
 }

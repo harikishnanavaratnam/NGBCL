@@ -71,7 +71,9 @@ public final class CompetitionDtos {
     @JsonInclude(JsonInclude.Include.ALWAYS)
     public record MatchView(UUID id, int order, UUID categoryId, String categoryCode, String categoryName,
             int playersPerSide, GenderRule genderRule, Instant scheduledAt, List<PlayerRef> sideA, List<PlayerRef> sideB,
-            StaffRef scorer, MatchStatus status, boolean lineupComplete) {
+            StaffRef scorer, MatchStatus status, boolean lineupComplete, Integer pointsToWin, Integer winBy,
+            Integer pointCap, Integer gamesToWin, boolean rulesCustom, int gamesA, int gamesB, String winnerSide,
+            String outcome, List<String> gameScores) {
     }
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -80,7 +82,8 @@ public final class CompetitionDtos {
             String sourceA, String sourceB, Instant scheduledAt, Instant endsAt, UUID courtId, String courtName,
             FixtureStatus status, boolean published, boolean changedSincePublish, UUID winnerToFixtureId,
             String winnerToSide, UUID loserToFixtureId, String loserToSide, List<MatchView> matches,
-            boolean lineupsComplete, List<String> warnings, Long version) {
+            boolean lineupsComplete, List<String> warnings, Long version, int matchesWonA, int matchesWonB,
+            String result) {
     }
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -117,14 +120,15 @@ public final class CompetitionDtos {
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
     public record PublicMatch(int order, String categoryCode, String categoryName, List<PublicPlayerRef> sideA,
-            List<PublicPlayerRef> sideB, Instant scheduledAt, MatchStatus status) {
+            List<PublicPlayerRef> sideB, Instant scheduledAt, MatchStatus status, List<String> games, String winnerSide,
+            String outcome, boolean provisional) {
     }
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
     public record PublicFixture(int number, String stageName, StageType stageType, String groupName, int roundNumber,
             String roundName, Integer bracketPosition, PublicTeamRef teamA, PublicTeamRef teamB, String sourceA,
             String sourceB, Instant scheduledAt, String courtName, FixtureStatus status, Integer winnerToNumber,
-            List<PublicMatch> matches) {
+            List<PublicMatch> matches, int matchesWonA, int matchesWonB, String result) {
     }
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
