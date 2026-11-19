@@ -218,6 +218,12 @@ export interface PublicFixtureMatch {
   sideB: { slug: string | null; fullName: string }[];
   scheduledAt: string | null;
   status: string;
+  /** Game scores, e.g. ["21-15", "18-21"], from side A's point of view. */
+  games: string[];
+  winnerSide: 'A' | 'B' | null;
+  outcome: 'NORMAL' | 'WALKOVER' | 'RETIRED' | null;
+  /** Submitted but not yet confirmed by an official. */
+  provisional: boolean;
 }
 export interface PublicFixture {
   number: number;
@@ -236,6 +242,9 @@ export interface PublicFixture {
   status: string;
   winnerToNumber: number | null;
   matches: PublicFixtureMatch[];
+  matchesWonA: number;
+  matchesWonB: number;
+  result: 'A' | 'B' | 'DRAW' | null;
 }
 export interface PublicFixtures {
   format: 'GROUPS_KNOCKOUT' | 'ROUND_ROBIN' | 'ROUND_ROBIN_FINAL' | 'KNOCKOUT' | null;

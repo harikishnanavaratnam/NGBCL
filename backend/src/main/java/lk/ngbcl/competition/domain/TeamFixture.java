@@ -88,6 +88,15 @@ public class TeamFixture extends AuditedEntity {
     @Column(name = "published_snapshot", columnDefinition = "jsonb")
     private String publishedSnapshot;
 
+    @Column(name = "matches_won_a", nullable = false)
+    private int matchesWonA;
+
+    @Column(name = "matches_won_b", nullable = false)
+    private int matchesWonB;
+
+    @Column(name = "result", length = 5)
+    private String result;
+
     @Column(name = "winner_team_id")
     private UUID winnerTeamId;
 
@@ -256,5 +265,26 @@ public class TeamFixture extends AuditedEntity {
 
     public UUID getWinnerTeamId() {
         return winnerTeamId;
+    }
+
+    /** Live tally; {@code result} is set (A, B or DRAW) only when every match is final. */
+    public void setScore(int wonA, int wonB, String result, UUID winnerTeamId, FixtureStatus status) {
+        this.matchesWonA = wonA;
+        this.matchesWonB = wonB;
+        this.result = result;
+        this.winnerTeamId = winnerTeamId;
+        this.status = status;
+    }
+
+    public int getMatchesWonA() {
+        return matchesWonA;
+    }
+
+    public int getMatchesWonB() {
+        return matchesWonB;
+    }
+
+    public String getResult() {
+        return result;
     }
 }

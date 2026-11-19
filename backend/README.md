@@ -24,7 +24,8 @@ docker compose -f ../docker-compose.yml up -d        # PostgreSQL
 | `realtime` | STOMP config, auth interceptor, after-commit publisher | M0 |
 | `auction` | Auction rules, queue, live engine (bids, undo, sold/unsold/withdrawn, re-auction rounds), budgets, rosters, audited corrections, public display state | M4 |
 | `competition` | Match categories, fixture template, courts, format, group draw, fixture generation (round robin, knockout with byes, 3rd place), scheduling with clash checks, line-ups, publishing frozen public copies | M5 |
-| `registration`, `player`, `team`, `scoring`, `standings`, `content`, `reporting`, `notification` | see `documentation/architecture-proposal.md` | M1–M7 |
+| `scoring` | Scoring rules, per-match format overrides, rally-by-rally scoring with an append-only event ledger (idempotent client event ids, undo by voiding), game-by-game entry, walkover/retirement, submit → confirm/return, audited corrections, tie results and knockout progression, public live feed | M6 |
+| `registration`, `player`, `team`, `standings`, `content`, `reporting`, `notification` | see `documentation/architecture-proposal.md` | M1–M7 |
 
 ## Environment
 
@@ -92,3 +93,16 @@ to `local-secrets.yml` (git-ignored) and fill it in. In `frontend/.env.local` se
   gender rule and the per-tie match limit.
 - Publishing stores a JSON copy of each tie; `/api/public/fixtures` serves only those copies, so later edits stay
   private until republished (`changedSincePublish`).
+
+## Scoring and results (M6)
+
+- Defaults (Settings › Scoring rules): 21 points · win by 2 · cap 30 · best of 3, walkovers and retirements on,
+  two-step approval on. Organisers can change one match's format until it starts; starting copies the rules onto the match.
+- Every scorer action is a `score_events` row with a client event id (a repeated tap is a no-op). The match and
+  its `match_games` are rebuilt by replaying the non-voided events, so undo works across games.
+- Commands lock the match row, then the tie row. A submitted result is provisional until a referee/admin confirms
+  it (or returns it with a reason); corrections need a reason and are audited.
+- The tie result is the most match wins, then game difference, then point difference. Knockout winners and losers
+  move into their next tie automatically unless that tie has started.
+- Live scores go out on `/topic/public/match/{id}` (version = the match's state version) and list changes on
+  `/topic/public/live`; `/api/public/live` is the snapshot. Public fixture copies refresh when a match changes status.

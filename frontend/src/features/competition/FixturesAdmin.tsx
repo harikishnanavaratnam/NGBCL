@@ -27,6 +27,9 @@ import {
   type TeamRef,
 } from '@/lib/api/competition';
 import { ApiError, errorMessage } from '@/lib/api/errors';
+import { useMatchRules, useScoringSettings } from '@/lib/api/scoring';
+import { GameScoreTiles } from '@/design-system/sport/Scores';
+import { rulesSummary } from '../scoring/ScoringSettingsPanel';
 import { useAuth } from '@/lib/auth/session';
 import { formatDateTime, fromZonedInput, toZonedInput } from '@/lib/format/dates';
 import s from './Competition.module.css';
@@ -76,7 +79,8 @@ export function FixturesAdmin() {
           </nav>
           <h1 className="t-h1">Fixtures</h1>
           <p className="muted t-body-s" style={{ margin: 0 }}>
-            {data.fixtures.length} ties · {data.fixtures.filter((f) => f.scheduledAt).length} scheduled · {data.fixtures.filter((f) => f.lineupsComplete).length} with full line-ups
+            {data.fixtures.length} ties · {data.fixtures.filter((f) => f.scheduledAt).length} scheduled ·{' '}
+            {data.fixtures.filter((f) => f.lineupsComplete).length} with full line-ups
           </p>
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -92,7 +96,11 @@ export function FixturesAdmin() {
       </div>
 
       {data.fixtures.length === 0 ? (
-        <EmptyState title="No fixtures yet" description="Choose the format and draw the groups, then generate the ties." action={{ label: 'Format and draw', href: '/admin/competition/format' }} />
+        <EmptyState
+          title="No fixtures yet"
+          description="Choose the format and draw the groups, then generate the ties."
+          action={{ label: 'Format and draw', href: '/admin/competition/format' }}
+        />
       ) : (
         <>
           <div className={s.toolbar}>
@@ -134,7 +142,12 @@ export function FixturesAdmin() {
         </>
       )}
 
-      <Drawer open={open !== null} onClose={() => setOpenId(null)} size={720} title={open ? `Tie #${open.number} · ${open.roundName}` : 'Tie'}>
+      <Drawer
+        open={open !== null}
+        onClose={() => setOpenId(null)}
+        size={720}
+        title={open ? `Tie #${open.number} · ${open.roundName}` : 'Tie'}
+      >
         {open && <TieEditor key={open.id} fixture={open} data={data} canEdit={canEdit} />}
       </Drawer>
       {publishOpen && <PublishDialog onClose={() => setPublishOpen(false)} />}
@@ -164,7 +177,9 @@ function FixtureList({ fixtures, onOpen }: { fixtures: Fixture[]; onOpen: (id: s
         <section key={name} className={s.round} aria-label={name}>
           <div className={s.roundHead}>
             <h2 className="t-h3">{name}</h2>
-            <span className="t-caption">{fs.length} {fs.length === 1 ? "tie" : "ties"}</span>
+            <span className="t-caption">
+              {fs.length} {fs.length === 1 ? 'tie' : 'ties'}
+            </span>
           </div>
           {fs.map((f) => (
             <TieRow key={f.id} f={f} onOpen={onOpen} />
@@ -177,13 +192,24 @@ function FixtureList({ fixtures, onOpen }: { fixtures: Fixture[]; onOpen: (id: s
 
 function TieRow({ f, onOpen }: { f: Fixture; onOpen: (id: string) => void }) {
   return (
-    <button type="button" className={s.tie} onClick={() => onOpen(f.id)} aria-label={`Tie ${f.number}: ${sideLabel(f.teamA, f.sourceA)} v ${sideLabel(f.teamB, f.sourceB)}`}>
+    <button
+      type="button"
+      className={s.tie}
+      onClick={() => onOpen(f.id)}
+      aria-label={`Tie ${f.number}: ${sideLabel(f.teamA, f.sourceA)} v ${sideLabel(f.teamB, f.sourceB)}`}
+    >
       <span className="mono muted">#{f.number}</span>
       <span className={s.vs}>
         <Side team={f.teamA} source={f.sourceA} />
-        <span className="muted mono" style={{ fontSize: 12 }}>
-          v
-        </span>
+        {f.status === 'SCHEDULED' ? (
+          <span className="muted mono" style={{ fontSize: 12 }}>
+            v
+          </span>
+        ) : (
+          <span className="num" style={{ fontSize: 18 }} aria-label={`${f.matchesWonA} matches to ${f.matchesWonB}`}>
+            {f.matchesWonA}–{f.matchesWonB}
+          </span>
+        )}
         <Side team={f.teamB} source={f.sourceB} right />
       </span>
       <span className="t-body-s">
@@ -207,7 +233,15 @@ function TieRow({ f, onOpen }: { f: Fixture; onOpen: (id: string) => void }) {
 function FixtureChips({ f }: { f: Fixture }) {
   return (
     <>
-      {!f.published ? <StatusChip tone="neutral">Draft</StatusChip> : f.changedSincePublish ? <StatusChip tone="pending">Changed</StatusChip> : <StatusChip tone="ok">Published</StatusChip>}
+      {f.status === 'LIVE' && <StatusChip tone="live">Live</StatusChip>}
+      {f.status === 'COMPLETED' && <StatusChip tone="navy">{f.result === 'DRAW' ? 'Drawn' : 'Final'}</StatusChip>}
+      {!f.published ? (
+        <StatusChip tone="neutral">Draft</StatusChip>
+      ) : f.changedSincePublish ? (
+        <StatusChip tone="pending">Changed</StatusChip>
+      ) : (
+        <StatusChip tone="ok">Published</StatusChip>
+      )}
       {f.warnings
         .filter((w) => w !== 'Not scheduled')
         .map((w) => (
@@ -289,7 +323,13 @@ function CrossTables({ data, onOpen }: { data: FixturesView; onOpen: (id: string
   const pools =
     data.groups.length > 0
       ? data.groups.map((g) => ({ name: g.name, teams: g.teams, fixtures: data.fixtures.filter((f) => f.groupId === g.id) }))
-      : [{ name: 'League', teams: uniqueTeams({ ...data, fixtures: data.fixtures.filter((f) => f.stageType === 'LEAGUE') }), fixtures: data.fixtures.filter((f) => f.stageType === 'LEAGUE') }];
+      : [
+          {
+            name: 'League',
+            teams: uniqueTeams({ ...data, fixtures: data.fixtures.filter((f) => f.stageType === 'LEAGUE') }),
+            fixtures: data.fixtures.filter((f) => f.stageType === 'LEAGUE'),
+          },
+        ];
   if (pools.every((p) => p.fixtures.length === 0)) return <p className="muted">This format has no group or league stage.</p>;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -313,11 +353,18 @@ function CrossTables({ data, onOpen }: { data: FixturesView; onOpen: (id: string
                   <th style={{ textAlign: 'left' }}>{row.name}</th>
                   {p.teams.map((col) => {
                     if (row.id === col.id) return <td key={col.id} className={s.self} aria-label="Same team" />;
-                    const f = p.fixtures.find((x) => (x.teamA?.id === row.id && x.teamB?.id === col.id) || (x.teamA?.id === col.id && x.teamB?.id === row.id));
+                    const f = p.fixtures.find(
+                      (x) => (x.teamA?.id === row.id && x.teamB?.id === col.id) || (x.teamA?.id === col.id && x.teamB?.id === row.id),
+                    );
                     return (
                       <td key={col.id}>
                         {f ? (
-                          <button type="button" className="link" style={{ background: 'none', border: 0, color: 'inherit', cursor: 'pointer', font: 'inherit' }} onClick={() => onOpen(f.id)}>
+                          <button
+                            type="button"
+                            className="link"
+                            style={{ background: 'none', border: 0, color: 'inherit', cursor: 'pointer', font: 'inherit' }}
+                            onClick={() => onOpen(f.id)}
+                          >
                             #{f.number}
                             <br />
                             <span className="t-caption">{f.scheduledAt ? formatDateTime(f.scheduledAt).split(' · ')[0] : 'TBC'}</span>
@@ -350,7 +397,9 @@ function TieEditor({ fixture: f, data, canEdit }: { fixture: Fixture; data: Fixt
   const [teamA, setTeamA] = useState(f.teamA?.id ?? '');
   const [teamB, setTeamB] = useState(f.teamB?.id ?? '');
   const locked = f.status === 'LIVE' || f.status === 'COMPLETED';
-  const allTeams = groups.data ? [...groups.data.groups.flatMap((g) => g.teams), ...groups.data.unassigned].sort((a, b) => a.name.localeCompare(b.name)) : [];
+  const allTeams = groups.data
+    ? [...groups.data.groups.flatMap((g) => g.teams), ...groups.data.unassigned].sort((a, b) => a.name.localeCompare(b.name))
+    : [];
   const ko = f.stageType === 'KNOCKOUT';
 
   const saveSchedule = (clear?: boolean) =>
@@ -386,7 +435,9 @@ function TieEditor({ fixture: f, data, canEdit }: { fixture: Fixture; data: Fixt
       {ko && canEdit && !locked && (
         <section className={s.matchCard} aria-label="Teams">
           <strong>Teams</strong>
-          <span className="help">Knockout slots fill automatically from results once scoring is live. Until then you can set them here.</span>
+          <span className="help">
+            Knockout slots fill automatically from results once scoring is live. Until then you can set them here.
+          </span>
           <div className={s.lineup}>
             <Field label={`Side A${f.sourceA ? ` (${f.sourceA})` : ''}`}>
               {({ id }) => (
@@ -435,7 +486,11 @@ function TieEditor({ fixture: f, data, canEdit }: { fixture: Fixture; data: Fixt
       <section className={s.matchCard} aria-label="Schedule">
         <strong>Schedule</strong>
         <div className={s.lineup}>
-          <Field label="Start (Asia/Colombo)">{({ id }) => <Input id={id} type="datetime-local" value={when} disabled={!canEdit || locked} onChange={(e) => setWhen(e.target.value)} />}</Field>
+          <Field label="Start (Asia/Colombo)">
+            {({ id }) => (
+              <Input id={id} type="datetime-local" value={when} disabled={!canEdit || locked} onChange={(e) => setWhen(e.target.value)} />
+            )}
+          </Field>
           <Field label="Court">
             {({ id }) => (
               <Select id={id} value={court} disabled={!canEdit || locked} onChange={(e) => setCourt(e.target.value)}>
@@ -479,7 +534,16 @@ function TieEditor({ fixture: f, data, canEdit }: { fixture: Fixture; data: Fixt
           <Skeleton height={160} />
         ) : (
           f.matches.map((m) => (
-            <MatchEditor key={`${m.id}-${f.version}`} f={f} m={m} squadA={rosters.data?.[0]?.players ?? []} squadB={rosters.data?.[1]?.players ?? []} scorers={data.scorers} canEdit={canEdit && !locked} />
+            <MatchEditor
+              key={`${m.id}-${f.version}`}
+              f={f}
+              m={m}
+              squadA={rosters.data?.[0]?.players ?? []}
+              squadB={rosters.data?.[1]?.players ?? []}
+              scorers={data.scorers}
+              canEdit={canEdit && !locked}
+              canSetRules={canEdit}
+            />
           ))
         )}
       </section>
@@ -494,14 +558,52 @@ function eligible(players: PlayerRef[], rule: MatchView['genderRule'], position:
   return players;
 }
 
-function MatchEditor({ f, m, squadA, squadB, scorers, canEdit }: { f: Fixture; m: MatchView; squadA: PlayerRef[]; squadB: PlayerRef[]; scorers: FixturesView['scorers']; canEdit: boolean }) {
+function MatchEditor({
+  f,
+  m,
+  squadA,
+  squadB,
+  scorers,
+  canEdit: canEditTie,
+  canSetRules,
+}: {
+  f: Fixture;
+  m: MatchView;
+  squadA: PlayerRef[];
+  squadB: PlayerRef[];
+  scorers: FixturesView['scorers'];
+  canEdit: boolean;
+  canSetRules: boolean;
+}) {
+  const canEdit = canEditTie && m.status === 'SCHEDULED';
   const cmd = useFixtureCommands();
   const toast = useToast();
-  const [a, setA] = useState<string[]>(pad(m.sideA.map((p) => p.entryId), m.playersPerSide));
-  const [b, setB] = useState<string[]>(pad(m.sideB.map((p) => p.entryId), m.playersPerSide));
+  const [a, setA] = useState<string[]>(
+    pad(
+      m.sideA.map((p) => p.entryId),
+      m.playersPerSide,
+    ),
+  );
+  const [b, setB] = useState<string[]>(
+    pad(
+      m.sideB.map((p) => p.entryId),
+      m.playersPerSide,
+    ),
+  );
   const [scorer, setScorer] = useState(m.scorer?.id ?? '');
   const [err, setErr] = useState<Record<string, string>>({});
-  const dirty = a.join() !== pad(m.sideA.map((p) => p.entryId), m.playersPerSide).join() || b.join() !== pad(m.sideB.map((p) => p.entryId), m.playersPerSide).join() || scorer !== (m.scorer?.id ?? '');
+  const dirty =
+    a.join() !==
+      pad(
+        m.sideA.map((p) => p.entryId),
+        m.playersPerSide,
+      ).join() ||
+    b.join() !==
+      pad(
+        m.sideB.map((p) => p.entryId),
+        m.playersPerSide,
+      ).join() ||
+    scorer !== (m.scorer?.id ?? '');
 
   const save = () => {
     setErr({});
@@ -525,7 +627,14 @@ function MatchEditor({ f, m, squadA, squadB, scorers, canEdit }: { f: Fixture; m
             const options = eligible(squad, m.genderRule, i);
             const current = squad.find((p) => p.entryId === v);
             return (
-              <Select key={i} id={i === 0 ? id : undefined} aria-label={`${team?.name ?? side} player ${i + 1}`} value={v} disabled={!canEdit} onChange={(e) => set(value.map((x, k) => (k === i ? e.target.value : x)))}>
+              <Select
+                key={i}
+                id={i === 0 ? id : undefined}
+                aria-label={`${team?.name ?? side} player ${i + 1}`}
+                value={v}
+                disabled={!canEdit}
+                onChange={(e) => set(value.map((x, k) => (k === i ? e.target.value : x)))}
+              >
                 <option value="">Not picked</option>
                 {current && !options.includes(current) && <option value={current.entryId}>{current.fullName}</option>}
                 {options.map((p) => (
@@ -552,8 +661,26 @@ function MatchEditor({ f, m, squadA, squadB, scorers, canEdit }: { f: Fixture; m
         <span className="t-caption" style={{ marginLeft: 'auto' }}>
           {m.scheduledAt ? formatDateTime(m.scheduledAt).split(' · ')[1] : 'Time follows the tie'}
         </span>
-        {m.lineupComplete ? <StatusChip tone="ok">Line-up set</StatusChip> : <span className="chip c-pend">Line-up incomplete</span>}
+        {m.status !== 'SCHEDULED' ? (
+          <StatusChip status={m.status}>{m.status === 'SUBMITTED' ? 'Awaiting confirmation' : undefined}</StatusChip>
+        ) : m.lineupComplete ? (
+          <StatusChip tone="ok">Line-up set</StatusChip>
+        ) : (
+          <span className="chip c-pend">Line-up incomplete</span>
+        )}
       </div>
+      {m.status !== 'SCHEDULED' && (
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+          <span className="num" style={{ fontSize: 20 }}>
+            {m.gamesA}–{m.gamesB}
+          </span>
+          {m.gameScores.length > 0 && (
+            <GameScoreTiles compact games={m.gameScores.map((g) => g.split('-').map(Number)).map(([a, b]) => ({ a: a ?? 0, b: b ?? 0 }))} />
+          )}
+          {m.outcome && m.outcome !== 'NORMAL' && <span className="t-caption">{m.outcome === 'WALKOVER' ? 'Walkover' : 'Retired'}</span>}
+        </div>
+      )}
+      <MatchRulesEditor m={m} canEdit={canSetRules && m.status === 'SCHEDULED'} />
       <div className={s.lineup}>
         {picker('A', squadA, a, setA, f.teamA)}
         {picker('B', squadB, b, setB, f.teamB)}
@@ -577,6 +704,131 @@ function MatchEditor({ f, m, squadA, squadB, scorers, canEdit }: { f: Fixture; m
           </Button>
         )}
       </div>
+    </div>
+  );
+}
+
+function MatchRulesEditor({ m, canEdit }: { m: MatchView; canEdit: boolean }) {
+  const defaults = useScoringSettings();
+  const save = useMatchRules();
+  const toast = useToast();
+  const base = m.rulesCustom && m.pointsToWin !== null ? m : defaults.data;
+  const [open, setOpen] = useState(false);
+  const [v, setV] = useState({ pointsToWin: '', winBy: '', pointCap: '', gamesToWin: '2' });
+  if (!base) return null;
+  const current = {
+    pointsToWin: base.pointsToWin ?? 21,
+    winBy: base.winBy ?? 2,
+    pointCap: base.pointCap ?? 30,
+    gamesToWin: base.gamesToWin ?? 2,
+  };
+  const edit = () => {
+    setV({
+      pointsToWin: String(current.pointsToWin),
+      winBy: String(current.winBy),
+      pointCap: String(current.pointCap),
+      gamesToWin: String(current.gamesToWin),
+    });
+    setOpen(true);
+  };
+  const done = (msg: string) => ({
+    onSuccess: () => {
+      setOpen(false);
+      toast.success(msg);
+    },
+    onError: (e: unknown) => toast.error(errorMessage(e)),
+  });
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+        <span className="t-caption">
+          Format: {rulesSummary(current)}
+          {m.rulesCustom ? ' · set for this match' : m.status === 'SCHEDULED' ? ' · tournament default' : ''}
+        </span>
+        {canEdit && !open && (
+          <Button size="sm" variant="ghost" onClick={edit}>
+            Change format
+          </Button>
+        )}
+        {canEdit && !open && m.rulesCustom && (
+          <Button
+            size="sm"
+            variant="ghost"
+            loading={save.isPending}
+            onClick={() => save.mutate({ matchId: m.id, reset: true }, done('Format reset to the default'))}
+          >
+            Use default
+          </Button>
+        )}
+      </div>
+      {open && (
+        <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end', flexWrap: 'wrap' }}>
+          <Field label="Points">
+            {({ id }) => (
+              <Input
+                id={id}
+                inputMode="numeric"
+                style={{ width: 80 }}
+                value={v.pointsToWin}
+                onChange={(e) => setV({ ...v, pointsToWin: e.target.value })}
+              />
+            )}
+          </Field>
+          <Field label="Win by">
+            {({ id }) => (
+              <Input
+                id={id}
+                inputMode="numeric"
+                style={{ width: 80 }}
+                value={v.winBy}
+                onChange={(e) => setV({ ...v, winBy: e.target.value })}
+              />
+            )}
+          </Field>
+          <Field label="Cap">
+            {({ id }) => (
+              <Input
+                id={id}
+                inputMode="numeric"
+                style={{ width: 80 }}
+                value={v.pointCap}
+                onChange={(e) => setV({ ...v, pointCap: e.target.value })}
+              />
+            )}
+          </Field>
+          <Field label="Games">
+            {({ id }) => (
+              <Select id={id} value={v.gamesToWin} onChange={(e) => setV({ ...v, gamesToWin: e.target.value })}>
+                <option value="1">Best of 1</option>
+                <option value="2">Best of 3</option>
+                <option value="3">Best of 5</option>
+              </Select>
+            )}
+          </Field>
+          <Button
+            size="sm"
+            variant="volt"
+            loading={save.isPending}
+            onClick={() =>
+              save.mutate(
+                {
+                  matchId: m.id,
+                  pointsToWin: Number(v.pointsToWin),
+                  winBy: Number(v.winBy),
+                  pointCap: Number(v.pointCap),
+                  gamesToWin: Number(v.gamesToWin),
+                },
+                done(`${m.categoryCode} format saved`),
+              )
+            }
+          >
+            Save format
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
@@ -627,10 +879,28 @@ function PublishDialog({ onClose }: { onClose: () => void }) {
           <p className="muted" style={{ margin: 0 }}>
             These ties will appear on the public Fixtures page exactly as they are now. Later edits stay private until you publish again.
           </p>
-          {preview.data && preview.data.unscheduled > 0 && <p className="help" style={{ margin: 0 }}>{preview.data.unscheduled} of them have no date yet — they show as “Date TBC”.</p>}
-          <ul style={{ margin: 0, padding: 0, listStyle: 'none', maxHeight: 340, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
+          {preview.data && preview.data.unscheduled > 0 && (
+            <p className="help" style={{ margin: 0 }}>
+              {preview.data.unscheduled} of them have no date yet — they show as “Date TBC”.
+            </p>
+          )}
+          <ul
+            style={{
+              margin: 0,
+              padding: 0,
+              listStyle: 'none',
+              maxHeight: 340,
+              overflowY: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 4,
+            }}
+          >
             {items.map((i) => (
-              <li key={i.fixtureId} style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '6px 0', borderBottom: '1px solid var(--line)' }}>
+              <li
+                key={i.fixtureId}
+                style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '6px 0', borderBottom: '1px solid var(--line)' }}
+              >
                 <span className="mono muted">#{i.number}</span>
                 <span style={{ flex: 1 }}>{i.label}</span>
                 {i.change === 'NEW' ? <StatusChip tone="live">New</StatusChip> : <StatusChip tone="pending">Changed</StatusChip>}
