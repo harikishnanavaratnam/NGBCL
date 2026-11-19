@@ -69,12 +69,26 @@ export function TeamGrid({ teams }: { teams: PublicTeam[] }) {
   );
 }
 
-export function PlayerGrid({ players }: { players: PublicPlayer[] }) {
+type GridPlayer = Pick<PublicPlayer, 'slug' | 'fullName' | 'categoryName' | 'photoUrl'> &
+  Partial<Pick<PublicPlayer, 'teamName' | 'teamColorSlot' | 'price'>>;
+
+/** Player cards. On a team page the team is implied, so pass `hideTeam`. */
+export function PlayerGrid({ players, hideTeam }: { players: GridPlayer[]; hideTeam?: boolean }) {
   return (
     <div className={s.gPlayers}>
       {players.map((p) => (
         <Link key={p.slug} href={`/players/${p.slug}`} prefetch className={s.cardLink}>
-          <PlayerCard p={{ fullName: p.fullName, photoUrl: p.photoUrl, category: p.categoryName, teamName: 'Not yet auctioned' }} />
+          <PlayerCard
+            p={{
+              fullName: p.fullName,
+              photoUrl: p.photoUrl,
+              category: p.categoryName,
+              teamName: hideTeam ? null : (p.teamName ?? 'Not yet auctioned'),
+              teamColorSlot: p.teamColorSlot ?? null,
+              price: p.price ?? null,
+              priceLabel: 'Sold',
+            }}
+          />
         </Link>
       ))}
     </div>

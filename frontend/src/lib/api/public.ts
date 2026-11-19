@@ -58,17 +58,33 @@ export interface PublicTeam {
   description: string | null;
   logoUrl: string | null;
 }
+export interface SquadMember {
+  slug: string;
+  fullName: string;
+  categoryName: string | null;
+  photoUrl: string | null;
+  /** Null when auction prices are hidden in settings. */
+  price: number | null;
+  lotNumber: number | null;
+}
 export interface PublicTeamDetail extends PublicTeam {
-  squad: PublicPlayer[];
+  squad: SquadMember[];
 }
 export interface PublicPlayer {
   slug: string;
   fullName: string;
   categoryName: string | null;
   photoUrl: string | null;
+  /** Set once the player is bought at the auction. */
+  teamSlug: string | null;
+  teamName: string | null;
+  teamColorSlot: number | null;
+  /** Null when not sold or when auction prices are hidden in settings. */
+  price: number | null;
 }
 export interface PublicPlayerDetail extends PublicPlayer {
   experience: string | null;
+  lotNumber: number | null;
 }
 export interface PublicNewsItem {
   slug: string;

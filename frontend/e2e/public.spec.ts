@@ -20,7 +20,7 @@ for (const { path, heading } of PAGES) {
 
 test('unknown team and player slugs show a friendly not-found state', async ({ page }) => {
   await page.goto('/teams/no-such-team');
-  await expect(page.getByText('Team not found')).toBeVisible();
+  await expect(page.getByText('Team not found').first()).toBeVisible();
   await page.goto('/players/no-such-player');
-  await expect(page.getByText('Player not found')).toBeVisible();
+  await expect(page.getByText('Player not found').first()).toBeVisible();
 });

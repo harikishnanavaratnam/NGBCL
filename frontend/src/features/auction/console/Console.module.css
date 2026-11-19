@@ -1,0 +1,82 @@
+/* Auctioneer console (export AuctionConsole): header + 320 / fluid / 360 columns, min 1280 px. */
+.root { min-height: 100dvh; display: flex; flex-direction: column; background: var(--bg); }
+.header { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--bg-2); flex-wrap: wrap; position: sticky; top: 0; z-index: 10; }
+.header img { height: 36px; width: auto; display: block; }
+.controls { display: flex; gap: 8px; margin-left: 16px; flex-wrap: wrap; }
+.right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+.banner { display: flex; align-items: center; gap: 14px; padding: 12px 16px; font-weight: 600; flex-wrap: wrap; }
+.paused { background: var(--warn); color: #101318; }
+.restored { background: rgba(130, 174, 255, .16); color: var(--text); font-weight: 500; }
+.cols { display: grid; grid-template-columns: 320px minmax(0, 1fr) 360px; gap: 16px; padding: 16px; align-items: start; flex: 1; transition: opacity .2s; }
+.dim { opacity: .45; }
+.panel { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--r-m); }
+
+/* Left: queue */
+.queue { display: flex; flex-direction: column; overflow: hidden; position: sticky; top: 76px; max-height: calc(100dvh - 92px); }
+.queueTools { padding: 14px; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid var(--line); }
+.queueList { overflow-y: auto; flex: 1; }
+.qItem { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 0; border-bottom: 1px solid rgba(245, 247, 250, .06); background: transparent; color: var(--text); text-align: left; width: 100%; font: inherit; }
+.qItem.onBlock { background: rgba(216, 255, 66, .08); box-shadow: inset 3px 0 0 var(--lime); }
+.qItem button { margin-left: auto; }
+.qName { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.qName > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.thumb { width: 32px; height: 40px; border-radius: 4px; object-fit: cover; flex-shrink: 0; background: #1E252E; display: block; }
+.queueFoot { margin: 0; padding: 12px 14px; font-size: 12px; }
+
+/* Centre */
+.centre { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.lotCard { padding: 20px; display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 24px; }
+.photo { aspect-ratio: 4 / 5; width: 100%; border-radius: var(--r-m); object-fit: cover; background: #222A34; display: block; }
+.highest { display: flex; align-items: center; gap: 20px; padding: 16px; border-radius: var(--r-m); background: var(--bg); border: 1px solid rgba(216, 255, 66, .4); }
+.highestNum { font-size: 72px; line-height: .9; color: var(--lime); white-space: nowrap; display: inline-flex; align-items: baseline; }
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.entry { padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+.bidFor > span:last-child { white-space: nowrap; }
+.bidFor { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--r-s); border: 2px solid var(--lime); min-height: 58px; }
+.bidForEmpty { border-style: dashed; border-color: var(--line-3); color: var(--text-2); }
+.amount { font-family: var(--font-display, 'Barlow Condensed'), sans-serif; font-weight: 700; font-size: 28px; min-height: 56px; font-variant-numeric: tabular-nums; }
+.xl { min-height: 68px; font-size: 18px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.fb { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: var(--r-s); flex-wrap: wrap; }
+.fbSending { background: rgba(245, 247, 250, .06); opacity: .75; }
+.fbOk { background: rgba(216, 255, 66, .12); border: 1px solid var(--lime); }
+.fbErr { background: rgba(255, 90, 98, .12); border: 1px solid #FF5A62; }
+.ladder { padding: 18px; display: flex; flex-direction: column; gap: 8px; max-height: 420px; overflow-y: auto; }
+.rung { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: var(--r-s); }
+.rung .num { margin-left: auto; font-size: 18px; white-space: nowrap; }
+.rung > span:nth-child(2) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rung .chip { flex-shrink: 0; }
+.leading { background: rgba(216, 255, 66, .1); border-left: 3px solid var(--lime); }
+.leading .num { color: var(--lime); }
+.rejected { background: rgba(255, 90, 98, .08); }
+.rejected .num, .voided .num { text-decoration: line-through; opacity: .6; }
+.voided { opacity: .7; }
+.close { padding: 16px; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; }
+.idle { padding: 32px; display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+
+/* Right: team rail */
+.rail { display: flex; flex-direction: column; overflow: hidden; position: sticky; top: 76px; max-height: calc(100dvh - 92px); }
+.railList { overflow-y: auto; }
+.team { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border: 0; border-bottom: 1px solid rgba(245, 247, 250, .08); background: transparent; color: var(--text); text-align: left; cursor: pointer; font: inherit; width: 100%; }
+.team:disabled { cursor: not-allowed; opacity: .45; }
+.team:focus-visible { outline: 2px solid var(--lime); outline-offset: -2px; }
+.team.selected { background: rgba(216, 255, 66, .1); box-shadow: inset 3px 0 0 var(--lime); opacity: 1; }
+.team.isLeading { box-shadow: inset 3px 0 0 var(--gold); }
+.teamRow { display: flex; align-items: center; gap: 10px; width: 100%; }
+.meter { flex: 1; height: 8px; border-radius: 2px; background: rgba(245, 247, 250, .12); position: relative; overflow: hidden; }
+.meter > span { position: absolute; left: 0; top: 0; bottom: 0; background: var(--gold); }
+
+.sheetGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.sheetBox { padding: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-m); display: flex; flex-direction: column; gap: 4px; }
+.check { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-bottom: 1px solid rgba(245, 247, 250, .06); }
+
+@media (max-width: 1279px) {
+  .cols { grid-template-columns: 280px minmax(0, 1fr); }
+  .rail { grid-column: 1 / -1; position: static; max-height: none; }
+  .railList { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+}
+@media (max-width: 900px) {
+  .cols { grid-template-columns: minmax(0, 1fr); }
+  .queue { position: static; max-height: 360px; }
+  .lotCard, .split { grid-template-columns: minmax(0, 1fr); }
+  .lotCard > div:first-child { max-width: 200px; }
+}

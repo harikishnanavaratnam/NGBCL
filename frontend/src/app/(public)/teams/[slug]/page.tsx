@@ -72,7 +72,7 @@ async function TeamDetail({ params }: Pick<PageProps<'/teams/[slug]'>, 'params'>
         <div className="wrap" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           <h2 className={clsx('disp', s.h2)}>Squad</h2>
           {team.squad.length ? (
-            <PlayerGrid players={team.squad} />
+            <PlayerGrid players={team.squad.map((m) => ({ ...m, teamColorSlot: team.colorSlot }))} hideTeam />
           ) : (
             <EmptyState
               title="Squad announced at the auction"

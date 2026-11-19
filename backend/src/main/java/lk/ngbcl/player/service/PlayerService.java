@@ -42,10 +42,13 @@ public class PlayerService {
     private final AuditService audit;
     private final EntityManager em;
     private final SiteRevalidator site;
+    private final org.springframework.beans.factory.ObjectProvider<PlayerTeamSource> teamSource;
 
     public PlayerService(PlayerRepository players, TournamentPlayerRepository entries, CategoryService categories,
-            FileService files, UploadContext tournament, AuditService audit, EntityManager em, SiteRevalidator site) {
+            FileService files, UploadContext tournament, AuditService audit, EntityManager em, SiteRevalidator site,
+            org.springframework.beans.factory.ObjectProvider<PlayerTeamSource> teamSource) {
         this.site = site;
+        this.teamSource = teamSource;
         this.players = players;
         this.entries = entries;
         this.categories = categories;
@@ -243,12 +246,60 @@ public class PlayerService {
 
     // ---- Public directory (PUB-004) — no contact details -------------------------------
 
-    public record PublicPlayer(String slug, String fullName, String categoryName, String photoUrl) {
+    public record PublicPlayer(String slug, String fullName, String categoryName, String photoUrl, String teamSlug,
+            String teamName, Short teamColorSlot, Long price) {
+    }
+
+    private Map<UUID, PlayerTeamSource.PlayerTeam> teamsOf(java.util.Collection<UUID> entryIds) {
+        PlayerTeamSource src = teamSource.getIfAvailable();
+        return src == null || entryIds.isEmpty() ? Map.of() : src.teamsOf(entryIds);
+    }
+
+    // ---- Auction module support ----------------------------------------------------------
+
+    /** What the auction needs to show for a lot. Staff-only (contains no contact data, but not Public*). */
+    public record LotPlayer(UUID entryId, UUID playerId, String slug, String fullName, String categoryName,
+            UUID categoryId, String photoUrl, TournamentPlayerStatus status, Long basePriceOverride) {
+    }
+
+    @Transactional(readOnly = true)
+    public Map<UUID, LotPlayer> lotPlayers(java.util.Collection<UUID> entryIds) {
+        if (entryIds.isEmpty()) {
+            return Map.of();
+        }
+        UUID t = tournament.currentTournamentId();
+        Map<UUID, String> cats = categories.namesById(t);
+        List<Object[]> rows = em.createQuery("""
+                select tp, p from TournamentPlayer tp join Player p on p.id = tp.playerId where tp.id in :ids
+                """, Object[].class).setParameter("ids", entryIds).getResultList();
+        Map<UUID, LotPlayer> out = new HashMap<>();
+        for (Object[] r : rows) {
+            TournamentPlayer tp = (TournamentPlayer) r[0];
+            Player p = (Player) r[1];
+            out.put(tp.getId(), new LotPlayer(tp.getId(), p.getId(), p.getSlug(), p.getFullName(),
+                    cats.get(tp.getSkillCategoryId()), tp.getSkillCategoryId(),
+                    files.publicUrl(p.getProfilePhotoAssetId()).orElse(null), tp.getStatus(), tp.getBasePrice()));
+        }
+        return out;
+    }
+
+    /** Approved players of the edition — the auction pool before allocations are removed. */
+    @Transactional(readOnly = true)
+    public List<LotPlayer> approvedEntries(UUID tournamentId) {
+        List<UUID> ids = em.createQuery("select tp.id from TournamentPlayer tp where tp.tournamentId = :t and tp.status = :s",
+                UUID.class).setParameter("t", tournamentId).setParameter("s", TournamentPlayerStatus.APPROVED).getResultList();
+        return new ArrayList<>(lotPlayers(ids).values());
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void setBasePrice(UUID entryId, Long price) {
+        TournamentPlayer tp = loadEntry(entryId);
+        tp.setBasePrice(price);
     }
 
     /** Public player page — public fields only (PUB-008). Team and price arrive with the auction (M4). */
     public record PublicPlayerDetail(String slug, String fullName, String categoryName, String photoUrl,
-            String experience) {
+            String experience, String teamSlug, String teamName, Short teamColorSlot, Long price, Integer lotNumber) {
     }
 
     @Transactional(readOnly = true)
@@ -259,8 +310,12 @@ public class PlayerService {
         TournamentPlayer tp = entries.findByTournamentIdAndPlayerId(t, p.getId())
                 .filter(e -> e.getStatus() == TournamentPlayerStatus.APPROVED)
                 .orElseThrow(() -> ApiException.notFound("Player"));
+        PlayerTeamSource.PlayerTeam team = teamsOf(List.of(tp.getId())).get(tp.getId());
         return new PublicPlayerDetail(p.getSlug(), p.getFullName(), categories.namesById(t).get(tp.getSkillCategoryId()),
-                files.publicUrl(p.getProfilePhotoAssetId()).orElse(null), p.getExperience());
+                files.publicUrl(p.getProfilePhotoAssetId()).orElse(null), p.getExperience(),
+                team == null ? null : team.teamSlug(), team == null ? null : team.teamName(),
+                team == null ? null : team.teamColorSlot(), team == null ? null : team.price(),
+                team == null ? null : team.lotNumber());
     }
 
     @Transactional(readOnly = true)
@@ -274,11 +329,15 @@ public class PlayerService {
                 .setParameter("t", t)
                 .setParameter("status", TournamentPlayerStatus.APPROVED)
                 .getResultList();
+        Map<UUID, PlayerTeamSource.PlayerTeam> teams = teamsOf(rows.stream().map(r -> ((TournamentPlayer) r[0]).getId()).toList());
         return rows.stream().map(r -> {
             TournamentPlayer tp = (TournamentPlayer) r[0];
             Player p = (Player) r[1];
+            PlayerTeamSource.PlayerTeam team = teams.get(tp.getId());
             return new PublicPlayer(p.getSlug(), p.getFullName(), cats.get(tp.getSkillCategoryId()),
-                    files.publicUrl(p.getProfilePhotoAssetId()).orElse(null));
+                    files.publicUrl(p.getProfilePhotoAssetId()).orElse(null), team == null ? null : team.teamSlug(),
+                    team == null ? null : team.teamName(), team == null ? null : team.teamColorSlot(),
+                    team == null ? null : team.price());
         }).toList();
     }
 }

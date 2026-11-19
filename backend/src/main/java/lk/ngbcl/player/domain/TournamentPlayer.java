@@ -33,6 +33,10 @@ public class TournamentPlayer extends AuditedEntity {
     @Column(name = "status_reason", length = 300)
     private String statusReason;
 
+    /** Auction base price override; null = the auction default (set by admins). */
+    @Column(name = "base_price")
+    private Long basePrice;
+
     protected TournamentPlayer() {
     }
 
@@ -52,6 +56,14 @@ public class TournamentPlayer extends AuditedEntity {
         }
         this.status = next;
         this.statusReason = reason == null || reason.isBlank() ? null : reason.trim();
+    }
+
+    public void setBasePrice(Long basePrice) {
+        this.basePrice = basePrice;
+    }
+
+    public Long getBasePrice() {
+        return basePrice;
     }
 
     public void changeCategory(UUID categoryId) {

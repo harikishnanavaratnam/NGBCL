@@ -36,8 +36,10 @@ jobs:
           distribution: temurin
           java-version: 21
           cache: maven
-      # Unit + integration tests (Testcontainers starts PostgreSQL 16 in Docker)
-      - run: ./mvnw -B verify
+      # Unit + integration tests (Testcontainers starts PostgreSQL 16 in Docker).
+      # Uses the runner's preinstalled Maven: the wrapper's extra download from Maven Central
+      # occasionally fails on CI runners. Locally keep using ./mvnw (or mvnw.cmd).
+      - run: mvn -B -ntp verify
 
   e2e:
     runs-on: ubuntu-latest
@@ -66,7 +68,7 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Build API
         working-directory: backend
-        run: ./mvnw -B -q -DskipTests package
+        run: mvn -B -q -ntp -DskipTests package
       - name: Start API (local profile — bootstrap admin, local-disk storage)
         working-directory: backend
         run: |

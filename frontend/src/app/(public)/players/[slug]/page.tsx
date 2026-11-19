@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { EmptyState, Skeleton } from '@/design-system/data/States';
+import { Money } from '@/design-system/primitives/Text';
+import { teamColor } from '@/design-system/tokens';
 import s from '@/features/public/Public.module.css';
 import { getPublicPlayer, staticSlugs } from '@/lib/api/public';
 import { splitName } from '@/lib/format/names';
@@ -69,7 +71,19 @@ async function PlayerDetail({ params }: Pick<PageProps<'/players/[slug]'>, 'para
             </div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
               {p.categoryName && <span className="chip c-neutral">{p.categoryName}</span>}
-              <span className="muted">Not yet auctioned</span>
+              {p.teamSlug && p.teamName ? (
+                <Link href={`/teams/${p.teamSlug}`} className="chip" style={{ background: teamColor(p.teamColorSlot), color: '#fff' }}>
+                  {p.teamName}
+                </Link>
+              ) : (
+                <span className="muted">Not yet auctioned</span>
+              )}
+              {p.price !== null && p.teamSlug && (
+                <span className="muted">
+                  Sold for <Money value={p.price} variant="public" className="gold" />
+                  {p.lotNumber ? ` · lot ${p.lotNumber}` : ''}
+                </span>
+              )}
             </div>
             {p.experience && (
               <p className="muted" style={{ margin: 0, maxWidth: 620 }}>

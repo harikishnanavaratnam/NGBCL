@@ -22,7 +22,8 @@ docker compose -f ../docker-compose.yml up -d        # PostgreSQL
 | `player.category` | Skill categories: create, edit, reorder, activate/deactivate, public list | M1 |
 | `audit` | Same-transaction audit log + query API | M0 |
 | `realtime` | STOMP config, auth interceptor, after-commit publisher | M0 |
-| `registration`, `player`, `team`, `auction`, `competition`, `scoring`, `standings`, `content`, `reporting`, `notification` | see `documentation/architecture-proposal.md` | M1–M7 |
+| `auction` | Auction rules, queue, live engine (bids, undo, sold/unsold/withdrawn, re-auction rounds), budgets, rosters, audited corrections, public display state | M4 |
+| `registration`, `player`, `team`, `competition`, `scoring`, `standings`, `content`, `reporting`, `notification` | see `documentation/architecture-proposal.md` | M1–M7 |
 
 ## Environment
 
@@ -70,3 +71,13 @@ To test against real R2 instead, create two **dev** buckets in
 R2 (`ngbcl-dev-private`, `ngbcl-dev-public`) following the steps above, then copy `local-secrets.example.yml`
 to `local-secrets.yml` (git-ignored) and fill it in. In `frontend/.env.local` set
 `NEXT_PUBLIC_STORAGE_ORIGIN=https://<ACCOUNT_ID>.r2.cloudflarestorage.com` and `NEXT_PUBLIC_CDN_URL=https://pub-<ID>.r2.dev`.
+
+## Auction engine (M4)
+
+- PostgreSQL is the single source of truth. Every auction command locks the edition's `auctions` row
+  (`SELECT … FOR UPDATE`), so commands run one at a time and `state_version` rises by exactly one per change.
+- Bids are append-only and idempotent (`Idempotency-Key` header); undo marks a bid `VOIDED`.
+- A sale is one transaction: transaction row + squad entry + budget deduction + lot closed. DB CHECKs keep
+  every purse balanced and non-negative; partial unique indexes allow one open lot and one active team per player.
+- After commit the public state is broadcast on `/topic/public/auction`; the console refetches its staff snapshot.
+- Defaults (all editable in Settings › Auction): budget 1,000,000 · squad 8 · base price 10,000 · increment 5,000.
