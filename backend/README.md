@@ -23,7 +23,8 @@ docker compose -f ../docker-compose.yml up -d        # PostgreSQL
 | `audit` | Same-transaction audit log + query API | M0 |
 | `realtime` | STOMP config, auth interceptor, after-commit publisher | M0 |
 | `auction` | Auction rules, queue, live engine (bids, undo, sold/unsold/withdrawn, re-auction rounds), budgets, rosters, audited corrections, public display state | M4 |
-| `registration`, `player`, `team`, `competition`, `scoring`, `standings`, `content`, `reporting`, `notification` | see `documentation/architecture-proposal.md` | M1–M7 |
+| `competition` | Match categories, fixture template, courts, format, group draw, fixture generation (round robin, knockout with byes, 3rd place), scheduling with clash checks, line-ups, publishing frozen public copies | M5 |
+| `registration`, `player`, `team`, `scoring`, `standings`, `content`, `reporting`, `notification` | see `documentation/architecture-proposal.md` | M1–M7 |
 
 ## Environment
 
@@ -81,3 +82,13 @@ to `local-secrets.yml` (git-ignored) and fill it in. In `frontend/.env.local` se
   every purse balanced and non-negative; partial unique indexes allow one open lot and one active team per player.
 - After commit the public state is broadcast on `/topic/public/auction`; the console refetches its staff snapshot.
 - Defaults (all editable in Settings › Auction): budget 1,000,000 · squad 8 · base price 10,000 · increment 5,000.
+
+## Competition (M5)
+
+- New editions are seeded with MS, WS, MD, WD, XD, a 5-match template and three courts — all editable.
+- Generation replaces draft ties only; once anything is published, ties are edited one by one.
+- Scheduling places a tie's matches back to back (match minutes + break) and refuses a court, team or player
+  in two places at once (FIX-009). Line-ups must come from the team's squad (FIX-008), follow the category's
+  gender rule and the per-tie match limit.
+- Publishing stores a JSON copy of each tie; `/api/public/fixtures` serves only those copies, so later edits stay
+  private until republished (`changedSincePublish`).

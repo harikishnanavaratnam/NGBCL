@@ -1,0 +1,58 @@
+.page { display: flex; flex-direction: column; gap: 24px; }
+.head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.drawGrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; align-items: start; }
+.seedList { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.seedList li { display: flex; align-items: center; gap: 10px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg-2); }
+.groupCards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+
+/* Fixtures list */
+.toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.round { display: flex; flex-direction: column; gap: 8px; }
+.roundHead { display: flex; align-items: baseline; gap: 10px; }
+.tie { display: grid; grid-template-columns: 56px minmax(0, 1fr) 210px 200px; gap: 14px; align-items: center; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface); color: var(--text); text-align: left; font: inherit; cursor: pointer; width: 100%; }
+.tie:hover { border-color: var(--line-3); }
+.tie:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+.vs { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 10px; align-items: center; }
+.side { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.side span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sideB { justify-content: flex-end; text-align: right; }
+.tbd { color: var(--text-2); font-style: italic; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+/* Tie editor */
+.editor { display: flex; flex-direction: column; gap: 18px; }
+.matchCard { border: 1px solid var(--line); border-radius: var(--r-m); padding: 14px; display: flex; flex-direction: column; gap: 10px; background: var(--bg-2); }
+.lineup { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+
+/* Bracket */
+.bracket { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(220px, 1fr); gap: 24px; overflow-x: auto; padding-bottom: 8px; }
+.bracketCol { display: flex; flex-direction: column; justify-content: space-around; gap: 16px; }
+.bracketTie { border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface); overflow: hidden; cursor: pointer; color: var(--text); font: inherit; text-align: left; padding: 0; width: 100%; }
+.bracketTie > div { display: flex; align-items: center; gap: 8px; padding: 8px 10px; }
+.bracketTie > div + div { border-top: 1px solid var(--line); }
+
+/* Cross table */
+.cross td, .cross th { text-align: center; }
+.cross td.self { background: var(--bg-2); }
+
+/* Schedule board */
+.board { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r-m); overflow: auto; }
+.cell { background: var(--bg); padding: 0; position: relative; }
+.cellHead { background: var(--bg-2); padding: 10px; font-weight: 600; font-size: 13px; position: sticky; top: 0; z-index: 1; }
+.timeHead { background: var(--bg-2); padding: 2px 8px; font-size: 12px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.cellOver { outline: 2px dashed var(--lime); outline-offset: -3px; }
+.card { border-radius: 6px; padding: 6px 8px; background: var(--surface-2); border-left: 4px solid var(--lime); font-size: 12px; cursor: grab; display: flex; flex-direction: column; gap: 2px; }
+.card strong { font-size: 12px; }
+.boardWrap { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 16px; align-items: start; }
+.pool { display: flex; flex-direction: column; gap: 6px; max-height: 70vh; overflow-y: auto; }
+
+@media (max-width: 1100px) {
+  .tie { grid-template-columns: 44px minmax(0, 1fr); }
+  .tie > :nth-child(3), .tie > :nth-child(4) { grid-column: 2; }
+  .chips { justify-content: flex-start; }
+  .boardWrap { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 700px) {
+  .grid3, .drawGrid, .lineup { grid-template-columns: minmax(0, 1fr); }
+}
