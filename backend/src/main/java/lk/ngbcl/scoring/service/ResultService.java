@@ -300,7 +300,7 @@ public class ResultService {
     private void refreeze(TeamFixture f) {
         f.freeze(competition.snapshot(f));
         fixtures.flush();
-        site.touch(SiteRevalidator.FIXTURES, SiteRevalidator.TEAMS, SiteRevalidator.PLAYERS);
+        site.touch(SiteRevalidator.FIXTURES, SiteRevalidator.TEAMS, SiteRevalidator.PLAYERS, SiteRevalidator.STANDINGS);
     }
 
     // ---- Helpers -------------------------------------------------------------------------------

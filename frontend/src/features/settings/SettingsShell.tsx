@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import styles from './Settings.module.css';
 
-const TABS = [
+const TABS: { href: string; label: string; flag?: string }[] = [
   { href: '/admin/system/settings', label: 'General' },
   { href: '/admin/system/settings/branding', label: 'Branding' },
   { href: '/admin/system/settings/registration', label: 'Registration' },
@@ -14,7 +14,7 @@ const TABS = [
   { href: '/admin/system/settings/auction', label: 'Auction' },
   { href: '/admin/system/settings/match-categories', label: 'Match categories' },
   { href: '/admin/system/settings/scoring', label: 'Scoring rules' },
-  { href: '/admin/system/settings/standings', label: 'Standings', flag: 'M7' },
+  { href: '/admin/system/settings/standings', label: 'Standings' },
 ];
 
 /** Admin › System › Settings (export AdminSettings): vertical tabs on desktop, scrolling row on tablet. */

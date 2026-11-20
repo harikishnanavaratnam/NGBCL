@@ -124,3 +124,11 @@ p {
     scroll-behavior: auto !important;
   }
 }
+
+@media print {
+  html, body { background: #fff !important; color: #000 !important; }
+  body * { color: #000 !important; }
+  .no-print { display: none !important; }
+  .card { background: #fff !important; border-color: #bbb !important; box-shadow: none !important; }
+  .print-break { break-inside: avoid; }
+}
