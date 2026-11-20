@@ -2,7 +2,7 @@
 # Shared by the scripts in this folder. Loads deploy/.env (as data, not as a script) and defines helpers.
 set -Eeuo pipefail
 DEPLOY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$DEPLOY_DIR"
+cd "$DEPLOY_DIR" || exit 1
 if [ ! -f .env ]; then echo "deploy/.env is missing — copy .env.example and fill it in." >&2; exit 1; fi
 while IFS= read -r line || [ -n "$line" ]; do
   case "$line" in '' | '#'*) continue ;; esac

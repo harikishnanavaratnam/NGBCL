@@ -2,11 +2,11 @@
 # Pull the latest main and rebuild/restart the API. Downtime is the API's start time (~30–60 s);
 # avoid deploying during the auction or while matches are on court.
 . "$(dirname "$0")/_common.sh"
-cd "$DEPLOY_DIR/.."
+cd "$DEPLOY_DIR/.." || exit 1
 git fetch --quiet origin
 git checkout --quiet main
 git pull --ff-only --quiet
-cd "$DEPLOY_DIR"
+cd "$DEPLOY_DIR" || exit 1
 "${COMPOSE[@]}" up -d --build
 echo "Waiting for the API to report healthy…"
 for _ in $(seq 1 40); do
