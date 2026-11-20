@@ -8,6 +8,8 @@ COPY src src
 RUN ./mvnw -q -B -DskipTests package && cp target/ngbcl-backend-*.jar /app.jar
 
 FROM eclipse-temurin:21-jre
+# curl for the container health check (docker-compose.prod.yml)
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 RUN useradd --system --uid 10001 ngbcl
 USER ngbcl
 COPY --from=build /app.jar /app/app.jar

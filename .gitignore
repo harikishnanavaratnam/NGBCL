@@ -21,3 +21,6 @@ Thumbs.db
 
 # Scratch / handover archives
 design/source-assets/_to_delete/
+
+# Production secrets (deploy/README.md)
+deploy/.env

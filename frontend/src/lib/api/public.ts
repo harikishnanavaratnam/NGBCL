@@ -1,5 +1,5 @@
 import { cacheLife, cacheTag } from 'next/cache';
-import { API_URL } from './client';
+import { apiOrigin } from './client';
 import type { TournamentPhase, TournamentStatus, WindowState } from './settings';
 
 export interface PublicTournament {
@@ -36,7 +36,7 @@ export async function getPublicTournament(): Promise<PublicTournament | null> {
   cacheLife('minutes');
   cacheTag('tournament');
   try {
-    const res = await fetch(`${API_URL}/api/public/tournament`, { headers: { Accept: 'application/json' } });
+    const res = await fetch(`${apiOrigin()}/api/public/tournament`, { headers: { Accept: 'application/json' } });
     if (!res.ok) return null;
     return (await res.json()) as PublicTournament;
   } catch {
@@ -125,7 +125,7 @@ interface NewsPage {
 
 async function getJson<T>(path: string): Promise<T | null> {
   try {
-    const res = await fetch(`${API_URL}/api/public${path}`, { headers: { Accept: 'application/json' } });
+    const res = await fetch(`${apiOrigin()}/api/public${path}`, { headers: { Accept: 'application/json' } });
     if (!res.ok) return null;
     return (await res.json()) as T;
   } catch {

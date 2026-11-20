@@ -1,7 +1,7 @@
 'use client';
 
 import { Client, type IMessage, type StompSubscription } from '@stomp/stompjs';
-import { API_URL } from '@/lib/api/client';
+import { wsUrl as resolveWsUrl } from '@/lib/api/client';
 
 export type ConnectionState = 'connecting' | 'live' | 'reconnecting' | 'offline';
 
@@ -38,7 +38,7 @@ class RealtimeHub {
 
   private ensure() {
     if (this.client) return this.client;
-    const wsUrl = API_URL.replace(/^http/, 'ws') + '/ws';
+    const wsUrl = resolveWsUrl();
     this.client = new Client({
       brokerURL: wsUrl,
       reconnectDelay: 2000,

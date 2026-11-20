@@ -1,6 +1,26 @@
 import { ApiError, type ProblemDetail } from './errors';
 
+/**
+ * API origin as the browser sees it. Empty when the site proxies the API (Vercel: next.config.ts rewrites
+ * this site's /api/* to API_PROXY_TARGET), so REST calls and the auth cookies stay first-party.
+ */
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080').replace(/\/$/, '');
+
+/** Server-side (RSC) calls go straight to the API instead of looping through this site's proxy. */
+const SERVER_API = (process.env.API_PROXY_TARGET || API_URL || 'http://localhost:8080').replace(/\/$/, '');
+
+/** Origin to prefix "/api/..." with: the API directly on the server, this site (or the API) in the browser. */
+export function apiOrigin(): string {
+  if (typeof window === 'undefined') return SERVER_API;
+  return API_URL || window.location.origin;
+}
+
+/** WebSocket endpoint. Vercel can't proxy WebSockets, so production sets NEXT_PUBLIC_WS_URL to the API host. */
+export function wsUrl(): string {
+  const explicit = process.env.NEXT_PUBLIC_WS_URL;
+  if (explicit) return explicit;
+  return apiOrigin().replace(/^http/, 'ws') + '/ws';
+}
 
 type TokenSource = {
   get: () => string | null;
@@ -23,7 +43,7 @@ export interface RequestOptions extends Omit<RequestInit, 'body'> {
 }
 
 function buildUrl(path: string, query?: RequestOptions['query']) {
-  const url = new URL(`${API_URL}/api${path.startsWith('/') ? path : `/${path}`}`);
+  const url = new URL(`${apiOrigin()}/api${path.startsWith('/') ? path : `/${path}`}`);
   if (query) {
     for (const [k, v] of Object.entries(query)) {
       if (v !== undefined && v !== null && v !== '') url.searchParams.set(k, String(v));

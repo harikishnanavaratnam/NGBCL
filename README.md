@@ -52,3 +52,8 @@ cd frontend && npx playwright install chromium && npm run e2e
 - **Only staff sign in.** Players and teams register without accounts; Team Manager logins are not used in edition 1.
 - **Visual changes start in `frontend/src/design-system/styles/ngbcl-ds.css`** (verbatim port of the export). Don't restyle with a generic UI kit.
 - Secrets come from environment variables only (`NGBCL_JWT_SECRET`, DB credentials, R2 keys). See `backend/src/main/resources/application.yml` and `frontend/.env.example`.
+
+## Deploying
+
+The website runs on Vercel and the API on one small server (Oracle Cloud Always Free) with nightly encrypted
+backups to R2 — see [deploy/README.md](deploy/README.md) and the [launch checklist](deploy/LAUNCH-CHECKLIST.md).

@@ -1,0 +1,4 @@
+# crontab -e   (as the user that owns ~/ngbcl; times are UTC — 21:15 UTC is 02:45 in Sri Lanka)
+15 21 * * *  $HOME/ngbcl/deploy/scripts/backup.sh       >> $HOME/ngbcl-backup.log 2>&1
+*/10 * * * * $HOME/ngbcl/deploy/scripts/health-check.sh >> $HOME/ngbcl-health.log 2>&1
+*/5 * * * *  $HOME/ngbcl/deploy/scripts/duckdns.sh      >> $HOME/ngbcl-duckdns.log 2>&1

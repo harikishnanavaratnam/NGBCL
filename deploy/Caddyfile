@@ -1,0 +1,37 @@
+# HTTPS for the API with an automatic Let's Encrypt certificate (needs ports 80 and 443 open).
+{
+	email {$ACME_EMAIL}
+	# Requests from Vercel's proxy carry the visitor's address in X-Forwarded-For; pass it on so the
+	# API's login limits work per visitor. (Login is also limited per account, so a forged header
+	# can't be used to guess passwords.)
+	servers {
+		trusted_proxies static 0.0.0.0/0 ::/0
+	}
+}
+
+{$API_DOMAIN} {
+	encode zstd gzip
+
+	# Only the API, WebSocket and health endpoints are served.
+	@allowed path /api/* /ws /ws/* /actuator/health /actuator/health/*
+	handle @allowed {
+		reverse_proxy api:8080 {
+			health_uri /actuator/health/liveness
+		}
+	}
+	handle {
+		respond "Not found" 404
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+
+	log {
+		output stdout
+		format json
+	}
+}
