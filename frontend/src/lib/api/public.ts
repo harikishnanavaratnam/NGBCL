@@ -258,3 +258,106 @@ export async function getPublicFixtures(): Promise<PublicFixtures> {
   cacheTag('fixtures');
   return (await getJson<PublicFixtures>('/fixtures')) ?? { format: null, groups: [], fixtures: [] };
 }
+
+// ---- Standings and records (M7) ------------------------------------------------------------------
+
+export interface StandingTeam {
+  slug: string;
+  name: string;
+  shortCode: string;
+  colorSlot: number | null;
+  logoUrl: string | null;
+}
+export interface StandingRow {
+  position: number;
+  team: StandingTeam | null;
+  played: number;
+  won: number;
+  drawn: number;
+  lost: number;
+  matchesWon: number;
+  matchesLost: number;
+  gamesWon: number;
+  gamesLost: number;
+  pointsWon: number;
+  pointsLost: number;
+  points: number;
+  /** Tie results in playing order: W, D or L. */
+  form: string[];
+  /** Level with another team on every tie-breaker. */
+  tied: boolean;
+  qualifies: boolean;
+}
+export interface GroupTable {
+  name: string;
+  complete: boolean;
+  tiesPlayed: number;
+  tiesTotal: number;
+  qualifiers: number;
+  rows: StandingRow[];
+}
+export type Tiebreaker = 'MATCHES_WON' | 'MATCH_DIFF' | 'GAME_DIFF' | 'POINT_DIFF' | 'GAMES_WON' | 'HEAD_TO_HEAD';
+export interface StandingsRules {
+  pointsWin: number;
+  pointsDraw: number;
+  pointsLoss: number;
+  tiebreakers: Tiebreaker[];
+  version: number | null;
+}
+export interface Standings {
+  format: string | null;
+  rules: StandingsRules;
+  groups: GroupTable[];
+}
+export interface PlayerStat {
+  slug: string;
+  fullName: string;
+  team: StandingTeam | null;
+  played: number;
+  won: number;
+  lost: number;
+  gamesWon: number;
+  gamesLost: number;
+  pointsWon: number;
+  pointsLost: number;
+  walkoversWon: number;
+  categories: { code: string; name: string; played: number; won: number }[];
+}
+export interface TeamStat {
+  team: StandingTeam;
+  tiesPlayed: number;
+  tiesWon: number;
+  tiesDrawn: number;
+  tiesLost: number;
+  matchesWon: number;
+  matchesLost: number;
+  gamesWon: number;
+  gamesLost: number;
+  pointsWon: number;
+  pointsLost: number;
+  form: string[];
+}
+export interface CategoryLeaders {
+  code: string;
+  name: string;
+  leaders: { slug: string; fullName: string; team: StandingTeam | null; played: number; won: number; gameDiff: number }[];
+}
+export interface Stats {
+  players: PlayerStat[];
+  teams: TeamStat[];
+  leaders: CategoryLeaders[];
+}
+
+export async function getPublicStandings(): Promise<Standings | null> {
+  'use cache';
+  cacheLife('minutes');
+  cacheTag('standings');
+  return getJson<Standings>('/standings');
+}
+
+export async function getPublicStats(): Promise<Stats> {
+  'use cache';
+  cacheLife('minutes');
+  cacheTag('standings');
+  return (await getJson<Stats>('/stats')) ?? { players: [], teams: [], leaders: [] };
+}

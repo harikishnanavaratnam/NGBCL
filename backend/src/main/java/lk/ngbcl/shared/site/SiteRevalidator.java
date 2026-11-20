@@ -28,6 +28,7 @@ public class SiteRevalidator {
     public static final String SPONSORS = "sponsors";
     public static final String COMMITTEE = "committee";
     public static final String FIXTURES = "fixtures";
+    public static final String STANDINGS = "standings";
 
     private static final Logger log = LoggerFactory.getLogger(SiteRevalidator.class);
     private static final Object KEY = new Object();

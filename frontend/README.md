@@ -49,6 +49,12 @@ minutes. For instant updates after an admin change, set the same random value as
 - `/admin/results/confirmations` confirm / return / correct · scoring rules in Settings and under Competition ·
   per-match format in the fixtures tie editor · public `/live` and scores on `/fixtures`.
 
+## Standings, statistics and reports (M7)
+
+- Public `/standings` (tables, team records, event leaders, player records) and records on team and player pages —
+  all cached under the `standings` tag. Admin `/admin/results/standings` (print / save as PDF, Excel, knockout places),
+  `/admin/results/statistics`, Settings › Standings, and `/admin/system/reports` (Excel via a lazy-loaded exceljs, CSV with BOM).
+
 ## Conventions
 
 - Every data view handles **loading → empty → error → content**; mutations end in a toast or inline field errors from the server.

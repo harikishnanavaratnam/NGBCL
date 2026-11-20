@@ -5,9 +5,10 @@ import { Suspense } from 'react';
 import { EmptyState, Skeleton } from '@/design-system/data/States';
 import { CrestTile } from '@/design-system/sport/CrestTile';
 import { teamColor } from '@/design-system/tokens';
+import { Form } from '@/features/standings/StandingsTable';
 import s from '@/features/public/Public.module.css';
 import { PageBand, PlayerGrid } from '@/features/public/Sections';
-import { getPublicTeam, staticSlugs } from '@/lib/api/public';
+import { getPublicTeam, staticSlugs, getPublicStats } from '@/lib/api/public';
 
 export async function generateStaticParams() {
   return staticSlugs('teams');
@@ -34,6 +35,7 @@ export default function TeamPage(props: PageProps<'/teams/[slug]'>) {
 
 async function TeamDetail({ params }: Pick<PageProps<'/teams/[slug]'>, 'params'>) {
   const team = await getPublicTeam((await params).slug);
+  const rec = team ? ((await getPublicStats()).teams.find((x) => x.team.slug === team.slug) ?? null) : null;
   if (!team) {
     return (
       <div className="wrap" style={{ padding: '64px 32px' }}>
@@ -83,10 +85,37 @@ async function TeamDetail({ params }: Pick<PageProps<'/teams/[slug]'>, 'params'>
         </div>
       </section>
       <section className={clsx(s.sec, s.secAlt)}>
-        <div className="wrap" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <h2 className={clsx('disp', s.h2)}>Fixtures and results</h2>
-          <p className="muted" style={{ margin: 0 }}>
-            Fixtures are published after the auction.
+        <div className="wrap" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <h2 className={clsx('disp', s.h2)}>Record</h2>
+          {rec ? (
+            <>
+              <div className={s.g4}>
+                {[
+                  ['Ties W–D–L', `${rec.tiesWon}–${rec.tiesDrawn}–${rec.tiesLost}`],
+                  ['Matches won', `${rec.matchesWon}–${rec.matchesLost}`],
+                  ['Games won', `${rec.gamesWon}–${rec.gamesLost}`],
+                  ['Points scored', rec.pointsWon],
+                ].map(([k, v]) => (
+                  <div key={k} className={clsx('card', s.stat)}>
+                    <span className="eyebrow">{k}</span>
+                    <span className="num" style={{ fontSize: 32 }}>
+                      {v}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span className="eyebrow">Last 5</span>
+                <Form form={rec.form} />
+              </div>
+            </>
+          ) : (
+            <p className="muted" style={{ margin: 0 }}>
+              The record starts with this team’s first confirmed result.
+            </p>
+          )}
+          <p style={{ margin: 0 }}>
+            <Link href="/fixtures">Fixtures and results</Link> · <Link href="/standings">Standings</Link>
           </p>
         </div>
       </section>

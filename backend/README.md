@@ -25,7 +25,9 @@ docker compose -f ../docker-compose.yml up -d        # PostgreSQL
 | `auction` | Auction rules, queue, live engine (bids, undo, sold/unsold/withdrawn, re-auction rounds), budgets, rosters, audited corrections, public display state | M4 |
 | `competition` | Match categories, fixture template, courts, format, group draw, fixture generation (round robin, knockout with byes, 3rd place), scheduling with clash checks, line-ups, publishing frozen public copies | M5 |
 | `scoring` | Scoring rules, per-match format overrides, rally-by-rally scoring with an append-only event ledger (idempotent client event ids, undo by voiding), game-by-game entry, walkover/retirement, submit → confirm/return, audited corrections, tie results and knockout progression, public live feed | M6 |
-| `registration`, `player`, `team`, `standings`, `content`, `reporting`, `notification` | see `documentation/architecture-proposal.md` | M1–M7 |
+| `standings` | Group/league tables computed from confirmed ties (points and ordered tie-breakers from Settings › Standings), knockout places from final tables (admin confirms), player/team records and event leaders | M7 |
+| `reporting` | Organiser exports: results, standings, players master list, auction workbook, audit log | M7 |
+| `registration`, `player`, `team`, `content`, `reporting`, `notification` | see `documentation/architecture-proposal.md` | M1–M7 |
 
 ## Environment
 
@@ -106,3 +108,14 @@ to `local-secrets.yml` (git-ignored) and fill it in. In `frontend/.env.local` se
   move into their next tie automatically unless that tie has started.
 - Live scores go out on `/topic/public/match/{id}` (version = the match's state version) and list changes on
   `/topic/public/live`; `/api/public/live` is the snapshot. Public fixture copies refresh when a match changes status.
+
+## Standings, statistics and reports (M7)
+
+- Tables are computed on read from `COMPLETED` ties: 2/1/0 points by default, then matches won, game difference,
+  point difference, head-to-head (editable order). Teams level on everything are marked `tied` and listed by name.
+  The pure ranking logic is `StandingsEngine`. Public tables use published ties only.
+- Knockout slots whose source is `"<Group> #n"` get a proposal once that group is finished;
+  `POST /api/admin/standings/seeding/apply` fills them through `FixtureService.setTeams` (audited). Publish to show them.
+- Records count confirmed matches in published ties; walkovers count for the tie and team, not a player's matches.
+- `/api/admin/reports/{results|standings|players|auction|audit}` return sheets (columns + rows); the admin app saves
+  them as `.xlsx` (exceljs) or CSV. Contact details are in the players and auction reports — `REPORT_VIEW` only; audit needs `AUDIT_VIEW`.

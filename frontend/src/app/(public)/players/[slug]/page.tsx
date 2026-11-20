@@ -6,7 +6,7 @@ import { EmptyState, Skeleton } from '@/design-system/data/States';
 import { Money } from '@/design-system/primitives/Text';
 import { teamColor } from '@/design-system/tokens';
 import s from '@/features/public/Public.module.css';
-import { getPublicPlayer, staticSlugs } from '@/lib/api/public';
+import { getPublicPlayer, getPublicStats, staticSlugs } from '@/lib/api/public';
 import { splitName } from '@/lib/format/names';
 
 export async function generateStaticParams() {
@@ -48,6 +48,7 @@ async function PlayerDetail({ params }: Pick<PageProps<'/players/[slug]'>, 'para
     );
   }
   const { first, last } = splitName(p.fullName);
+  const rec = (await getPublicStats()).players.find((x) => x.slug === p.slug) ?? null;
   return (
     <>
       <section className={s.band}>
@@ -97,15 +98,30 @@ async function PlayerDetail({ params }: Pick<PageProps<'/players/[slug]'>, 'para
         <div className="wrap" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <h2 className={clsx('disp', s.h2)}>Statistics</h2>
           <div className={s.g4}>
-            {['Matches', 'Won', 'Games won', 'Points scored'].map((k) => (
+            {[
+              ['Matches', rec ? rec.played : null],
+              ['Won', rec ? rec.won : null],
+              ['Games won', rec ? `${rec.gamesWon}–${rec.gamesLost}` : null],
+              ['Points scored', rec ? rec.pointsWon : null],
+            ].map(([k, v]) => (
               <div key={k} className={clsx('card', s.stat)}>
                 <span className="eyebrow">{k}</span>
                 <span className="num" style={{ fontSize: 32 }}>
-                  —
+                  {v ?? '—'}
                 </span>
               </div>
             ))}
           </div>
+          {rec && rec.categories.length > 0 && (
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {rec.categories.map((c) => (
+                <span key={c.code} className="chip c-neutral">
+                  {c.name}: {c.won} of {c.played} won
+                </span>
+              ))}
+              {rec.walkoversWon > 0 && <span className="chip c-neutral">Walkovers: {rec.walkoversWon}</span>}
+            </div>
+          )}
           <p className="help" style={{ margin: 0 }}>
             Statistics count confirmed results only and start once matches are played.
           </p>
