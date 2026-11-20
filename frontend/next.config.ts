@@ -1,10 +1,18 @@
 import type { NextConfig } from 'next';
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
-const wsUrl = apiUrl.replace(/^http/, 'ws');
+/**
+ * Production on Vercel: set API_PROXY_TARGET (e.g. https://ngbcl-api.duckdns.org) and NEXT_PUBLIC_WS_URL
+ * (wss://ngbcl-api.duckdns.org/ws). This site's /api/* is then proxied to the API, so the browser only
+ * talks to one origin for REST and the sign-in cookies are first-party. Locally neither is set.
+ */
+const proxyTarget = (process.env.API_PROXY_TARGET ?? '').replace(/\/$/, '');
+const apiUrl = proxyTarget ? '' : (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080').replace(/\/$/, '');
+const wsUrl = process.env.NEXT_PUBLIC_WS_URL ?? apiUrl.replace(/^http/, 'ws');
 const cdnUrl = process.env.NEXT_PUBLIC_CDN_URL ?? '';
 /** Origin of the R2 / MinIO S3 endpoint: the browser PUTs uploads and loads private previews there. */
 const storageOrigin = process.env.NEXT_PUBLIC_STORAGE_ORIGIN ?? '';
+
+const hsts = process.env.NODE_ENV === 'production' && proxyTarget;
 
 const csp = [
   "default-src 'self'",
@@ -22,11 +30,17 @@ const csp = [
 ].join('; ');
 
 const nextConfig: NextConfig = {
+  // The browser bundle must not point at the API host when the site proxies it.
+  env: { NEXT_PUBLIC_API_URL: apiUrl },
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,
   images: {
     remotePatterns: cdnUrl ? [new URL(`${cdnUrl}/**`)] : [],
+  },
+  async rewrites() {
+    // Runs after this app's own routes (e.g. /api/revalidate), so only unknown /api/* paths are proxied.
+    return proxyTarget ? [{ source: '/api/:path*', destination: `${proxyTarget}/api/:path*` }] : [];
   },
   async headers() {
     return [
@@ -37,6 +51,8 @@ const nextConfig: NextConfig = {
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          ...(hsts ? [{ key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' }] : []),
         ],
       },
       {

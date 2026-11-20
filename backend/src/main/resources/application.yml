@@ -28,9 +28,13 @@ spring:
   threads:
     virtual:
       enabled: true
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
 
 server:
   port: ${PORT:8080}
+  # Finish in-flight requests on redeploy instead of cutting them off.
+  shutdown: graceful
   forward-headers-strategy: framework
   error:
     include-message: never
@@ -49,8 +53,10 @@ management:
 springdoc:
   api-docs:
     path: /v3/api-docs
+    enabled: ${NGBCL_API_DOCS_ENABLED:true}
   swagger-ui:
     path: /swagger-ui.html
+    enabled: ${NGBCL_API_DOCS_ENABLED:true}
 
 ngbcl:
   security:
